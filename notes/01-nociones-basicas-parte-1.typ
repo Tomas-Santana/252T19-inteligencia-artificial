@@ -2,6 +2,7 @@
 #import "@preview/cetz:0.5.2"
 #import "@preview/cetz-plot:0.1.4": plot
 #import "../lib/plot.typ": *
+#import "../lib/op.typ": *
 
 #let fvec(x) = math.bold(math.upright(x))
 
@@ -337,3 +338,32 @@ Donde:
 - $P(E) = sum_l P(E | H = l) P(H = l)$ es la *evidencia*.
 
 En el siguiente enlace se encuentra una #link("https://www.3blue1brown.com/lessons/bayes-theorem/")[explicación más detallada del Teorema de Bayes] (puede leerse el artículo completo o visualizar el video).
+
+
+= Notación para problemas de optimización
+
+Formalizamos un problema de minimización como:
+
+$
+  hat(y) = min_(x in X) f(x)
+$
+
+Donde: 
+
+- $hat(y)$ es el valor mínimo de la función objetivo $f(x)$.
+- $X subset RR^k$ es el conjunto de posibles soluciones (conjunto factible).
+- $f(x): RR^k arrow.r RR$ es la función objetivo que queremos minimizar.
+
+Si en cambio, queremos retornar el valor de $x$ que minimiza la función, lo denotamos como:
+
+$
+  hat(x) = argmin_(x in X) f(x)
+$
+
+Por ejemplo, si queremos minimizar la función $f(x) = 3(x - 2)^2 + 100$, entonces:
+$
+  hat(y) = min_(x in RR) 3(x - 2)^2 + 100 \
+  hat(y) = 100 \ \
+  hat(x) = argmin_(x in RR) 3(x - 2)^2 + 100 \
+  hat(x) = 2
+$
