@@ -108,12 +108,12 @@ Durante este curso, se diseñan, implementan y evalúan algoritmos de aprendizaj
   [Participación.],
 
   [11],
-  [Reducción de dimensionalidad (PCA). Aplicaciones del aprendizaje automático: Bases de datos vectoriales, búsqueda semántica, RAG. Ética e IA responsable.  (Sesiones 21 y 22).],
+  [Reducción de dimensionalidad (PCA). Aplicaciones del aprendizaje automático: Bases de datos vectoriales, búsqueda semántica, RAG. Ética e IA responsable.],
   [Participación.
     Tarea 5.
   ],
 
-  [12], [Presentación del proyecto final.], [Participación / Presentación de proyecto final (Actividad 6).],
+  [12], [Presentación del proyecto final.], [Participación. Presentación de proyecto final.],
 )
 
 = Evaluación
@@ -136,4 +136,16 @@ El resto de la nota final (10%) corresponde a apreciación del profesor, e inclu
 = Honestidad académica
 
 Todas las actividades de los estudiantes deben ser originales. De ocurrir una falta o plagio se recibirá automáticamente la nota de cero en dicha evaluación, se citará a los responsables a la Coordinación de Pregrado y se elevará el informe respectivo a la Facultad con copia a la Dirección Académica. El uso de herramientas de IA generativa, cuando se permita, debe ser declarado explícitamente.
+
+= Bibliografía recomendada
+
+- James, G., Witten, D., Hastie, T., y Tibshirani, R. (2021). An Introduction to Statistical Learning (2ª ed.). Springer. https://www.statlearning.com/. 
+
+- Goodfellow, I., Bengio, Y., y Courville, A. (2016). Deep Learning. MIT Press. http://www.deeplearningbook.org.
+
+
+== Otros recursos en línea
+
+- Andriy Burkov (2019). The Hundred-Page Machine Learning Book. https://themlbook.com.
+- MIT 6.390 Staff. Intro to Machine Learning lecture Notes. https://introml.mit.edu/notes/
 
