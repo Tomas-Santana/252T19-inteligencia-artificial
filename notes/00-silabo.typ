@@ -21,7 +21,7 @@
 
 = Información del profesor
 - Nombre: Tomas Santana
-- Correo electrónico: tomas.30604530\@uru.edu
+- Correo electrónico: tomas.santana.205635\@uru.edu
 - Dudas y consultas: En clase o por correo electrónico. 
 
 = Descripción del curso
