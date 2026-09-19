@@ -137,6 +137,36 @@ El resto de la nota final (10%) corresponde a apreciación del profesor, e inclu
 
 Todas las actividades de los estudiantes deben ser originales. De ocurrir una falta o plagio se recibirá automáticamente la nota de cero en dicha evaluación, se citará a los responsables a la Coordinación de Pregrado y se elevará el informe respectivo a la Facultad con copia a la Dirección Académica. El uso de herramientas de IA generativa, cuando se permita, debe ser declarado explícitamente.
 
+= Política de entregas
+
+== Para trabajos y tareas entregadas virtualmente
+
+- Las tareas deben ser entregadas en la fecha y hora establecida, con un periodo de gracia de 4 horas sin penalización.
+- Se aplicará una penalización del 10% entre las 4 y 24 horas siguientes a la fecha de entrega.
+- Se aplicará una penalización del 30% entre las 24 y 48 horas siguientes a la fecha de entrega.
+- Pasado este periodo, no se aceptarán entregas tardías y la nota será cero.
+
+== Para trabajos y tareas entregadas en clase
+
+- Las tareas y trabajos deben ser entregadas durante la clase a la que fueron asignadas.
+
+== Para exposiciones y presentaciones
+
+- Las exposiciones y presentaciones deben realizarse en la fecha y hora establecida.
+
+== Comodín
+
+Los estudiantes tendrán derecho a retrasar la fecha de entrega de una única tarea o trabajo, siguiendo las siguientes normas:
+- Para entregas virtuales, el comodín puede ser utilizado para retrasar la entrega de una tarea o trabajo hasta 48 horas después de la fecha de entrega original, sin penalización. No se extenderá la fecha límite de entrega más allá de las 48 horas posteriores a la fecha original.
+- Para entregas en clase, el comodín puede ser utilizado para retrasar la entrega de una tarea o trabajo hasta la clase siguiente, sin penalización. No será posible utilizar el comodín para retrasar la entrega en la última clase del periodo académico.
+- Para exposiciones y presentaciones, el comodín puede ser utilizado para retrasar la presentación hasta la clase siguiente. Para este caso, el uso debe ser aprobado previamente por el profesor.
+- Para trabajos en grupo, podrá aplicarse siempre que al menos un integrante del equipo lo tenga disponible. Su uso consumirá el comodín de todos los miembros del grupo que aún lo conserven.
+
+
+== Sobre retrasos justificados
+
+En caso de retrasos en la entrega debido a causas justificables, el estudiante debe comunicarse previamente (o en la brevedad posible una vez superada la eventualidad) con el profesor por correo electrónico. El profesor evaluará la situación y podrá otorgar una extensión de tiempo para la entrega sin penalización, según corresponda.
+
 = Bibliografía recomendada
 
 - James, G., Witten, D., Hastie, T., y Tibshirani, R. (2021). An Introduction to Statistical Learning (2ª ed.). Springer. https://www.statlearning.com/. 
