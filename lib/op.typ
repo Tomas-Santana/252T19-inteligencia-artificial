@@ -1,0 +1,1 @@
+#let argmin = $op("argmin", limits: #true)$
