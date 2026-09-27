@@ -260,7 +260,11 @@ window.Quarto = {
 </section>
 <section id="clases" class="level3">
 <h3 class="anchored" data-anchor-id="clases">Clases</h3>
-<p>Una clase es un molde para crear objetos que reúnen datos y comportamiento. <code>__init__</code> se ejecuta al crear el objeto, <code>self</code> representa ese objeto y un método es una función definida dentro de la clase. Aquí <code>resumen()</code> devuelve un texto con sus datos. Un texto que comienza con <code>f</code> puede insertar valores entre llaves; <code>:,.2f</code> muestra un número con separador de miles y dos decimales.</p>
+<p>Una clase es un molde para crear objetos que reúnen datos y comportamiento.</p>
+<p><code>__init__</code> se ejecuta al crear el objeto,</p>
+<p><code>self</code> representa ese objeto y un método es una función definida dentro de la clase.</p>
+<p>Aquí <code>resumen()</code> devuelve un texto con sus datos.</p>
+<p>Un texto que comienza con <code>f</code> puede insertar valores entre llaves; <code>:,.2f</code> muestra un número con separador de miles y dos decimales.</p>
 <div id="cell-14" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Casa:</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, area, precio):</span>
@@ -549,7 +553,8 @@ memory usage: 62.8 KB</code></pre>
 </div>
 </div>
 </div>
-<p>El método <code>describe()</code> calcula estadísticas básicas de las columnas numéricas: cantidad, promedio, desviación estándar, mínimo, cuartiles y máximo. El método <code>round(2)</code> redondea esos resultados a dos decimales para facilitar su lectura.</p>
+<p>El método <code>describe()</code> calcula estadísticas básicas de las columnas numéricas: cantidad, promedio, desviación estándar, mínimo, cuartiles y máximo.</p>
+<p>El método <code>round(2)</code> redondea esos resultados a dos decimales para facilitar su lectura.</p>
 <div id="cell-30" class="cell" data-execution_count="6">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df.describe().<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="6">
@@ -865,11 +870,10 @@ Duplicados restantes: 0</code></pre>
 R²: 0.998</code></pre>
 </div>
 </div>
-<p>Para comparar resultados usamos otro <code>scatter</code>: cada punto enfrenta un precio real con uno predicho. En una serie o arreglo, los métodos <code>min()</code> y <code>max()</code> devuelven su menor y mayor valor. Las funciones incorporadas <code>min()</code> y <code>max()</code> comparan esos límites, y <code>plt.plot()</code> dibuja con ellos una diagonal de referencia. Los puntos cercanos a esa línea son mejores predicciones.</p>
 </section>
 <section id="coeficientes" class="level3">
 <h3 class="anchored" data-anchor-id="coeficientes">Coeficientes</h3>
-<p>El atributo <code>coef_</code> contiene un coeficiente por característica. Cada uno estima cuánto cambia el precio cuando esa característica aumenta una unidad y las demás permanecen iguales.</p>
+<p>El atributo <code>coef_</code> contiene un coeficiente por característica de la ecuación lineal.</p>
 <p><code>pd.Series(valores, index=...)</code> los presenta con el nombre de cada característica.</p>
 <div id="fc75b503" class="cell" data-execution_count="16">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>pd.Series(modelo.coef_, index<span class="op">=</span>X.columns, name<span class="op">=</span><span class="st">"Coeficiente"</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -893,7 +897,7 @@ Name: Coeficiente, dtype: float64</code></pre>
 <li>Calcula el nuevo RMSE y R².</li>
 <li>Compara los resultados: ¿mejoraron o empeoraron?</li>
 </ol>
-<div id="cell-49" class="cell">
+<div id="cell-48" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
