@@ -11,6 +11,10 @@ subtitle: "Material de la asignatura"
 
 - [1. Nociones básicas](notes/01-nociones-basicas-parte-1.pdf)
 
+## Laboratorios
+
+- [Laboratorio 01: Python, NumPy, pandas, Matplotlib y regresión lineal](labs/lab-01.zip)
+
 ## Tareas
 
 - [Tarea 1](homework/01.pdf)
