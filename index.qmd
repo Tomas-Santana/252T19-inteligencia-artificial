@@ -1,0 +1,16 @@
+---
+title: "Inteligencia Artificial"
+subtitle: "Material de la asignatura"
+---
+
+## Sílabo
+
+- [Descargar sílabo](notes/00-silabo.pdf)
+
+## Notas
+
+- [1. Nociones básicas](notes/01-nociones-basicas-parte-1.pdf)
+
+## Tareas
+
+- [Tarea 1](homework/01.pdf)
