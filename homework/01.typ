@@ -11,7 +11,7 @@
 
 1. Sean los vectores:
 $
-y = mat(x_1 x_2; x_2^2; x_3 x_1)^T, quad a = mat(5; -2; 3)^T, quad x = mat(x_1; x_2; x_3)^T
+y = mat(x_1 x_2; x_2^2; x_3 x_1), quad a = mat(5; -2; 3), quad x = mat(x_1; x_2; x_3)
 $
 
 Evalúa las siguientes derivadas matriciales mostrando todo el procedimiento analítico (en la notación de disposición de denominadores):
