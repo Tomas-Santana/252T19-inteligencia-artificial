@@ -197,7 +197,7 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="variables-y-tipos">Variables y tipos</h3>
 <p>Una variable guarda un valor. Aquí usamos un entero (<code>int</code>), un decimal (<code>float</code>), un texto (<code>str</code>) y un booleano (<code>bool</code>).</p>
 <p>La función <code>type(valor)</code> indica el tipo y <code>print(valor)</code> muestra un resultado en pantalla.</p>
-<div id="cell-4" class="cell">
+<div id="cell-4" class="cell" data-execution_count="8">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>habitaciones <span class="op">=</span> <span class="dv">3</span> <span class="co"># int</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>precio <span class="op">=</span> <span class="fl">250000.50</span> <span class="co"># float</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>barrio <span class="op">=</span> <span class="st">"Centro"</span> <span class="co"># str</span></span>
@@ -207,6 +207,12 @@ window.Quarto = {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(precio, <span class="bu">type</span>(precio))</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(barrio, <span class="bu">type</span>(barrio))</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tiene_garaje, <span class="bu">type</span>(tiene_garaje))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>3 &lt;class 'int'&gt;
+250000.5 &lt;class 'float'&gt;
+Centro &lt;class 'str'&gt;
+True &lt;class 'bool'&gt;</code></pre>
+</div>
 </div>
 </section>
 <section id="listas" class="level3">
@@ -215,13 +221,18 @@ window.Quarto = {
 <p>Los índices empiezan en <code>0</code>: <code>precios[0]</code> obtiene el primero y <code>precios[-1]</code> el último.</p>
 <p>El método <code>append(valor)</code> agrega un elemento al final de la lista.</p>
 <p>La función <code>len(lista)</code> indica la cantidad de elementos y <code>sum(lista)</code> la suma de todos los valores.</p>
-<div id="cell-6" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>precios_lista <span class="op">=</span> [<span class="dv">180000</span>, <span class="dv">220000</span>, <span class="dv">310000</span>]</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Primer precio:"</span>, precios_lista[<span class="dv">0</span>])</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Último precio:"</span>, precios_lista[<span class="op">-</span><span class="dv">1</span>])</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>precios_lista.append(<span class="dv">275000</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Lista actualizada:"</span>, precios_lista)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-6" class="cell" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>precios_lista <span class="op">=</span> [<span class="dv">180000</span>, <span class="dv">220000</span>, <span class="dv">310000</span>]</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Primer precio:"</span>, precios_lista[<span class="dv">0</span>])</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Último precio:"</span>, precios_lista[<span class="op">-</span><span class="dv">1</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>precios_lista.append(<span class="dv">275000</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Lista actualizada:"</span>, precios_lista)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Primer precio: 180000
+Último precio: 310000
+Lista actualizada: [180000, 220000, 310000, 275000]</code></pre>
+</div>
 </div>
 </section>
 <section id="ahora-tú-listas" class="level3">
@@ -232,8 +243,8 @@ window.Quarto = {
 <li>Muestra el segundo elemento y la lista completa.</li>
 <li>Muestra la cantidad de elementos y la suma de todos los valores.</li>
 </ol>
-<div id="cell-8" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-8" class="cell" data-execution_count="10">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="diccionarios" class="level3">
@@ -241,21 +252,28 @@ window.Quarto = {
 <p>Un diccionario relaciona claves con valores.</p>
 <p><code>casa["precio"]</code> accede a una clave existente.</p>
 <p>El método <code>get(clave, valor_por_defecto)</code> permite consultar una clave sin producir un error cuando no existe.</p>
-<div id="cell-10" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>casa <span class="op">=</span> {<span class="st">"area"</span>: <span class="dv">1360</span>, <span class="st">"habitaciones"</span>: <span class="dv">2</span>, <span class="st">"precio"</span>: <span class="fl">262382.85</span>}</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precio:"</span>, casa[<span class="st">"precio"</span>])</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Piscina:"</span>, casa.get(<span class="st">"piscina"</span>, <span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-10" class="cell" data-execution_count="11">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>casa <span class="op">=</span> {<span class="st">"area"</span>: <span class="dv">1360</span>, <span class="st">"habitaciones"</span>: <span class="dv">2</span>, <span class="st">"precio"</span>: <span class="fl">262382.85</span>}</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precio:"</span>, casa[<span class="st">"precio"</span>])</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Piscina:"</span>, casa.get(<span class="st">"piscina"</span>, <span class="va">False</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Precio: 262382.85
+Piscina: False</code></pre>
+</div>
 </div>
 </section>
 <section id="funciones" class="level3">
 <h3 class="anchored" data-anchor-id="funciones">Funciones</h3>
 <p>Una función agrupa instrucciones reutilizables. <code>def</code> inicia su definición, los valores entre paréntesis son parámetros y <code>return</code> entrega el resultado.</p>
-<div id="cell-12" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> precio_por_pie(precio, area):</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> precio <span class="op">/</span> area</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> precio_por_pie(casa[<span class="st">"precio"</span>], casa[<span class="st">"area"</span>])</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precio por pie cuadrado:"</span>, resultado)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-12" class="cell" data-execution_count="12">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> precio_por_pie(precio, area):</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> precio <span class="op">/</span> area</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> precio_por_pie(casa[<span class="st">"precio"</span>], casa[<span class="st">"area"</span>])</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precio por pie cuadrado:"</span>, resultado)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Precio por pie cuadrado: 192.92856617647058</code></pre>
+</div>
 </div>
 </section>
 <section id="clases" class="level3">
@@ -265,17 +283,20 @@ window.Quarto = {
 <p><code>self</code> representa ese objeto y un método es una función definida dentro de la clase.</p>
 <p>Aquí <code>resumen()</code> devuelve un texto con sus datos.</p>
 <p>Un texto que comienza con <code>f</code> puede insertar valores entre llaves; <code>:,.2f</code> muestra un número con separador de miles y dos decimales.</p>
-<div id="cell-14" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Casa:</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, area, precio):</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.area <span class="op">=</span> area</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.precio <span class="op">=</span> precio</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> resumen(<span class="va">self</span>):</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"Casa de </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>area<span class="sc">}</span><span class="ss"> pies²: $</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>precio<span class="sc">:,.2f}</span><span class="ss">"</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>mi_casa <span class="op">=</span> Casa(<span class="dv">1360</span>, <span class="fl">262382.85</span>)</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(mi_casa.resumen())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-14" class="cell" data-execution_count="13">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Casa:</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, area, precio):</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.area <span class="op">=</span> area</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.precio <span class="op">=</span> precio</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> resumen(<span class="va">self</span>):</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"Casa de </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>area<span class="sc">}</span><span class="ss"> pies²: $</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>precio<span class="sc">:,.2f}</span><span class="ss">"</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>mi_casa <span class="op">=</span> Casa(<span class="dv">1360</span>, <span class="fl">262382.85</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(mi_casa.resumen())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Casa de 1360 pies²: $262,382.85</code></pre>
+</div>
 </div>
 </section>
 <section id="ahora-tú-diccionarios-funciones-y-clases" class="level3">
@@ -285,8 +306,8 @@ window.Quarto = {
 <li>Escribe una función que reciba un precio y aplique un descuento del 5 % (<span class="math inline">\(precio * 0.05\)</span>).</li>
 <li>Agrega a <code>Casa</code> un método llamado <code>precio_por_pie</code> que devuelva <code>self.precio / self.area</code>.</li>
 </ol>
-<div id="cell-16" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-16" class="cell" data-execution_count="14">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -296,14 +317,14 @@ window.Quarto = {
 <p>La función <code>np.array(lista)</code> convierte una lista en un arreglo.</p>
 <p>El atributo <code>shape</code> indica sus dimensiones.</p>
 <p>Los métodos <code>mean()</code> y <code>max()</code> calculan el promedio y el valor máximo.</p>
-<div id="cell-18" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>precios <span class="op">=</span> np.array([<span class="fl">262382.85</span>, <span class="fl">985260.85</span>, <span class="fl">777977.39</span>])</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Arreglo:"</span>, precios)</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensiones:"</span>, precios.shape)</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Promedio:"</span>, precios.mean())</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Máximo:"</span>, precios.<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-18" class="cell" data-execution_count="15">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>precios <span class="op">=</span> np.array([<span class="fl">262382.85</span>, <span class="fl">985260.85</span>, <span class="fl">777977.39</span>])</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Arreglo:"</span>, precios)</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensiones:"</span>, precios.shape)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Promedio:"</span>, precios.mean())</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Máximo:"</span>, precios.<span class="bu">max</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Arreglo: [262382.85 985260.85 777977.39]
 Dimensiones: (3,)
@@ -316,10 +337,10 @@ Máximo: 985260.85</code></pre>
 <p>Los índices funcionan como en las listas.</p>
 <p>Un corte como <code>precios[:2]</code> selecciona desde el inicio hasta antes del índice <code>2</code>.</p>
 <p>NumPy también permite aplicar una operación a todos los elementos: <code>precios / 1000</code> expresa cada precio en miles.</p>
-<div id="cell-20" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Primer precio:"</span>, precios[<span class="dv">0</span>])</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Primeros dos:"</span>, precios[:<span class="dv">2</span>])</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"En miles:"</span>, precios <span class="op">/</span> <span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-20" class="cell" data-execution_count="16">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Primer precio:"</span>, precios[<span class="dv">0</span>])</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Primeros dos:"</span>, precios[:<span class="dv">2</span>])</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"En miles:"</span>, precios <span class="op">/</span> <span class="dv">1000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Primer precio: 262382.85
 Primeros dos: [262382.85 985260.85]
@@ -332,12 +353,12 @@ En miles: [262.38285 985.26085 777.97739]</code></pre>
 <p>Una lista de listas produce un arreglo de filas y columnas.</p>
 <p><code>datos[0, 1]</code> selecciona la fila <code>0</code>, columna <code>1</code></p>
 <p><code>datos[:, 0]</code> selecciona todas las filas de la primera columna (<code>:</code> significa “todas las filas en esa columna”).</p>
-<div id="cell-22" class="cell" data-execution_count="3">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>datos <span class="op">=</span> np.array([[<span class="dv">1360</span>, <span class="dv">2</span>, <span class="fl">262382.85</span>], </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">4272</span>, <span class="dv">3</span>, <span class="fl">985260.85</span>]])</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensiones:"</span>, datos.shape)</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Habitaciones de la primera casa:"</span>, datos[<span class="dv">0</span>, <span class="dv">1</span>])</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Áreas:"</span>, datos[:, <span class="dv">0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-22" class="cell" data-execution_count="17">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>datos <span class="op">=</span> np.array([[<span class="dv">1360</span>, <span class="dv">2</span>, <span class="fl">262382.85</span>], </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                  [<span class="dv">4272</span>, <span class="dv">3</span>, <span class="fl">985260.85</span>]])</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensiones:"</span>, datos.shape)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Habitaciones de la primera casa:"</span>, datos[<span class="dv">0</span>, <span class="dv">1</span>])</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Áreas:"</span>, datos[:, <span class="dv">0</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dimensiones: (2, 3)
 Habitaciones de la primera casa: 2.0
@@ -352,8 +373,8 @@ Habitaciones de la primera casa: 2.0
 <li>Muestra su <code>shape</code>, los primeros tres valores y su promedio.</li>
 <li>Convierte las áreas a metros cuadrados multiplicando por <code>0.092903</code>.</li>
 </ol>
-<div id="cell-24" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-24" class="cell" data-execution_count="18">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -362,12 +383,12 @@ Habitaciones de la primera casa: 2.0
 <p>pandas organiza datos tabulares en un <code>DataFrame</code>.</p>
 <p>La función <code>pd.read_csv(ruta)</code> lee un archivo CSV y devuelve un <code>DataFrame</code>.</p>
 <p>El método <code>head()</code> muestra las primeras cinco filas.</p>
-<div id="cell-26" class="cell" data-execution_count="4">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"house_price_regression_dataset.csv"</span>)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="4">
+<div id="cell-26" class="cell" data-execution_count="19">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(<span class="st">"house_price_regression_dataset.csv"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>df.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="19">
 <div>
 
 
@@ -388,57 +409,57 @@ Habitaciones de la primera casa: 2.0
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">0</th>
-<td>1360</td>
-<td>2</td>
-<td>1</td>
-<td>1981</td>
+<td>1360.0</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>1981.0</td>
 <td>0.599637</td>
-<td>0</td>
-<td>5</td>
+<td>0.0</td>
+<td>5.0</td>
 <td>2.623829e+05</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">1</th>
-<td>4272</td>
-<td>3</td>
-<td>3</td>
-<td>2016</td>
+<td>4272.0</td>
+<td>3.0</td>
+<td>3.0</td>
+<td>2016.0</td>
 <td>4.753014</td>
-<td>1</td>
-<td>6</td>
+<td>1.0</td>
+<td>6.0</td>
 <td>9.852609e+05</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">2</th>
-<td>3592</td>
-<td>1</td>
-<td>2</td>
-<td>2016</td>
+<td>3592.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2016.0</td>
 <td>3.634823</td>
-<td>0</td>
-<td>9</td>
+<td>0.0</td>
+<td>9.0</td>
 <td>7.779774e+05</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">3</th>
-<td>966</td>
-<td>1</td>
-<td>2</td>
-<td>1977</td>
+<td>966.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>1977.0</td>
 <td>2.730667</td>
-<td>1</td>
-<td>8</td>
+<td>1.0</td>
+<td>8.0</td>
 <td>2.296989e+05</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">4</th>
-<td>4926</td>
-<td>2</td>
-<td>1</td>
-<td>1993</td>
+<td>4926.0</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>1993.0</td>
 <td>4.699073</td>
-<td>0</td>
-<td>8</td>
+<td>0.0</td>
+<td>8.0</td>
 <td>1.041741e+06</td>
 </tr>
 </tbody>
@@ -450,30 +471,30 @@ Habitaciones de la primera casa: 2.0
 <p>El atributo <code>shape</code> contiene el número de filas y columnas.</p>
 <p>El método <code>info()</code> muestra los nombres de las columnas, sus tipos y cuántos valores no vacíos tienen.</p>
 <p>El método <code>tail()</code> muestra las últimas cinco filas.</p>
-<div id="cell-28" class="cell" data-execution_count="5">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Filas y columnas:"</span>, df.shape)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df.info()</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>df.tail()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-28" class="cell" data-execution_count="20">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Filas y columnas:"</span>, df.shape)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>df.info()</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>df.tail()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Filas y columnas: (1003, 8)
+<pre><code>Filas y columnas: (1023, 8)
 &lt;class 'pandas.DataFrame'&gt;
-RangeIndex: 1003 entries, 0 to 1002
+RangeIndex: 1023 entries, 0 to 1022
 Data columns (total 8 columns):
  #   Column                Non-Null Count  Dtype  
 ---  ------                --------------  -----  
- 0   Square_Footage        1003 non-null   int64  
- 1   Num_Bedrooms          1003 non-null   int64  
- 2   Num_Bathrooms         1003 non-null   int64  
- 3   Year_Built            1003 non-null   int64  
- 4   Lot_Size              1002 non-null   float64
- 5   Garage_Size           1003 non-null   int64  
- 6   Neighborhood_Quality  1003 non-null   int64  
- 7   House_Price           1002 non-null   float64
-dtypes: float64(2), int64(6)
-memory usage: 62.8 KB</code></pre>
+ 0   Square_Footage        1021 non-null   float64
+ 1   Num_Bedrooms          1021 non-null   float64
+ 2   Num_Bathrooms         1022 non-null   float64
+ 3   Year_Built            1022 non-null   float64
+ 4   Lot_Size              1021 non-null   float64
+ 5   Garage_Size           1022 non-null   float64
+ 6   Neighborhood_Quality  1022 non-null   float64
+ 7   House_Price           1021 non-null   float64
+dtypes: float64(8)
+memory usage: 64.1 KB</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="5">
+<div class="cell-output cell-output-display" data-execution_count="20">
 <div>
 
 
@@ -493,59 +514,59 @@ memory usage: 62.8 KB</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<th data-quarto-table-cell-role="th">998</th>
-<td>4723</td>
-<td>5</td>
-<td>2</td>
-<td>1950</td>
-<td>1.930921</td>
-<td>0</td>
-<td>7</td>
-<td>964865.298639</td>
+<th data-quarto-table-cell-role="th">1018</th>
+<td>1600.0</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>1985.0</td>
+<td>0.8</td>
+<td>NaN</td>
+<td>4.0</td>
+<td>330000.0</td>
 </tr>
 <tr class="even">
-<th data-quarto-table-cell-role="th">999</th>
-<td>3268</td>
-<td>4</td>
-<td>2</td>
-<td>1983</td>
-<td>3.108790</td>
-<td>2</td>
-<td>2</td>
-<td>742599.253332</td>
+<th data-quarto-table-cell-role="th">1019</th>
+<td>3200.0</td>
+<td>5.0</td>
+<td>3.0</td>
+<td>2018.0</td>
+<td>3.0</td>
+<td>2.0</td>
+<td>NaN</td>
+<td>850000.0</td>
 </tr>
 <tr class="odd">
-<th data-quarto-table-cell-role="th">1000</th>
-<td>1360</td>
-<td>2</td>
-<td>1</td>
-<td>1981</td>
-<td>0.599637</td>
-<td>0</td>
-<td>5</td>
-<td>262382.852274</td>
+<th data-quarto-table-cell-role="th">1020</th>
+<td>1450.0</td>
+<td>2.0</td>
+<td>2.0</td>
+<td>1995.0</td>
+<td>1.2</td>
+<td>1.0</td>
+<td>5.0</td>
+<td>NaN</td>
 </tr>
 <tr class="even">
-<th data-quarto-table-cell-role="th">1001</th>
-<td>2500</td>
-<td>3</td>
-<td>2</td>
-<td>2005</td>
+<th data-quarto-table-cell-role="th">1021</th>
+<td>3800.0</td>
 <td>NaN</td>
-<td>1</td>
-<td>7</td>
-<td>525000.000000</td>
+<td>3.0</td>
+<td>2020.0</td>
+<td>4.1</td>
+<td>2.0</td>
+<td>10.0</td>
+<td>950000.0</td>
 </tr>
 <tr class="odd">
-<th data-quarto-table-cell-role="th">1002</th>
-<td>1800</td>
-<td>2</td>
-<td>2</td>
-<td>1999</td>
-<td>1.250000</td>
-<td>1</td>
-<td>6</td>
+<th data-quarto-table-cell-role="th">1022</th>
 <td>NaN</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1970.0</td>
+<td>0.5</td>
+<td>0.0</td>
+<td>3.0</td>
+<td>180000.0</td>
 </tr>
 </tbody>
 </table>
@@ -555,9 +576,9 @@ memory usage: 62.8 KB</code></pre>
 </div>
 <p>El método <code>describe()</code> calcula estadísticas básicas de las columnas numéricas: cantidad, promedio, desviación estándar, mínimo, cuartiles y máximo.</p>
 <p>El método <code>round(2)</code> redondea esos resultados a dos decimales para facilitar su lectura.</p>
-<div id="cell-30" class="cell" data-execution_count="6">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>df.describe().<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-display" data-execution_count="6">
+<div id="cell-30" class="cell" data-execution_count="26">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>df.describe().<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display" data-execution_count="26">
 <div>
 
 
@@ -578,36 +599,36 @@ memory usage: 62.8 KB</code></pre>
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">count</th>
-<td>1003.00</td>
-<td>1003.00</td>
-<td>1003.00</td>
-<td>1003.00</td>
-<td>1002.00</td>
-<td>1003.00</td>
-<td>1003.00</td>
-<td>1002.00</td>
+<td>1000.00</td>
+<td>1000.00</td>
+<td>1000.00</td>
+<td>1000.00</td>
+<td>1000.00</td>
+<td>1000.00</td>
+<td>1000.00</td>
+<td>1000.00</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">mean</th>
-<td>2812.64</td>
+<td>2815.42</td>
 <td>2.99</td>
 <td>1.97</td>
-<td>1986.58</td>
-<td>2.77</td>
+<td>1986.55</td>
+<td>2.78</td>
 <td>1.02</td>
 <td>5.62</td>
-<td>618411.58</td>
+<td>618861.02</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">std</th>
-<td>1254.92</td>
+<td>1255.51</td>
 <td>1.43</td>
 <td>0.82</td>
-<td>20.61</td>
+<td>20.63</td>
 <td>1.30</td>
 <td>0.81</td>
-<td>2.88</td>
-<td>253582.03</td>
+<td>2.89</td>
+<td>253568.06</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">min</th>
@@ -622,36 +643,36 @@ memory usage: 62.8 KB</code></pre>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">25%</th>
-<td>1749.00</td>
+<td>1749.50</td>
 <td>2.00</td>
 <td>1.00</td>
 <td>1969.00</td>
-<td>1.66</td>
+<td>1.67</td>
 <td>0.00</td>
 <td>3.00</td>
-<td>400939.72</td>
+<td>401648.23</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">50%</th>
-<td>2849.00</td>
+<td>2862.50</td>
 <td>3.00</td>
 <td>2.00</td>
 <td>1986.00</td>
 <td>2.81</td>
 <td>1.00</td>
 <td>6.00</td>
-<td>627623.28</td>
+<td>628267.29</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">75%</th>
-<td>3846.50</td>
+<td>3849.50</td>
 <td>4.00</td>
 <td>3.00</td>
-<td>2004.50</td>
+<td>2004.25</td>
 <td>3.92</td>
 <td>2.00</td>
 <td>8.00</td>
-<td>827006.84</td>
+<td>827141.28</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">max</th>
@@ -676,30 +697,30 @@ memory usage: 62.8 KB</code></pre>
 <p>El CSV contiene intencionalmente una fila repetida y dos filas con datos vacíos.</p>
 <p>El método <code>isna()</code> marca cada valor vacío como <code>True</code>; después, <code>sum()</code> cuenta esos valores por columna.</p>
 <p>El método <code>duplicated()</code> marca las filas repetidas.</p>
-<div id="cell-32" class="cell" data-execution_count="7">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Valores faltantes por columna:"</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.isna().<span class="bu">sum</span>())</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Filas duplicadas:"</span>, df.duplicated().<span class="bu">sum</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-32" class="cell" data-execution_count="22">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Valores faltantes por columna:"</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(df.isna().<span class="bu">sum</span>())</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Filas duplicadas:"</span>, df.duplicated().<span class="bu">sum</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Valores faltantes por columna:
-Square_Footage          0
-Num_Bedrooms            0
-Num_Bathrooms           0
-Year_Built              0
-Lot_Size                1
-Garage_Size             0
-Neighborhood_Quality    0
-House_Price             1
+Square_Footage          2
+Num_Bedrooms            2
+Num_Bathrooms           1
+Year_Built              1
+Lot_Size                2
+Garage_Size             1
+Neighborhood_Quality    1
+House_Price             2
 dtype: int64
-Filas duplicadas: 1</code></pre>
+Filas duplicadas: 11</code></pre>
 </div>
 </div>
 <p>El método <code>drop_duplicates()</code> elimina las filas repetidas. El método <code>dropna()</code> elimina las filas que contienen al menos un valor vacío. Guardamos el resultado otra vez en <code>df</code>. En un proyecto real no siempre se eliminan los faltantes: la decisión depende de qué representan y de cuántos existen.</p>
-<div id="cell-34" class="cell" data-execution_count="8">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.drop_duplicates().dropna()</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensiones después de limpiar:"</span>, df.shape)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Faltantes restantes:"</span>, df.isna().<span class="bu">sum</span>().<span class="bu">sum</span>())</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Duplicados restantes:"</span>, df.duplicated().<span class="bu">sum</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-34" class="cell" data-execution_count="23">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> df.drop_duplicates().dropna()</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Dimensiones después de limpiar:"</span>, df.shape)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Faltantes restantes:"</span>, df.isna().<span class="bu">sum</span>().<span class="bu">sum</span>())</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Duplicados restantes:"</span>, df.duplicated().<span class="bu">sum</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Dimensiones después de limpiar: (1000, 8)
 Faltantes restantes: 0
@@ -709,16 +730,16 @@ Duplicados restantes: 0</code></pre>
 <section id="selección-y-filtros" class="level3">
 <h3 class="anchored" data-anchor-id="selección-y-filtros">Selección y filtros</h3>
 <p><code>df["House_Price"]</code> selecciona una columna. Una comparación como <code>df["Num_Bedrooms"] &gt;= 4</code> crea valores <code>True</code> o <code>False</code>, y usarlos dentro de <code>df[...]</code> conserva sólo las filas que cumplen la condición. En una columna de pandas, <code>mean()</code> calcula el promedio.</p>
-<div id="cell-36" class="cell" data-execution_count="9">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>precio_promedio <span class="op">=</span> df[<span class="st">"House_Price"</span>].mean()</span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>casas_grandes <span class="op">=</span> df[df[<span class="st">"Num_Bedrooms"</span>] <span class="op">&gt;=</span> <span class="dv">4</span>]</span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precio promedio:"</span>, precio_promedio)</span>
-<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>casas_grandes.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-36" class="cell" data-execution_count="24">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>precio_promedio <span class="op">=</span> df[<span class="st">"House_Price"</span>].mean()</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>casas_grandes <span class="op">=</span> df[df[<span class="st">"Num_Bedrooms"</span>] <span class="op">&gt;=</span> <span class="dv">4</span>]</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Precio promedio:"</span>, precio_promedio)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>casas_grandes.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Precio promedio: 618861.0186467685</code></pre>
 </div>
-<div class="cell-output cell-output-display" data-execution_count="9">
+<div class="cell-output cell-output-display" data-execution_count="24">
 <div>
 
 
@@ -739,57 +760,57 @@ Duplicados restantes: 0</code></pre>
 <tbody>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">5</th>
-<td>3944</td>
-<td>5</td>
-<td>3</td>
-<td>1990</td>
+<td>3944.0</td>
+<td>5.0</td>
+<td>3.0</td>
+<td>1990.0</td>
 <td>2.475930</td>
-<td>2</td>
-<td>8</td>
+<td>2.0</td>
+<td>8.0</td>
 <td>8.797970e+05</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">9</th>
-<td>2185</td>
-<td>4</td>
-<td>2</td>
-<td>1981</td>
+<td>2185.0</td>
+<td>4.0</td>
+<td>2.0</td>
+<td>1981.0</td>
 <td>3.941604</td>
-<td>2</td>
-<td>5</td>
+<td>2.0</td>
+<td>5.0</td>
 <td>5.041765e+05</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">12</th>
-<td>2933</td>
-<td>5</td>
-<td>3</td>
-<td>1973</td>
+<td>2933.0</td>
+<td>5.0</td>
+<td>3.0</td>
+<td>1973.0</td>
 <td>4.781489</td>
-<td>2</td>
-<td>9</td>
+<td>2.0</td>
+<td>9.0</td>
 <td>7.011338e+05</td>
 </tr>
 <tr class="even">
 <th data-quarto-table-cell-role="th">13</th>
-<td>1684</td>
-<td>5</td>
-<td>3</td>
-<td>1988</td>
+<td>1684.0</td>
+<td>5.0</td>
+<td>3.0</td>
+<td>1988.0</td>
 <td>3.994202</td>
-<td>1</td>
-<td>8</td>
+<td>1.0</td>
+<td>8.0</td>
 <td>4.407263e+05</td>
 </tr>
 <tr class="odd">
 <th data-quarto-table-cell-role="th">15</th>
-<td>4617</td>
-<td>5</td>
-<td>1</td>
-<td>2005</td>
+<td>4617.0</td>
+<td>5.0</td>
+<td>1.0</td>
+<td>2005.0</td>
 <td>4.357890</td>
-<td>0</td>
-<td>4</td>
+<td>0.0</td>
+<td>4.0</td>
 <td>1.019193e+06</td>
 </tr>
 </tbody>
@@ -807,8 +828,96 @@ Duplicados restantes: 0</code></pre>
 <li>Muestra las primeras cinco filas del resultado.</li>
 <li>Comprueba que el conjunto limpio no tenga valores faltantes.</li>
 </ol>
-<div id="cell-38" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="cell-38" class="cell" data-execution_count="25">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>sq_mean <span class="op">=</span> df[<span class="st">"Square_Footage"</span>].mean()</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(sq_mean)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>new_houses <span class="op">=</span> df[df[<span class="st">"Year_Built"</span>] <span class="op">&gt;=</span> <span class="dv">2000</span>]</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>new_houses.head()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>2815.422</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="25">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">Square_Footage</th>
+<th data-quarto-table-cell-role="th">Num_Bedrooms</th>
+<th data-quarto-table-cell-role="th">Num_Bathrooms</th>
+<th data-quarto-table-cell-role="th">Year_Built</th>
+<th data-quarto-table-cell-role="th">Lot_Size</th>
+<th data-quarto-table-cell-role="th">Garage_Size</th>
+<th data-quarto-table-cell-role="th">Neighborhood_Quality</th>
+<th data-quarto-table-cell-role="th">House_Price</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">1</th>
+<td>4272.0</td>
+<td>3.0</td>
+<td>3.0</td>
+<td>2016.0</td>
+<td>4.753014</td>
+<td>1.0</td>
+<td>6.0</td>
+<td>9.852609e+05</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">2</th>
+<td>3592.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2016.0</td>
+<td>3.634823</td>
+<td>0.0</td>
+<td>9.0</td>
+<td>7.779774e+05</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6</th>
+<td>3671.0</td>
+<td>1.0</td>
+<td>2.0</td>
+<td>2012.0</td>
+<td>4.911960</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>8.144279e+05</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">10</th>
+<td>1269.0</td>
+<td>2.0</td>
+<td>2.0</td>
+<td>2006.0</td>
+<td>3.555040</td>
+<td>1.0</td>
+<td>9.0</td>
+<td>3.353326e+05</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">15</th>
+<td>4617.0</td>
+<td>5.0</td>
+<td>1.0</td>
+<td>2005.0</td>
+<td>4.357890</td>
+<td>0.0</td>
+<td>4.0</td>
+<td>1.019193e+06</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
 </div>
 </section>
 </section>
@@ -817,13 +926,13 @@ Duplicados restantes: 0</code></pre>
 <p>Matplotlib es una biblioteca de Python para crear gráficos.</p>
 <p>La función <code>plt.scatter(x, y)</code> crea un gráfico de dispersión. <code>plt.xlabel()</code> y <code>plt.ylabel()</code> nombran los ejes, <code>plt.title()</code> agrega un título y <code>plt.show()</code> presenta el gráfico.</p>
 <div id="cell-40" class="cell" data-execution_count="10">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(df[<span class="st">"Square_Footage"</span>], df[<span class="st">"House_Price"</span>], alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Área (pies cuadrados)"</span>)</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Precio de la casa"</span>)</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Área vs. precio"</span>)</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>plt.scatter(df[<span class="st">"Square_Footage"</span>], df[<span class="st">"House_Price"</span>], alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"Área (pies cuadrados)"</span>)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">"Precio de la casa"</span>)</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>plt.title(<span class="st">"Área vs. precio"</span>)</span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
@@ -839,19 +948,19 @@ Duplicados restantes: 0</code></pre>
 <p>La función <code>train_test_split()</code> divide los datos: <code>test_size=0.2</code> reserva 20 % para prueba y <code>random_state=42</code> permite repetir la misma división.</p>
 <p><code>LinearRegression()</code> crea el modelo. Su método <code>fit(X, y)</code> aprende con los datos de entrenamiento y <code>predict(X)</code> genera predicciones para datos nuevos.</p>
 <div id="cell-42" class="cell" data-execution_count="13">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span><span class="st">"House_Price"</span>)</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"House_Price"</span>]</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> LinearRegression()</span>
-<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a>modelo.fit(X_train, y_train)</span>
-<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>predicciones <span class="op">=</span> modelo.predict(X_test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.drop(columns<span class="op">=</span><span class="st">"House_Price"</span>)</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df[<span class="st">"House_Price"</span>]</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>    X, y, test_size<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> LinearRegression()</span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>modelo.fit(X_train, y_train)</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>predicciones <span class="op">=</span> modelo.predict(X_test)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="evaluación" class="level3">
 <h3 class="anchored" data-anchor-id="evaluación">Evaluación</h3>
@@ -859,12 +968,12 @@ Duplicados restantes: 0</code></pre>
 <p><code>np.sqrt()</code> obtiene su raíz cuadrada para producir el RMSE.</p>
 <p><code>r2_score(reales, predicciones)</code> calcula R²: la proporción de variación explicada; un valor cercano a <code>1</code> indica un mejor ajuste.</p>
 <div id="a06fd1e1" class="cell" data-execution_count="14">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, r2_score</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> np.sqrt(mean_squared_error(y_test, predicciones))</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>r2 <span class="op">=</span> r2_score(y_test, predicciones)</span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"RMSE: </span><span class="sc">{</span>rmse<span class="sc">:,.2f}</span><span class="ss">"</span>)</span>
-<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"R²: </span><span class="sc">{</span>r2<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error, r2_score</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>rmse <span class="op">=</span> np.sqrt(mean_squared_error(y_test, predicciones))</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>r2 <span class="op">=</span> r2_score(y_test, predicciones)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"RMSE: </span><span class="sc">{</span>rmse<span class="sc">:,.2f}</span><span class="ss">"</span>)</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"R²: </span><span class="sc">{</span>r2<span class="sc">:.3f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>RMSE: 10,071.48
 R²: 0.998</code></pre>
@@ -876,7 +985,7 @@ R²: 0.998</code></pre>
 <p>El atributo <code>coef_</code> contiene un coeficiente por característica de la ecuación lineal.</p>
 <p><code>pd.Series(valores, index=...)</code> los presenta con el nombre de cada característica.</p>
 <div id="fc75b503" class="cell" data-execution_count="16">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>pd.Series(modelo.coef_, index<span class="op">=</span>X.columns, name<span class="op">=</span><span class="st">"Coeficiente"</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>pd.Series(modelo.coef_, index<span class="op">=</span>X.columns, name<span class="op">=</span><span class="st">"Coeficiente"</span>).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display" data-execution_count="16">
 <pre><code>Square_Footage            199.51
 Num_Bedrooms            10225.20
@@ -898,7 +1007,7 @@ Name: Coeficiente, dtype: float64</code></pre>
 <li>Compara los resultados: ¿mejoraron o empeoraron?</li>
 </ol>
 <div id="cell-48" class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Escribe tu solución aquí</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 

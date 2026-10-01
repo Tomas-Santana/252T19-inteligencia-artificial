@@ -7,6 +7,7 @@
   y-min: -3,
   y-max: 3,
   size: (6, 5),
+  axis-style: "school-book",
   body,
 ) = {
   cetz.canvas({
@@ -22,7 +23,7 @@
 
       x-tick-step: 1,
       y-tick-step: 1,
-      axis-style: "school-book",
+      axis-style: axis-style,
 
       body,
     )
@@ -72,4 +73,38 @@
       }
     },
   )
+}
+
+#let custom-plot(
+  title: none,
+  x-label: none,
+  y-label: none,
+  x-min: 0,
+  x-max: 6,
+  y-min: 0,
+  y-max: 6,
+  x-tick-step: none,
+  y-tick-step: none,
+  legend: none,
+  size: (6, 5),
+  body,
+) = {
+  cetz.canvas({
+    import cetz.draw: *
+
+    plot.plot(
+      size: size,
+      x-min: x-min,
+      x-max: x-max,
+      y-min: y-min,
+      y-max: y-max,
+      x-label: x-label,
+      y-label: y-label,
+      x-tick-step: x-tick-step,
+      y-tick-step: y-tick-step,
+      axis-style: "scientific",
+      legend: legend,
+      body,
+    )
+  })
 }
