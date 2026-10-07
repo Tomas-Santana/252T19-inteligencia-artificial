@@ -11,6 +11,7 @@ subtitle: "Material de la asignatura"
 
 - [1. Nociones básicas](notes/01-nociones-basicas-parte-1.pdf)
 - [2. Aprendizaje supervisado y regresión lineal](notes/02-regresion-lineal.pdf)
+- [3. Generalización, selección de modelos y regularización](notes/03-regularizacion.pdf)
 
 ## Laboratorios
 

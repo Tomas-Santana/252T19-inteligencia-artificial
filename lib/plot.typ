@@ -87,6 +87,10 @@
   y-tick-step: none,
   legend: none,
   size: (6, 5),
+  x-mode: "lin",
+  y-mode: "lin",
+  x-format: "float",
+  y-format: "float",
   body,
 ) = {
   cetz.canvas({
@@ -103,6 +107,10 @@
       x-tick-step: x-tick-step,
       y-tick-step: y-tick-step,
       axis-style: "scientific",
+      x-mode: x-mode,
+      y-mode: y-mode,
+      x-format: x-format,
+      y-format: y-format,
       legend: legend,
       body,
     )

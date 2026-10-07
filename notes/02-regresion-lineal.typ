@@ -10,7 +10,7 @@
 // 3.6. Descripcion rapido de Matrix Calculus: Gradiente, Jacobiano, denominator layout, identidades basicas para OLS
 // 3.7 Solucion analitica: OLS
 // 4. Matrix calculus: revisitado
-// 4. Laboratorio: Numpy, Matplotlib, Pandas, Scikit-learn
+// 5. Laboratorio: Numpy, Matplotlib, Pandas, Scikit-learn
 
 #import "@preview/minimal-note:0.10.1": *
 #import "@preview/cetz:0.5.2"
@@ -43,7 +43,7 @@
 
 = Parte 1: Estructura de un problema de Aprendizaje Supervisado
 
-En el dominio del aprendizaje supervisado, se busca aprender una función $fvec(x) mapsto y$ a partir de un conjunto de entrenamiento $italic(S) = {(fvec(x)_i, y_i)}_(i=1)^n$. Es decir, cada observación $i$ del conjunto de entrenamiento está compuesta por un vector de características $fvec(x)_i$ y una etiqueta $y_i$. El objetivo es encontrar una función que pueda predecir la etiqueta $y$ para nuevas observaciones basadas en sus características $fvec(x)$.
+En el dominio del aprendizaje supervisado, se busca aprender una función $fvec(x) mapsto y$ a partir de un conjunto de entrenamiento $italic(S) = {(fvec(x)^(\(i\)), y^(\(i\)))}_(i=1)^m$. Es decir, cada observación $i$ del conjunto de entrenamiento está compuesta por un vector de características $fvec(x)^(\(i\))$ y una etiqueta $y^(\(i\))$. El objetivo es encontrar una función que pueda predecir la etiqueta $y$ para nuevas observaciones basadas en sus características $fvec(x)$.
 
 == Regresión vs Clasificación
 
@@ -64,7 +64,7 @@ Por otro lado, el tipo de las variables predictoras no tiene tanta influencia en
 Para poder evaluar el desempeño de un modelo, se debe definir una métrica que mida la calidad de sus predicciones (cuantificando que tan cerca de la predicción está el valor real). Por ejemplo, para problemas de regresión la métrica más utilizada es el error cuadrático medio (MSE).
 
 $
-  "MSE" = frac(1, n) sum_(i=1)^n (y_i - hat(y)_i)^2
+  "MSE" = frac(1, m) sum_(i=1)^m (y^(\(i\)) - hat(y)^(\(i\)))^2
 $
 
 Cuando se computa el MSE sobre el conjunto de entrenamiento, se le llama *error de entrenamiento*, mientras que cuando se computa sobre un conjunto de prueba, se le llama *error de prueba*.
@@ -76,7 +76,7 @@ En general, el error de entrenamiento no nos interesa tanto como el error de pru
 De forma precisa, queremos el modelo que nos de el menor MSE de prueba, incluso si eso significa que el MSE de entrenamiento es mayor. Veamos un ejemplo en la siguiente figura:
 
 #figure(
-  caption: [A la izquierda, se muestran varios ejemplos de funciones que podrían modelar los datos de entrenamiento. La función azul es un ejemplo de *underfitting*, la función verde es un ejemplo de *ajuste intermedio* y la función roja es un ejemplo de *overfitting*. A la derecha, se muestra el error cuadrático medio de entrenamiento (linea azul punteada) y prueba (línea roja) en función de la flexibilidad del modelo.],
+  caption: [A la izquierda, se muestran varios ejemplos de funciones que podrían modelar los datos de entrenamiento. La función azul es un ejemplo de *underfitting*, la función verde es un ejemplo de *ajuste intermedio* y la función roja es un ejemplo de *overfitting*. A la derecha, se muestra el error cuadrático medio de entrenamiento (línea gris punteada) y prueba (línea roja) en función de la flexibilidad del modelo.],
   grid(
     columns: (1fr, 1fr),
     gutter: 1.2cm,
@@ -116,7 +116,8 @@ De forma precisa, queremos el modelo que nos de el menor MSE de prueba, incluso 
             exact-data,
             mark: "o",
             mark-size: 0.16,
-            style: (stroke: none, fill: black),
+            style: (stroke: none),
+            mark-style: (stroke: none, fill: black),
           )
 
           // 1.1. Función real puntos
@@ -124,7 +125,8 @@ De forma precisa, queremos el modelo que nos de el menor MSE de prueba, incluso 
             test-data,
             mark: "o",
             mark-size: 0.16,
-            style: (stroke: none, fill: gray.darken(40%)),
+            style: (stroke: none),
+            mark-style: (stroke: none, fill: gray.darken(40%)),
           )
 
           // 2. Modelo 1: Underfitting (Línea recta)
@@ -187,13 +189,13 @@ En la figura anterior, se puede observar que el modelo azul (underfitting) tiene
 
 Podemos ver que inicialmente, a medida que aumentamos la flexibilidad del modelo, el MSE de prueba disminuye, pero después de cierto punto, el MSE de prueba comienza a aumentar nuevamente.
 
-Este ilustra *dilema sesgo-varianza* (bias-variance tradeoff), donde un modelo demasiado simple (alto sesgo) no captura la complejidad de los datos, mientras que un modelo demasiado complejo (alta varianza) se ajusta demasiado a los datos de entrenamiento y no generaliza bien a nuevos datos.
+Esto ilustra el *dilema sesgo-varianza* (bias-variance tradeoff), donde un modelo demasiado simple (alto sesgo) no captura la complejidad de los datos, mientras que un modelo demasiado complejo (alta varianza) se ajusta demasiado a los datos de entrenamiento y no generaliza bien a nuevos datos.
 
 El sesgo es el error introducido por aproximar un problema real, que puede ser complejo, por un modelo más simple. La varianza corresponde a la sensibilidad del modelo a pequeñas fluctuaciones en el conjunto de entrenamiento. Más detalles sobre el dilema sesgo-varianza se puede encontrar en la #link("https://www.statlearning.com", "sección 2.2.2  de ISLP").
 
 == Definiendo un problema de aprendizaje supervisado
 
-Suponiendo que tenemos un conjunto de datos sobre casas en Maracaibo, su área en metros cuadrados y su precio en dólares.
+Suponiendo que tenemos un conjunto de datos sobre casas en Maracaibo, su área en pies cuadrados y su precio en dólares.
 
 #align(
   center,
@@ -274,7 +276,8 @@ Podemos graficar estos datos:
           house-data,
           mark: "x",
           mark-size: 0.18,
-          style: (stroke: none, fill: blue.darken(20%)),
+          style: (stroke: none),
+          mark-style: (stroke: blue.darken(20%), fill: blue.darken(20%)),
         )
       },
     )
@@ -674,7 +677,7 @@ $
   fvec(x)^(\(i\)).
 $
 
-Este algoritmo se conoce como batch gradient descent. Nótese que el algoritmo de descenso de gradiente es suceptible a quedar atrapado en mínimos locales. Sin embargo, para el caso de regresión lineal, la función de costo es convexa, por lo que no hay mínimos locales y el algoritmo siempre encontrará el mínimo global (siempre que $alpha$ no sea demasiado grande). La @fig-contour-descent muestra las actualizaciones de los parámetros del algoritmo de descenso por gradiente sobre las curvas de nivel de la función de costo.
+Este algoritmo se conoce como batch gradient descent. Nótese que el algoritmo de descenso de gradiente es susceptible a quedar atrapado en mínimos locales. Sin embargo, para el caso de regresión lineal, la función de costo es convexa, por lo que no hay mínimos locales y el algoritmo siempre encontrará el mínimo global (siempre que $alpha$ no sea demasiado grande). La @fig-contour-descent muestra las actualizaciones de los parámetros del algoritmo de descenso por gradiente sobre las curvas de nivel de la función de costo.
 
 #figure(
   custom-plot(
@@ -890,7 +893,7 @@ Sean $fvec(a) in RR^m$ un vector constante, y $fvec(u)(fvec(x)), fvec(v)(fvec(x)
 
 === Solución analítica de mínimos cuadrados
 
-Para utilizar las herramientas del cálculo matricial para solucionar el problema de mímimos cuadrados, debemos definir el problema en términos de vectores y matrices. En primer lugar definimos la matriz de diseño $fvec(X)$ que contiene los ejemplos de entrenamiento como filas.
+Para utilizar las herramientas del cálculo matricial para solucionar el problema de mínimos cuadrados, debemos definir el problema en términos de vectores y matrices. En primer lugar definimos la matriz de diseño $fvec(X)$ que contiene los ejemplos de entrenamiento como filas.
 
 $
   fvec(X) = mat(- (fvec(x)^(\(1\)))^T -; - (fvec(x)^(\(2\)))^T -; dots.v; - (fvec(x)^(\(m\)))^T - ) 
@@ -945,10 +948,10 @@ $
   &= fvec(X)^T fvec(X) theta - fvec(X)^T fvec(y)
 $
 
-En el paso 3, utilizamos el hecho que $fvec(a)^T fvec(b) = fvec(b)^T fvec(a)$. En el paso 5, utilizamos las siguientes reglas de derivación:
+En el paso 3, utilizamos el hecho que $fvec(a)^T fvec(b) = fvec(b)^T fvec(a)$. En el paso 4, utilizamos las siguientes reglas de derivación:
 
 - $gradient_fvec(x) fvec(b)^T fvec(x) = fvec(b)$
-- $gradient_fvec(x)^T fvec(A) fvec(x) = 2 fvec(A) fvec(x)$ para una matriz simétrica $fvec(A)$.
+- $gradient_fvec(x) fvec(x)^T fvec(A) fvec(x) = 2 fvec(A) fvec(x)$ para una matriz simétrica $fvec(A)$.
 
 Si hacemos la derivada igual a cero, obtenemos el punto crítico:
 

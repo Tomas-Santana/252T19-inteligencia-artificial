@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Clase 3: generalización, selección de modelos y regularización – Inteligencia Artificial</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-deae0c18f5b5cd7b9158b1169a045e04.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 3: generalización, selección de modelos y regularización</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Visualizaciones interactivas para acompañar las notas de la clase 3. Las figuras siguen el mismo orden y los mismos colores de las notas, y usan exactamente los mismos datos: se importan desde <code>notes/scripts/03-regularizacion-figuras.py</code>, el script que genera las figuras del PDF.</p>
+<p>Para usarlo en clase basta con ejecutar todas las celdas al inicio y luego mover los sliders.</p>
+<div id="6d0a7446" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> importlib.util</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pathlib <span class="im">import</span> Path</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ipywidgets <span class="im">import</span> interact, widgets</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.colors <span class="im">import</span> ListedColormap</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Datos y ajustes de las notas (los mismos que generan las figuras del PDF)</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>ruta <span class="op">=</span> Path(<span class="st">"../notes/scripts/03-regularizacion-figuras.py"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>spec <span class="op">=</span> importlib.util.spec_from_file_location(<span class="st">"fig03"</span>, ruta)</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>fig03 <span class="op">=</span> importlib.util.module_from_spec(spec)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>spec.loader.exec_module(fig03)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>AZUL, VERDE, ROJO, NARANJA, GRIS <span class="op">=</span> <span class="st">"tab:blue"</span>, <span class="st">"tab:green"</span>, <span class="st">"tab:red"</span>, <span class="st">"tab:orange"</span>, <span class="st">"0.55"</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>CELESTE, DURAZNO <span class="op">=</span> <span class="st">"#bcd4ee"</span>, <span class="st">"#f6c28b"</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>plt.rcParams.update({</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">"figure.figsize"</span>: (<span class="dv">11</span>, <span class="fl">4.2</span>),</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">"axes.spines.top"</span>: <span class="va">False</span>,</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">"axes.spines.right"</span>: <span class="va">False</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    <span class="st">"font.size"</span>: <span class="dv">11</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="regresión-polinomial-figura-1" class="level2">
+<h2 class="anchored" data-anchor-id="regresión-polinomial-figura-1">1. Regresión polinomial (Figura 1)</h2>
+<p>Ajustamos polinomios de grado <span class="math inline">\(d\)</span> a los mismos 15 ejemplos de entrenamiento de las notas, generados a partir de <span class="math inline">\(f(x) = 2 + 0.5x + \sin(1.3x)\)</span> con ruido.</p>
+<p>Qué observar al mover el grado:</p>
+<ul>
+<li>El error de entrenamiento (gris punteado) baja siempre: un polinomio de grado <span class="math inline">\(d+1\)</span> puede imitar a cualquiera de grado <span class="math inline">\(d\)</span>.</li>
+<li>El error de validación (rojo) baja hasta grado 3 o 4 y luego sube. Con grado 9 o 10 es enorme.</li>
+<li>El título muestra el coeficiente más grande en valor absoluto. Con grados altos los coeficientes explotan, y esa es la idea que retoma la regularización.</li>
+</ul>
+<div id="c413b2bd" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>curva_poli <span class="op">=</span> fig03.curva_error_polinomios()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>grados <span class="op">=</span> [r[<span class="st">"grado"</span>] <span class="cf">for</span> r <span class="kw">in</span> curva_poli]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>mse_train_poli <span class="op">=</span> [r[<span class="st">"mse_train"</span>] <span class="cf">for</span> r <span class="kw">in</span> curva_poli]</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>mse_val_poli <span class="op">=</span> [r[<span class="st">"mse_val"</span>] <span class="cf">for</span> r <span class="kw">in</span> curva_poli]</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estilo_grado(grado):</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> grado <span class="op">&lt;=</span> <span class="dv">2</span>:</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">dict</span>(color<span class="op">=</span>AZUL, ls<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> grado <span class="op">&lt;=</span> <span class="dv">6</span>:</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">dict</span>(color<span class="op">=</span>VERDE, ls<span class="op">=</span><span class="st">"-"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(color<span class="op">=</span>ROJO, ls<span class="op">=</span><span class="st">"-"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ver_polinomio(grado<span class="op">=</span><span class="dv">1</span>):</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> fig03.x_grid</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>    theta <span class="op">=</span> fig03.ajustar_ols(grado)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>    fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>    ax1.plot(x, fig03.f_real(x), color<span class="op">=</span>GRIS, lw<span class="op">=</span><span class="dv">5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">"función real"</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    ax1.plot(x, fig03.potencias(x, grado) <span class="op">@</span> theta, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="ss">f"grado </span><span class="sc">{</span>grado<span class="sc">}</span><span class="ss">"</span>, <span class="op">**</span>estilo_grado(grado))</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    ax1.scatter(fig03.x_train, fig03.y_train, color<span class="op">=</span><span class="st">"black"</span>, zorder<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="st">"entrenamiento"</span>)</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    ax1.<span class="bu">set</span>(xlim<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">5</span>), ylim<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">5</span>), xlabel<span class="op">=</span><span class="st">"$x$"</span>, ylabel<span class="op">=</span><span class="st">"$y$"</span>,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>            title<span class="op">=</span><span class="ss">f"Grado </span><span class="sc">{</span>grado<span class="sc">}</span><span class="ss">:  max|θ| = </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">abs</span>(theta)<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:.3g}</span><span class="ss">"</span>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>    ax1.legend(loc<span class="op">=</span><span class="st">"upper left"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    ax2.semilogy(grados, mse_train_poli, <span class="st">"--"</span>, color<span class="op">=</span>GRIS, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"entrenamiento"</span>)</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    ax2.semilogy(grados, mse_val_poli, color<span class="op">=</span>ROJO, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"validación"</span>)</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>    ax2.axhline(fig03.SIGMA<span class="op">**</span><span class="dv">2</span>, color<span class="op">=</span><span class="st">"0.7"</span>, ls<span class="op">=</span><span class="st">":"</span>, label<span class="op">=</span><span class="st">"varianza del ruido"</span>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    ax2.plot(grado, mse_train_poli[grado <span class="op">-</span> <span class="dv">1</span>], <span class="st">"o"</span>, color<span class="op">=</span>GRIS, ms<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>    ax2.plot(grado, mse_val_poli[grado <span class="op">-</span> <span class="dv">1</span>], <span class="st">"o"</span>, color<span class="op">=</span>ROJO, ms<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    ax2.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Grado del polinomio"</span>, ylabel<span class="op">=</span><span class="st">"MSE"</span>, xticks<span class="op">=</span>grados)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    ax2.legend(fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="0ff8bed0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>interact(ver_polinomio, grado<span class="op">=</span>widgets.IntSlider(<span class="bu">min</span><span class="op">=</span><span class="dv">1</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">10</span>, value<span class="op">=</span><span class="dv">1</span>, description<span class="op">=</span><span class="st">"Grado"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="validación-cruzada-figura-3" class="level2">
+<h2 class="anchored" data-anchor-id="validación-cruzada-figura-3">2. Validación cruzada (Figura 3)</h2>
+<p>Ahora escogemos el grado sin usar el conjunto de validación grande: solo con los 15 ejemplos de entrenamiento y validación cruzada k-fold. Los ejemplos se dividen en <span class="math inline">\(k\)</span> partes; en cada iteración una parte (naranja) se usa para validar y las demás (azul) para entrenar. El error estimado es el promedio de los <span class="math inline">\(k\)</span> errores. Con <span class="math inline">\(k = 15\)</span> cada parte tiene un solo ejemplo: es leave-one-out (LOOCV).</p>
+<p>Qué observar:</p>
+<ul>
+<li>A la izquierda, cómo cambia la partición con <span class="math inline">\(k\)</span>.</li>
+<li>A la derecha, el error de validación cruzada para cada grado (rojo), comparado con el error medido sobre 300 ejemplos nuevos (gris). La estrella marca el grado que escogería la validación cruzada.</li>
+<li>Aunque solo usa 15 ejemplos, la validación cruzada tiene la misma forma de U y escoge un grado razonable.</li>
+</ul>
+<div id="bcdbcbe3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>m_poli <span class="op">=</span> <span class="bu">len</span>(fig03.x_train)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>orden <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>).permutation(m_poli)  <span class="co"># asignación de ejemplos a las partes</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> error_cv(k):</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    partes <span class="op">=</span> np.array_split(orden, k)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    errores <span class="op">=</span> []</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> g <span class="kw">in</span> grados:</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        e <span class="op">=</span> []</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> val <span class="kw">in</span> partes:</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>            ent <span class="op">=</span> np.setdiff1d(orden, val)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>            X <span class="op">=</span> fig03.potencias(fig03.x_train[ent], g)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>            theta, <span class="op">*</span>_ <span class="op">=</span> np.linalg.lstsq(X, fig03.y_train[ent], rcond<span class="op">=</span><span class="va">None</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            e.append(fig03.mse(fig03.potencias(fig03.x_train[val], g), fig03.y_train[val], theta))</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        errores.append(np.mean(e))</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(errores), partes</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ver_validacion_cruzada(k<span class="op">=</span><span class="dv">5</span>):</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    errores, partes <span class="op">=</span> error_cv(k)</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, gridspec_kw<span class="op">=</span><span class="bu">dict</span>(width_ratios<span class="op">=</span>[<span class="fl">1.2</span>, <span class="dv">1</span>]))</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Columnas ordenadas por parte, para que cada parte se vea como un bloque</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>    tabla <span class="op">=</span> np.zeros((k, m_poli))</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>    inicio <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, p <span class="kw">in</span> <span class="bu">enumerate</span>(partes):</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>        tabla[i, inicio:inicio <span class="op">+</span> <span class="bu">len</span>(p)] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>        inicio <span class="op">+=</span> <span class="bu">len</span>(p)</span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>    ax1.imshow(tabla, cmap<span class="op">=</span>ListedColormap([CELESTE, DURAZNO]), aspect<span class="op">=</span><span class="st">"auto"</span>)</span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>    ax1.set_xticks(np.arange(<span class="op">-</span><span class="fl">0.5</span>, m_poli, <span class="dv">1</span>), minor<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>    ax1.set_yticks(np.arange(<span class="op">-</span><span class="fl">0.5</span>, k, <span class="dv">1</span>), minor<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>    ax1.grid(which<span class="op">=</span><span class="st">"minor"</span>, color<span class="op">=</span><span class="st">"white"</span>, lw<span class="op">=</span><span class="fl">1.5</span>)</span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>    ax1.tick_params(which<span class="op">=</span><span class="st">"minor"</span>, length<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>    ax1.set_xticks([])</span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>    ax1.set_yticks(<span class="bu">range</span>(k), [<span class="ss">f"Iteración </span><span class="sc">{</span>i <span class="op">+</span> <span class="dv">1</span><span class="sc">}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(k)], fontsize<span class="op">=</span><span class="dv">8</span> <span class="cf">if</span> k <span class="op">&gt;</span> <span class="dv">8</span> <span class="cf">else</span> <span class="dv">10</span>)</span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>    ax1.set_xlabel(<span class="st">"Ejemplos de entrenamiento"</span>)</span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>    ax1.set_title(<span class="ss">f"k = </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">"</span> <span class="op">+</span> (<span class="st">"  (LOOCV)"</span> <span class="cf">if</span> k <span class="op">==</span> m_poli <span class="cf">else</span> <span class="st">""</span>))</span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> s <span class="kw">in</span> ax1.spines.values():</span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>        s.set_visible(<span class="va">False</span>)</span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>    ax2.semilogy(grados, mse_val_poli, color<span class="op">=</span>GRIS, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"validación (300 ejemplos)"</span>)</span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    ax2.semilogy(grados, errores, <span class="st">"o-"</span>, color<span class="op">=</span>ROJO, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="ss">f"validación cruzada, k = </span><span class="sc">{</span>k<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    mejor <span class="op">=</span> <span class="bu">int</span>(np.argmin(errores))</span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>    ax2.plot(grados[mejor], errores[mejor], <span class="st">"*"</span>, color<span class="op">=</span><span class="st">"black"</span>, ms<span class="op">=</span><span class="dv">16</span>, zorder<span class="op">=</span><span class="dv">3</span>,</span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>             label<span class="op">=</span><span class="ss">f"mejor grado: </span><span class="sc">{</span>grados[mejor]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>    ax2.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="st">"Grado del polinomio"</span>, ylabel<span class="op">=</span><span class="st">"MSE"</span>, xticks<span class="op">=</span>grados)</span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>    ax2.legend(fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="39c66e13" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>interact(ver_validacion_cruzada, k<span class="op">=</span>widgets.IntSlider(<span class="bu">min</span><span class="op">=</span><span class="dv">2</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">15</span>, value<span class="op">=</span><span class="dv">5</span>, description<span class="op">=</span><span class="st">"k"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ridge-con-una-sola-feature" class="level2">
+<h2 class="anchored" data-anchor-id="ridge-con-una-sola-feature">3. Ridge con una sola feature</h2>
+<p>Tenemos solo dos ejemplos de entrenamiento (negro) y algunos ejemplos de prueba (naranja). Con dos puntos, la recta de mínimos cuadrados pasa exactamente por ellos: el error de entrenamiento es cero, pero la pendiente es demasiado grande y el error de prueba es alto.</p>
+<p>Con la feature centrada, la solución de Ridge es</p>
+<p><span class="math display">\[
+\theta_0 = \bar{y}, \qquad \theta_1 = \frac{\sum_i x^{(i)} y^{(i)}}{\sum_i (x^{(i)})^2 + \lambda}.
+\]</span></p>
+<p>Qué observar al mover <span class="math inline">\(\lambda\)</span>:</p>
+<ul>
+<li>La recta gira alrededor del punto <span class="math inline">\((\bar{x}, \bar{y})\)</span> y se va aplanando. Tiende a la recta horizontal <span class="math inline">\(y = \bar{y}\)</span>, no a <span class="math inline">\(y = 0\)</span>, porque el intercepto no se penaliza.</li>
+<li><span class="math inline">\(\lambda\)</span> solo aparece en el denominador de <span class="math inline">\(\theta_1\)</span>: mientras más grande, más pequeña la pendiente.</li>
+<li>A la derecha, el error de entrenamiento siempre sube con <span class="math inline">\(\lambda\)</span>, mientras que el de prueba primero baja y luego sube: un poco de sesgo nos compra mucha menos varianza.</li>
+</ul>
+<div id="3d6caeea" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> f_1d(x):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fl">1.6</span> <span class="op">+</span> <span class="fl">0.4</span> <span class="op">*</span> x</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>x_ent_1d <span class="op">=</span> np.array([<span class="fl">1.5</span>, <span class="fl">3.5</span>])</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>y_ent_1d <span class="op">=</span> np.array([<span class="fl">1.6</span>, <span class="fl">3.6</span>])</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>rng_1d <span class="op">=</span> np.random.default_rng(<span class="dv">3</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>x_prueba_1d <span class="op">=</span> np.linspace(<span class="fl">0.6</span>, <span class="fl">4.4</span>, <span class="dv">8</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>y_prueba_1d <span class="op">=</span> f_1d(x_prueba_1d) <span class="op">+</span> rng_1d.normal(<span class="dv">0</span>, <span class="fl">0.3</span>, <span class="bu">len</span>(x_prueba_1d))</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>x_media, y_media_1d <span class="op">=</span> x_ent_1d.mean(), y_ent_1d.mean()</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>xc <span class="op">=</span> x_ent_1d <span class="op">-</span> x_media  <span class="co"># feature centrada</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>numerador, suma_cuadrados <span class="op">=</span> xc <span class="op">@</span> y_ent_1d, xc <span class="op">@</span> xc</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ridge_1d(lam):</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Devuelve (θ_0, θ_1) en términos de x centrado."""</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> y_media_1d, numerador <span class="op">/</span> (suma_cuadrados <span class="op">+</span> lam)</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mse_1d(x, y, lam):</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    th0, th1 <span class="op">=</span> ridge_1d(lam)</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.mean((th0 <span class="op">+</span> th1 <span class="op">*</span> (x <span class="op">-</span> x_media) <span class="op">-</span> y) <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>lambdas_1d <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">200</span>)</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>mse_ent_1d <span class="op">=</span> [mse_1d(x_ent_1d, y_ent_1d, l) <span class="cf">for</span> l <span class="kw">in</span> lambdas_1d]</span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>mse_prueba_1d <span class="op">=</span> [mse_1d(x_prueba_1d, y_prueba_1d, l) <span class="cf">for</span> l <span class="kw">in</span> lambdas_1d]</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ver_ridge_1d(lam<span class="op">=</span><span class="fl">0.01</span>):</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>    th0, th1 <span class="op">=</span> ridge_1d(lam)</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">5</span>, <span class="dv">2</span>)</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    ax1.plot(x, y_media_1d <span class="op">+</span> numerador <span class="op">/</span> suma_cuadrados <span class="op">*</span> (x <span class="op">-</span> x_media), color<span class="op">=</span><span class="st">"0.8"</span>, ls<span class="op">=</span><span class="st">":"</span>,</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>             label<span class="op">=</span><span class="st">"mínimos cuadrados (λ = 0)"</span>)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    ax1.axhline(y_media_1d, color<span class="op">=</span>GRIS, lw<span class="op">=</span><span class="dv">1</span>, ls<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="vs">y = </span><span class="dv">\b</span><span class="vs">ar{y}</span><span class="dv">$</span><span class="vs">"</span>)</span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    ax1.plot(x, th0 <span class="op">+</span> th1 <span class="op">*</span> (x <span class="op">-</span> x_media), color<span class="op">=</span>AZUL, lw<span class="op">=</span><span class="fl">2.5</span>, label<span class="op">=</span><span class="st">"Ridge"</span>)</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    ax1.scatter(x_prueba_1d, y_prueba_1d, color<span class="op">=</span>NARANJA, s<span class="op">=</span><span class="dv">45</span>, zorder<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="st">"prueba"</span>)</span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>    ax1.scatter(x_ent_1d, y_ent_1d, color<span class="op">=</span><span class="st">"black"</span>, s<span class="op">=</span><span class="dv">60</span>, zorder<span class="op">=</span><span class="dv">4</span>, label<span class="op">=</span><span class="st">"entrenamiento"</span>)</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>    ax1.plot(x_media, y_media_1d, <span class="st">"P"</span>, color<span class="op">=</span>AZUL, ms<span class="op">=</span><span class="dv">10</span>, mec<span class="op">=</span><span class="st">"white"</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    ax1.text(<span class="fl">0.2</span>, <span class="fl">4.55</span>,</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>             <span class="vs">rf"</span><span class="dv">$</span><span class="ch">\t</span><span class="vs">heta_1 = </span><span class="ch">\f</span><span class="vs">rac</span><span class="ch">{{</span><span class="dv">\s</span><span class="vs">um x</span><span class="dv">^</span><span class="ch">{{</span><span class="kw">(</span><span class="vs">i</span><span class="kw">)</span><span class="ch">}}</span><span class="vs"> y</span><span class="dv">^</span><span class="ch">{{</span><span class="kw">(</span><span class="vs">i</span><span class="kw">)</span><span class="ch">}}}}{{</span><span class="dv">\s</span><span class="vs">um </span><span class="kw">(</span><span class="vs">x</span><span class="dv">^</span><span class="ch">{{</span><span class="kw">(</span><span class="vs">i</span><span class="kw">)</span><span class="ch">}}</span><span class="kw">)</span><span class="dv">^</span><span class="vs">2 </span><span class="op">+</span><span class="vs"> </span><span class="er">\</span><span class="vs">lambda</span><span class="ch">}}</span><span class="vs">"</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>             <span class="vs">rf" = </span><span class="ch">\f</span><span class="vs">rac</span><span class="ch">{{</span><span class="sc">{</span>numerador<span class="sc">:.2f}</span><span class="ch">}}{{</span><span class="sc">{</span>suma_cuadrados<span class="sc">:.2f}</span><span class="vs"> </span><span class="op">+</span><span class="vs"> </span><span class="sc">{</span>lam<span class="sc">:.3g}</span><span class="ch">}}</span><span class="vs"> = </span><span class="sc">{</span>th1<span class="sc">:.3f}</span><span class="dv">$</span><span class="vs">"</span>,</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>             fontsize<span class="op">=</span><span class="dv">13</span>)</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    ax1.<span class="bu">set</span>(xlim<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">5</span>), ylim<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">5</span>), xlabel<span class="op">=</span><span class="st">"$x$"</span>, ylabel<span class="op">=</span><span class="st">"$y$"</span>,</span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>            title<span class="op">=</span><span class="vs">rf"</span><span class="dv">$</span><span class="er">\</span><span class="vs">lambda</span><span class="dv">$</span><span class="vs"> = </span><span class="sc">{</span>lam<span class="sc">:.3g}</span><span class="vs">:   </span><span class="dv">$</span><span class="ch">\t</span><span class="vs">heta_0 = </span><span class="dv">\b</span><span class="vs">ar</span><span class="ch">{{</span><span class="vs">y</span><span class="ch">}}</span><span class="dv">$</span><span class="vs"> = </span><span class="sc">{</span>th0<span class="sc">:.2f}</span><span class="vs">"</span>)</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    ax1.legend(loc<span class="op">=</span><span class="st">"lower right"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    ax2.semilogx(lambdas_1d, mse_ent_1d, <span class="st">"--"</span>, color<span class="op">=</span>GRIS, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"entrenamiento"</span>)</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>    ax2.semilogx(lambdas_1d, mse_prueba_1d, color<span class="op">=</span>ROJO, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"prueba"</span>)</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>    ax2.plot(lam, mse_1d(x_ent_1d, y_ent_1d, lam), <span class="st">"o"</span>, color<span class="op">=</span>GRIS, ms<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>    ax2.plot(lam, mse_1d(x_prueba_1d, y_prueba_1d, lam), <span class="st">"o"</span>, color<span class="op">=</span>ROJO, ms<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    ax2.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="er">\</span><span class="vs">lambda</span><span class="dv">$</span><span class="vs">"</span>, ylabel<span class="op">=</span><span class="st">"MSE"</span>, ylim<span class="op">=</span>(<span class="dv">0</span>, <span class="va">None</span>))</span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    ax2.legend(fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="9d1c2c46" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>interact(ver_ridge_1d, lam<span class="op">=</span>widgets.FloatLogSlider(value<span class="op">=</span><span class="fl">0.01</span>, base<span class="op">=</span><span class="dv">10</span>, <span class="bu">min</span><span class="op">=-</span><span class="dv">2</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">3</span>, step<span class="op">=</span><span class="fl">0.05</span>, description<span class="op">=</span><span class="st">"λ"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ridge-sobre-el-polinomio-de-grado-10-figura-4" class="level2">
+<h2 class="anchored" data-anchor-id="ridge-sobre-el-polinomio-de-grado-10-figura-4">4. Ridge sobre el polinomio de grado 10 (Figura 4)</h2>
+<p>Volvemos al polinomio de grado 10, el que peor generalizaba, y lo entrenamos con Ridge. Las columnas están centradas y escaladas con las estadísticas de entrenamiento, igual que en las notas.</p>
+<p>Qué observar al mover <span class="math inline">\(\lambda\)</span>:</p>
+<ul>
+<li>Con <span class="math inline">\(\lambda\)</span> muy pequeño el polinomio oscila entre los puntos (sobreajuste) y los coeficientes son enormes.</li>
+<li>Cerca del <span class="math inline">\(\lambda\)</span> óptimo de validación (≈ 0.019) el ajuste se parece a la función real, aunque el modelo sigue teniendo 11 parámetros.</li>
+<li>Con <span class="math inline">\(\lambda\)</span> grande el modelo se vuelve demasiado rígido (subajuste).</li>
+<li>La curva de error de la derecha es la de la Figura 1 reflejada: la complejidad disminuye de izquierda a derecha.</li>
+</ul>
+<div id="59dd5995" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>lambdas_rp <span class="op">=</span> np.logspace(<span class="op">-</span><span class="dv">6</span>, <span class="dv">3</span>, <span class="dv">200</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>curva_rp <span class="op">=</span> fig03.curva_error_ridge(lambdas_rp)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>mse_train_rp <span class="op">=</span> [r[<span class="st">"mse_train"</span>] <span class="cf">for</span> r <span class="kw">in</span> curva_rp]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>mse_val_rp <span class="op">=</span> [r[<span class="st">"mse_val"</span>] <span class="cf">for</span> r <span class="kw">in</span> curva_rp]</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>mejor_lambda_rp <span class="op">=</span> <span class="bu">min</span>(curva_rp, key<span class="op">=</span><span class="kw">lambda</span> r: r[<span class="st">"mse_val"</span>])[<span class="st">"lambda"</span>]</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> estilo_lambda(lam):</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> lam <span class="op">&lt;</span> mejor_lambda_rp <span class="op">/</span> <span class="dv">30</span>:</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">dict</span>(color<span class="op">=</span>ROJO, ls<span class="op">=</span><span class="st">"-"</span>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> lam <span class="op">&gt;</span> mejor_lambda_rp <span class="op">*</span> <span class="dv">30</span>:</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">dict</span>(color<span class="op">=</span>AZUL, ls<span class="op">=</span><span class="st">"--"</span>)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(color<span class="op">=</span>VERDE, ls<span class="op">=</span><span class="st">"-"</span>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ver_ridge_polinomio(lam<span class="op">=</span><span class="fl">1e-6</span>):</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> fig03.x_grid</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    th <span class="op">=</span> fig03.ridge_cerrada(fig03.X_tr, fig03.y_train, lam)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    fig, (ax1, ax2) <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    ax1.plot(x, fig03.f_real(x), color<span class="op">=</span>GRIS, lw<span class="op">=</span><span class="dv">5</span>, alpha<span class="op">=</span><span class="fl">0.5</span>, label<span class="op">=</span><span class="st">"función real"</span>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    ax1.plot(x, fig03.y_media <span class="op">+</span> fig03.diseno_ridge(x) <span class="op">@</span> th, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"Ridge, grado 10"</span>, <span class="op">**</span>estilo_lambda(lam))</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    ax1.scatter(fig03.x_train, fig03.y_train, color<span class="op">=</span><span class="st">"black"</span>, zorder<span class="op">=</span><span class="dv">3</span>, label<span class="op">=</span><span class="st">"entrenamiento"</span>)</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    ax1.<span class="bu">set</span>(xlim<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">5</span>), ylim<span class="op">=</span>(<span class="dv">0</span>, <span class="dv">5</span>), xlabel<span class="op">=</span><span class="st">"$x$"</span>, ylabel<span class="op">=</span><span class="st">"$y$"</span>,</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>            title<span class="op">=</span><span class="ss">f"λ = </span><span class="sc">{</span>lam<span class="sc">:.3g}</span><span class="ss">:  max|θ| = </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">abs</span>(th)<span class="sc">.</span><span class="bu">max</span>()<span class="sc">:.3g}</span><span class="ss">"</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>    ax1.legend(loc<span class="op">=</span><span class="st">"upper left"</span>, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    ax2.loglog(lambdas_rp, mse_train_rp, <span class="st">"--"</span>, color<span class="op">=</span>GRIS, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"entrenamiento"</span>)</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    ax2.loglog(lambdas_rp, mse_val_rp, color<span class="op">=</span>ROJO, lw<span class="op">=</span><span class="dv">2</span>, label<span class="op">=</span><span class="st">"validación"</span>)</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    ax2.axhline(fig03.SIGMA<span class="op">**</span><span class="dv">2</span>, color<span class="op">=</span><span class="st">"0.7"</span>, ls<span class="op">=</span><span class="st">":"</span>, label<span class="op">=</span><span class="st">"varianza del ruido"</span>)</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    ax2.axvline(mejor_lambda_rp, color<span class="op">=</span><span class="st">"0.85"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    ax2.plot(lam, fig03.mse_ridge(fig03.X_tr, fig03.y_train, th), <span class="st">"o"</span>, color<span class="op">=</span>GRIS, ms<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    ax2.plot(lam, fig03.mse_ridge(fig03.X_va, fig03.y_val, th), <span class="st">"o"</span>, color<span class="op">=</span>ROJO, ms<span class="op">=</span><span class="dv">8</span>)</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>    ax2.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="er">\</span><span class="vs">lambda</span><span class="dv">$</span><span class="vs">"</span>, ylabel<span class="op">=</span><span class="st">"MSE"</span>)</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>    ax2.legend(fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="991b6e4b" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>interact(ver_ridge_polinomio, lam<span class="op">=</span>widgets.FloatLogSlider(value<span class="op">=</span><span class="fl">1e-6</span>, base<span class="op">=</span><span class="dv">10</span>, <span class="bu">min</span><span class="op">=-</span><span class="dv">6</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">3</span>, step<span class="op">=</span><span class="fl">0.1</span>, description<span class="op">=</span><span class="st">"λ"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="por-qué-l_1-produce-ceros-y-l_2-no-figura-5" class="level2">
+<h2 class="anchored" data-anchor-id="por-qué-l_1-produce-ceros-y-l_2-no-figura-5">5. Por qué <span class="math inline">\(L_1\)</span> produce ceros y <span class="math inline">\(L_2\)</span> no (Figura 5)</h2>
+<p>Usamos la formulación con restricción: minimizar <span class="math inline">\(J(\theta)\)</span> sujeto a <span class="math inline">\(\theta_1^2 + \theta_2^2 \le t\)</span> (Ridge, un círculo) o sujeto a <span class="math inline">\(|\theta_1| + |\theta_2| \le t\)</span> (Lasso, un rombo). La × marca el mínimo sin regularizar, <span class="math inline">\(\hat\theta\)</span>, y el punto rojo la solución regularizada: el punto de la región donde <span class="math inline">\(J\)</span> es menor. La curva gruesa es la curva de nivel que toca la región.</p>
+<p>Qué observar al mover <span class="math inline">\(t\)</span>:</p>
+<ul>
+<li>Con Lasso, para un rango grande de valores de <span class="math inline">\(t\)</span> la solución se queda en una esquina del rombo, sobre el eje: <span class="math inline">\(\theta_2 = 0\)</span> exactamente.</li>
+<li>Con Ridge la solución se desliza suavemente por el círculo y nunca cae sobre un eje.</li>
+<li>Si <span class="math inline">\(t\)</span> es suficientemente grande, <span class="math inline">\(\hat\theta\)</span> queda dentro de la región y la restricción deja de importar (<span class="math inline">\(t\)</span> grande equivale a <span class="math inline">\(\lambda\)</span> pequeño).</li>
+</ul>
+<div id="7e1a497e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>theta_ols <span class="op">=</span> fig03.theta_ols</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>g1, g2 <span class="op">=</span> np.meshgrid(np.linspace(<span class="op">-</span><span class="dv">3</span>, <span class="fl">3.5</span>, <span class="dv">300</span>), np.linspace(<span class="op">-</span><span class="dv">3</span>, <span class="fl">3.5</span>, <span class="dv">300</span>))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>dif <span class="op">=</span> np.stack([g1 <span class="op">-</span> theta_ols[<span class="dv">0</span>], g2 <span class="op">-</span> theta_ols[<span class="dv">1</span>]], axis<span class="op">=-</span><span class="dv">1</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>J_malla <span class="op">=</span> np.einsum(<span class="st">"...i,ij,...j-&gt;..."</span>, dif, fig03.A, dif)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> solucion_restringida(region, t):</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> region <span class="op">==</span> <span class="st">"l2"</span>:</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>        dentro, frontera, radio <span class="op">=</span> theta_ols <span class="op">@</span> theta_ols <span class="op">&lt;=</span> t, fig03.circulo, np.sqrt(t)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>        dentro, frontera, radio <span class="op">=</span> np.<span class="bu">abs</span>(theta_ols).<span class="bu">sum</span>() <span class="op">&lt;=</span> t, fig03.rombo, t</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> dentro:</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> theta_ols.copy()</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> fig03.minimo_en_frontera(frontera, radio)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ver_geometria(t<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">5</span>))</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    s <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">2</span> <span class="op">*</span> np.pi, <span class="dv">400</span>)</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax, region, nombre <span class="kw">in</span> [(axs[<span class="dv">0</span>], <span class="st">"l2"</span>, <span class="st">"Ridge ($L_2$)"</span>), (axs[<span class="dv">1</span>], <span class="st">"l1"</span>, <span class="st">"Lasso ($L_1$)"</span>)]:</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        radio <span class="op">=</span> np.sqrt(t) <span class="cf">if</span> region <span class="op">==</span> <span class="st">"l2"</span> <span class="cf">else</span> t</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>        borde <span class="op">=</span> (fig03.circulo <span class="cf">if</span> region <span class="op">==</span> <span class="st">"l2"</span> <span class="cf">else</span> fig03.rombo)(s, radio)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a>        ax.fill(borde[<span class="dv">0</span>], borde[<span class="dv">1</span>], color<span class="op">=</span>CELESTE, alpha<span class="op">=</span><span class="fl">0.8</span>, ec<span class="op">=</span>AZUL, lw<span class="op">=</span><span class="fl">1.2</span>)</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>        ax.contour(g1, g2, J_malla, levels<span class="op">=</span>[<span class="fl">0.3</span>, <span class="dv">1</span>, <span class="fl">2.5</span>, <span class="dv">5</span>, <span class="dv">9</span>, <span class="dv">15</span>], colors<span class="op">=</span><span class="st">"0.75"</span>, linewidths<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>        sol <span class="op">=</span> solucion_restringida(region, t)</span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>        nivel <span class="op">=</span> fig03.J_cuad(sol)</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> nivel <span class="op">&gt;</span> <span class="fl">1e-9</span>:</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>            ax.contour(g1, g2, J_malla, levels<span class="op">=</span>[nivel], colors<span class="op">=</span><span class="st">"tab:cyan"</span>, linewidths<span class="op">=</span><span class="fl">2.5</span>)</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>        ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.6"</span>, lw<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a>        ax.axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.6"</span>, lw<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>        ax.plot(<span class="op">*</span>theta_ols, <span class="st">"x"</span>, color<span class="op">=</span><span class="st">"black"</span>, ms<span class="op">=</span><span class="dv">10</span>, mew<span class="op">=</span><span class="fl">2.5</span>)</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a>        ax.plot(<span class="op">*</span>sol, <span class="st">"o"</span>, color<span class="op">=</span>ROJO, ms<span class="op">=</span><span class="dv">9</span>, zorder<span class="op">=</span><span class="dv">5</span>)</span>
+<span id="cb10-33"><a href="#cb10-33" aria-hidden="true" tabindex="-1"></a>        ax.<span class="bu">set</span>(xlim<span class="op">=</span>(<span class="op">-</span><span class="dv">3</span>, <span class="fl">3.5</span>), ylim<span class="op">=</span>(<span class="op">-</span><span class="dv">3</span>, <span class="fl">3.5</span>), aspect<span class="op">=</span><span class="st">"equal"</span>, xlabel<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="ch">\t</span><span class="vs">heta_1</span><span class="dv">$</span><span class="vs">"</span>, ylabel<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="ch">\t</span><span class="vs">heta_2</span><span class="dv">$</span><span class="vs">"</span>,</span>
+<span id="cb10-34"><a href="#cb10-34" aria-hidden="true" tabindex="-1"></a>               title<span class="op">=</span><span class="ss">f"</span><span class="sc">{</span>nombre<span class="sc">}</span><span class="ss">:  θ = (</span><span class="sc">{</span>sol[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">, </span><span class="sc">{</span>sol[<span class="dv">1</span>]<span class="sc">:.2f}</span><span class="ss">)"</span>)</span>
+<span id="cb10-35"><a href="#cb10-35" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="7b12b05e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>interact(ver_geometria, t<span class="op">=</span>widgets.FloatSlider(value<span class="op">=</span><span class="fl">1.0</span>, <span class="bu">min</span><span class="op">=</span><span class="fl">0.05</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">7</span>, step<span class="op">=</span><span class="fl">0.05</span>, description<span class="op">=</span><span class="st">"t"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="caminos-de-coeficientes-figura-6" class="level2">
+<h2 class="anchored" data-anchor-id="caminos-de-coeficientes-figura-6">6. Caminos de coeficientes (Figura 6)</h2>
+<p>El problema de las casas de las notas: 80 casas con ocho features estandarizadas. Cinco tienen efecto real sobre el precio (área, habitaciones, baños, antigüedad, distancia al centro) y tres son ruido (gris punteado). El área y las habitaciones están correlacionadas.</p>
+<p>La línea vertical marca el <span class="math inline">\(\lambda\)</span> actual, y el panel de la derecha muestra los coeficientes de Ridge y Lasso para ese <span class="math inline">\(\lambda\)</span>.</p>
+<p>Qué observar al mover <span class="math inline">\(\lambda\)</span>:</p>
+<ul>
+<li>Con Lasso las tres features de ruido son las primeras en llegar exactamente a cero; el área es la última. Lasso hace selección de features.</li>
+<li>Con Ridge todos los coeficientes se encogen poco a poco, pero ninguno llega a cero.</li>
+<li>El coeficiente de las habitaciones en Ridge crece un poco antes de encogerse: al encoger el área, parte de su peso pasa a la feature correlacionada.</li>
+</ul>
+<div id="976c727c" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>camino_ridge, camino_lasso <span class="op">=</span> fig03.caminos()</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>lambdas_c <span class="op">=</span> fig03.lambdas_camino</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>nombres <span class="op">=</span> fig03.nombres</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>colores <span class="op">=</span> [AZUL, NARANJA, VERDE, ROJO, <span class="st">"tab:purple"</span>] <span class="op">+</span> [GRIS] <span class="op">*</span> <span class="dv">3</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ver_caminos(lam<span class="op">=</span><span class="fl">1.0</span>):</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="fl">4.6</span>), gridspec_kw<span class="op">=</span><span class="bu">dict</span>(width_ratios<span class="op">=</span>[<span class="dv">1</span>, <span class="dv">1</span>, <span class="fl">1.1</span>]))</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> ax, camino, titulo <span class="kw">in</span> [(axs[<span class="dv">0</span>], camino_ridge, <span class="st">"Ridge"</span>), (axs[<span class="dv">1</span>], camino_lasso, <span class="st">"Lasso"</span>)]:</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j, nombre <span class="kw">in</span> <span class="bu">enumerate</span>(nombres):</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>            ax.semilogx(lambdas_c, camino[:, j], color<span class="op">=</span>colores[j], lw<span class="op">=</span><span class="dv">2</span>, ls<span class="op">=</span><span class="st">"--"</span> <span class="cf">if</span> j <span class="op">&gt;=</span> <span class="dv">5</span> <span class="cf">else</span> <span class="st">"-"</span>,</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>                        label<span class="op">=</span>nombre <span class="cf">if</span> j <span class="op">&lt;</span> <span class="dv">5</span> <span class="cf">else</span> (<span class="st">"Ruido"</span> <span class="cf">if</span> j <span class="op">==</span> <span class="dv">5</span> <span class="cf">else</span> <span class="va">None</span>))</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>        ax.axhline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.8"</span>, lw<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>        ax.axvline(lam, color<span class="op">=</span><span class="st">"black"</span>, lw<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>        ax.<span class="bu">set</span>(xlabel<span class="op">=</span><span class="vs">r"</span><span class="dv">$</span><span class="er">\</span><span class="vs">lambda</span><span class="dv">$</span><span class="vs">"</span>, ylabel<span class="op">=</span><span class="st">"Coeficiente"</span>, title<span class="op">=</span>titulo, ylim<span class="op">=</span>(<span class="op">-</span><span class="fl">2.6</span>, <span class="fl">3.4</span>))</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">0</span>].legend(fontsize<span class="op">=</span><span class="dv">8</span>, loc<span class="op">=</span><span class="st">"upper right"</span>)</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    th_r, th_l <span class="op">=</span> fig03.ridge_casas(lam), fig03.lasso_casas(lam)</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    pos <span class="op">=</span> np.arange(<span class="bu">len</span>(nombres))[::<span class="op">-</span><span class="dv">1</span>]</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">2</span>].barh(pos <span class="op">+</span> <span class="fl">0.2</span>, th_r, height<span class="op">=</span><span class="fl">0.38</span>, color<span class="op">=</span>colores, alpha<span class="op">=</span><span class="fl">0.45</span>, label<span class="op">=</span><span class="st">"Ridge"</span>)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">2</span>].barh(pos <span class="op">-</span> <span class="fl">0.2</span>, th_l, height<span class="op">=</span><span class="fl">0.38</span>, color<span class="op">=</span>colores, label<span class="op">=</span><span class="st">"Lasso"</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">2</span>].axvline(<span class="dv">0</span>, color<span class="op">=</span><span class="st">"0.5"</span>, lw<span class="op">=</span><span class="fl">0.8</span>)</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">2</span>].set_yticks(pos, nombres, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">2</span>].<span class="bu">set</span>(xlim<span class="op">=</span>(<span class="op">-</span><span class="fl">2.6</span>, <span class="fl">3.4</span>), xlabel<span class="op">=</span><span class="st">"Coeficiente"</span>,</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>               title<span class="op">=</span><span class="ss">f"λ = </span><span class="sc">{</span>lam<span class="sc">:.3g}</span><span class="ss">:  Lasso usa </span><span class="sc">{</span>np<span class="sc">.</span><span class="bu">sum</span>(np.<span class="bu">abs</span>(th_l) <span class="op">&gt;</span> <span class="fl">1e-10</span>)<span class="sc">}</span><span class="ss"> de </span><span class="sc">{</span><span class="bu">len</span>(nombres)<span class="sc">}</span><span class="ss"> features"</span>)</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">2</span>].legend(fontsize<span class="op">=</span><span class="dv">9</span>, loc<span class="op">=</span><span class="st">"lower right"</span>)</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="196bd321" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>interact(ver_caminos, lam<span class="op">=</span>widgets.FloatLogSlider(value<span class="op">=</span><span class="fl">1.0</span>, base<span class="op">=</span><span class="dv">10</span>, <span class="bu">min</span><span class="op">=-</span><span class="dv">2</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">4</span>, step<span class="op">=</span><span class="fl">0.05</span>, description<span class="op">=</span><span class="st">"λ"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
