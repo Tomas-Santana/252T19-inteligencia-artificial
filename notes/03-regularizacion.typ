@@ -62,15 +62,15 @@
 // Redondeo para mostrar números en el texto
 #let num(x, digits: 2) = str(calc.round(x, digits: digits))
 
-En la clase anterior vimos que lo que nos interesa de un modelo es su error sobre datos que no ha visto (error de prueba), y no su error sobre los datos con los que fue entrenado. También vimos con la Figura 1 de la clase anterior que, a medida que un modelo se vuelve más flexible, el error de entrenamiento siempre baja, pero el error de prueba primero baja y luego sube.
+Anteriormente se observó que, a medida que un modelo se vuelve más flexible, el error de entrenamiento siempre baja, pero el error de prueba primero baja y luego sube.
 
-En esta clase vamos a responder tres preguntas que salen de esa figura:
+En este documento se responden tres preguntas que resultan de esta observación:
 
 + Si no podemos usar el error de entrenamiento para escoger la flexibilidad de un modelo, ¿qué usamos? (Parte 1)
 + ¿Hay alguna forma de controlar la flexibilidad de un modelo sin cambiar el número de parámetros? (Parte 2)
 + ¿Por qué usamos el error cuadrático y no otra función de costo, y qué relación tiene eso con la regularización? (Parte 3)
 
-Seguimos con la notación de la clase anterior: tenemos $m$ ejemplos de entrenamiento $(fvec(x)^(\(i\)), y^(\(i\)))$, el modelo tiene $n$ parámetros $theta_0, ..., theta_(n-1)$, y la función de costo es
+Seguimos con la notación anterior: tenemos $m$ ejemplos de entrenamiento $(fvec(x)^(\(i\)), y^(\(i\)))$, el modelo tiene $n$ parámetros $theta_0, ..., theta_(n-1)$, y la función de costo es
 
 $
   J(theta) = 1/2 sum_(i=1)^m (h_theta (fvec(x)^(\(i\))) - y^(\(i\)))^2.
