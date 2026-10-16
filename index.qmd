@@ -12,6 +12,7 @@ subtitle: "Material de la asignatura"
 - [1. Nociones básicas](notes/01-nociones-basicas-parte-1.pdf)
 - [2. Aprendizaje supervisado y regresión lineal](notes/02-regresion-lineal.pdf)
 - [3. Generalización, selección de modelos y regularización](notes/03-regularizacion.pdf)
+- [4. Clasificación lineal y regresión logística](notes/04-clasificacion.pdf)
 
 ## Laboratorios
 
@@ -21,3 +22,9 @@ subtitle: "Material de la asignatura"
 ## Tareas
 
 - [Tarea 1](homework/01.pdf)
+
+## Guía de estudio
+
+Estas guías reúnen preguntas sobre los conceptos fundamentales estudiados en las primeras cuatro clases. Su propósito es orientar el estudio personal y ayudar a relacionar los conceptos vistos en clase. No son actividades evaluadas ni requieren entrega. 
+
+- [Guía de estudio: clases 1 a 4](checkpoints/01.pdf)
