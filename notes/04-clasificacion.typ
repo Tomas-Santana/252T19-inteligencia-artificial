@@ -18,10 +18,7 @@
 // 5.1. Fronteras no lineales con un modelo lineal
 // 5.2. El costo de muchas features
 // 5.3. Hacia SVM y kernels
-//
-// Los datos de las figuras se generan con `python generar_figuras.py`
-// y se leen desde la carpeta figs/.
-
+// 
 #import "@preview/minimal-note:0.10.1": *
 #import "@preview/cetz:0.5.2"
 #import "@preview/cetz-plot:0.1.4": plot
@@ -437,22 +434,6 @@ La @fig-aporte muestra el comportamiento. Si el ejemplo es de la clase 1 y el mo
 
 Esto también resuelve el problema de la @fig-regresion-falla. Un tumor muy grande y maligno tiene un score muy positivo, $h_theta approx 1$, y su aporte es prácticamente cero, que es lo máximo posible. No tira de la frontera como lo hacía el error cuadrático.
 
-== Comparación con regresión lineal
-
-Ambos modelos salen de la misma receta: suponer cómo se distribuye $y$ dado $fvec(x)$, escribir la log-verosimilitud y maximizarla.
-
-#align(center, block(breakable: false, table(
-    columns: (2.8cm, 4.6cm, 6.6cm),
-    align: (left, center, center),
-    [], [Regresión lineal], [Regresión logística],
-    [Suposición], [$y tilde cal(N)(theta^T fvec(x), sigma^2)$], [$P(y = 1 | fvec(x); theta) = h_theta (fvec(x))$],
-    [$h_theta (fvec(x))$], [$theta^T fvec(x)$], [$g(theta^T fvec(x))$],
-    [Maximizar $ell$], [$min 1/2 sum (h_theta - y)^2$], [$max sum y log h_theta + (1 - y) log(1 - h_theta)$],
-    [Solución cerrada], [Sí], [No],
-  )))
-
-¿Por qué no simplemente minimizar el error cuadrático con la sigmoide, $1/2 sum (g(theta^T fvec(x)^(\(i\))) - y^(\(i\)))^2$? Se puede, pero tiene dos problemas. El primero es que esa función puede tener mínimos locales. El segundo es que su gradiente incluye el factor $g'(z) = g(z)(1 - g(z))$, que es casi cero cuando el modelo está muy seguro. Si el modelo está muy seguro y equivocado, el gradiente es casi cero y el modelo aprende muy lento justo cuando más lo necesita. Como veremos ahora, en el gradiente de $ell(theta)$ ese factor se cancela.
-
 = Parte 4: Entrenamiento
 
 == El gradiente
@@ -507,13 +488,7 @@ Todo lo que vimos sobre descenso por gradiente se aplica igual al ascenso: la ve
 
 A diferencia de la regresión lineal, ahora no hay solución cerrada. Al igualar el gradiente a cero, $theta$ queda adentro de la sigmoide y no se puede despejar. Por eso siempre se usa un método iterativo.
 
-La buena noticia es que $ell(theta)$ es cóncava (la versión "al revés" de convexa), así que no tiene máximos locales: si el ascenso por gradiente converge, llega al máximo global. Para verlo, se puede calcular la matriz de segundas derivadas:
-
-$
-  (partial^2 ell(theta)) / (partial theta_j partial theta_k) = -sum_(i=1)^m h_theta (fvec(x)^(\(i\))) (1 - h_theta (fvec(x)^(\(i\)))) x_j^(\(i\)) x_k^(\(i\)).
-$
-
-Para cualquier vector $fvec(v)$, $sum_(j,k) v_j v_k (partial^2 ell) slash (partial theta_j partial theta_k) = -sum_i h_theta (fvec(x)^(\(i\))) (1 - h_theta (fvec(x)^(\(i\)))) (fvec(v)^T fvec(x)^(\(i\)))^2 <= 0$, porque cada término de la suma es un producto de números no negativos. Una función cuya matriz de segundas derivadas cumple esto es cóncava.
+La buena noticia es que $ell(theta)$ es cóncava, así que no tiene máximos locales: si el ascenso por gradiente converge, llega al máximo global. 
 
 == Datos separables y regularización
 
@@ -521,10 +496,10 @@ Hay un caso donde el ascenso por gradiente no converge. Supongamos que los datos
 
 En la práctica esto significa que, con datos separables, el ascenso por gradiente hace que los parámetros crezcan indefinidamente, y el modelo termina asignando probabilidades de casi exactamente 0 o 1. Eso es una forma de overfitting: el modelo está demasiado seguro.
 
-La solución es la misma que en regresión lineal: penalizar el tamaño de los parámetros. Con regularización $L_2$ maximizamos
+La solución es la misma que en regresión lineal: penalizar el tamaño de los parámetros. Con regularización $L_2$ maximizamos:
 
 $
-  ell(theta) - lambda / 2 sum_(j=1)^(n-1) theta_j^2,
+  max_theta ell(theta) - lambda / 2 sum_(j=1)^(n-1) theta_j^2,
 $
 
 y la regla de actualización gana el término $-alpha lambda theta_j$ para $j >= 1$. Ahora el crecimiento de $theta$ tiene un costo, y el máximo existe siempre. También se puede usar regularización $L_1$ para obtener modelos sparse. Igual que antes, se escoge $lambda$ con validación y se estandarizan las features.
@@ -573,7 +548,7 @@ y la regla de actualización gana el término $-alpha lambda theta_j$ para $j >=
   ],
 ) <fig-ascenso>
 
-Una advertencia para el laboratorio: `LogisticRegression` de scikit-learn regulariza por defecto, y no usa $lambda$ sino un parámetro `C` que es su inverso: con la convención de estas notas, `C` $= 1 slash lambda$. Un `C` pequeño significa mucha regularización. Además, scikit-learn, como la mayoría de las librerías, plantea el problema como una minimización de $-ell(theta)$; maximizar $ell$ y minimizar $-ell$ es lo mismo.
+Adventercia: `LogisticRegression` de scikit-learn regulariza por defecto, y no usa $lambda$ sino un parámetro `C` que es su inverso: con la convención de estas notas, `C` $= 1 slash lambda$. Un `C` pequeño significa mucha regularización. 
 
 = Parte 5: Transformaciones de features
 
@@ -654,7 +629,7 @@ $
 
 El modelo sigue siendo lineal en $theta$, y por eso sigue siendo fácil de entrenar. Lo no lineal está en $phi$, que escogemos nosotros.
 
-Las mismas advertencias de la regresión polinomial aplican aquí. Con un $phi$ muy rico (por ejemplo, todos los monomios hasta grado 10), la frontera puede volverse tan flexible que rodee cada ejemplo de entrenamiento: overfitting. La complejidad se controla igual que antes, escogiendo $phi$ con validación y usando regularización.
+Las mismas advertencias de la regresión polinomial aplican aquí. Con un $phi$ muy rico (por ejemplo, todos los monomios hasta grado 10), la frontera puede volverse tan flexible que rodee cada ejemplo de entrenamiento: overfitting.
 
 == El costo de muchas features
 
