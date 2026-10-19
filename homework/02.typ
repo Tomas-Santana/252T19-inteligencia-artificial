@@ -80,11 +80,7 @@ print(model.score(X, y), model.rmse(X, y))
 
 #heading(numbering: none, level: 1)[Entrega y evaluación]
 
-
-
-Deben entregar un notebook (`.ipynb`) con la solución de todos los puntos y un archivo `my_ridge.py` con la clase `MyRidge`. El notebook debe ejecutarse de principio a fin sin errores. 
-
-La tarea se presenta en clase. La nota definitiva se calcula como
+Deben entregar un notebook (`.ipynb`) con la solución de todos los puntos y un archivo `my_ridge.py` con la clase `MyRidge`. El notebook debe ejecutarse de principio a fin sin errores. La nota definitiva se calculará como:
 
 $
 "Nota" = "Implementación" times "Explicabilidad",
