@@ -11,11 +11,12 @@
 
 1. Descargar un dataset en #link("https://www.kaggle.com/datasets", "Kaggle.com") (o cualquier otra fuente) con al menos 1000 ejemplos, al menos 8 características predictoras cuantitativas y una variable objetivo continua. El dataset debe ser de datos reales y distinto al utilizado en la Tarea 1. No se permite usar los datasets de los laboratorios (`house_price_regression_dataset.csv` y `diabetes.csv`). Realizar un análisis exploratorio breve y limpiar los datos según sea necesario.
 
-Separar un conjunto de prueba y escoger un tamaño de entrenamiento lo suficientemente pequeño (o agregar features con `PolynomialFeatures`) para que la regresión lineal *sobreajuste*. Deben mostrar el sobreajuste reportando el RMSE de entrenamiento y de prueba de la clase `LinearRegression` de `sklearn`. (4 puntos)
+  Separar un conjunto de prueba y escoger un tamaño de entrenamiento lo suficientemente pequeño (o agregar features con `PolynomialFeatures`) para que la regresión lineal *sobreajuste*. Deben mostrar el sobreajuste reportando el RMSE de entrenamiento y de prueba de la clase `LinearRegression` de `sklearn`. (4 puntos)
 
 \
 
 2. Implementar en Python una clase `MyRidge` que resuelva Ridge regression con la solución cerrada:
+
 $
 theta = (X^T X + lambda I)^(-1) X^T y
 $
@@ -81,7 +82,7 @@ print(model.score(X, y), model.rmse(X, y))
 
 
 
-Deben entregar un notebook (`.ipynb`) con la solución de todos los puntos y un archivo `my_ridge.py` con la clase `MyRidge`. El notebook debe ejecutarse de principio a fin sin errores. El uso de herramientas de IA generativa debe declararse explícitamente, según lo establecido en el sílabo.
+Deben entregar un notebook (`.ipynb`) con la solución de todos los puntos y un archivo `my_ridge.py` con la clase `MyRidge`. El notebook debe ejecutarse de principio a fin sin errores. 
 
 La tarea se presenta en clase. La nota definitiva se calcula como
 
@@ -89,7 +90,7 @@ $
 "Nota" = "Implementación" times "Explicabilidad",
 $
 
-donde la implementación es la suma de los puntos anteriores (de 0 a 20) y la explicabilidad es un factor entre 0 y 1 que mide la capacidad de presentar y justificar la solución propia. Para medirla, cada estudiante responderá 3 preguntas sobre su implementación, las mismas para todos, con su código abierto y ejecutable. El factor se asigna según la siguiente tabla:
+donde la implementación es la suma de los puntos anteriores (de 0 a 20) y la explicabilidad es un factor entre 0 y 1 que mide la capacidad de presentar y justificar la solución propia. Para medirla, cada estudiante responderá 3 preguntas sobre su implementación, con su código abierto y ejecutable. El factor se asigna según la siguiente tabla:
 
 #align(center)[
   #table(
