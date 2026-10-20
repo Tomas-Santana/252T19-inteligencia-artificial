@@ -47,11 +47,11 @@
 )
 
 // Datos de las figuras
-#let d-poli = json("figs/polinomios.json")
-#let d-ridge = json("figs/ridge_polinomio.json")
-#let d-caminos = json("figs/caminos.json")
-#let d-geo = json("figs/geometria.json")
-#let d-gauss = json("figs/gaussiana.json")
+#let d-poli = json("figs/03/polinomios.json")
+#let d-ridge = json("figs/03/ridge_polinomio.json")
+#let d-caminos = json("figs/03/caminos.json")
+#let d-geo = json("figs/03/geometria.json")
+#let d-gauss = json("figs/03/gaussiana.json")
 
 // Formato de ticks para ejes logarítmicos: 10^k
 #let fmt-pot(v) = {

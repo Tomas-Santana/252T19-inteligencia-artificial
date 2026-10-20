@@ -50,11 +50,11 @@
 )
 
 // Datos de las figuras
-#let d-reg = json("figs/regresion_falla.json")
-#let d-front = json("figs/frontera.json")
-#let d-log = json("figs/logistica.json")
-#let d-desc = json("figs/ascenso.json")
-#let d-par = json("figs/parabola.json")
+#let d-reg = json("figs/04/regresion_falla.json")
+#let d-front = json("figs/04/frontera.json")
+#let d-log = json("figs/04/logistica.json")
+#let d-desc = json("figs/04/ascenso.json")
+#let d-par = json("figs/04/parabola.json")
 
 #let num(x, digits: 2) = str(calc.round(x, digits: digits))
 
