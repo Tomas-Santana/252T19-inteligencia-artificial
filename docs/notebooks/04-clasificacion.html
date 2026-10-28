@@ -275,7 +275,7 @@ window.Quarto = {
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>         posicion<span class="op">=</span>widgets.FloatSlider(<span class="bu">min</span><span class="op">=</span><span class="dv">10</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">40</span>, step<span class="op">=</span><span class="fl">0.5</span>, value<span class="op">=</span><span class="dv">24</span>, description<span class="op">=</span><span class="st">"Posición"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"fcf8132db2554b7d983fef94151bfd1d","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"b909e2b050314e1995de20c498388964","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -333,7 +333,7 @@ window.Quarto = {
 <span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>         c<span class="op">=</span>widgets.FloatLogSlider(value<span class="op">=</span><span class="dv">1</span>, base<span class="op">=</span><span class="dv">10</span>, <span class="bu">min</span><span class="op">=-</span><span class="fl">0.7</span>, <span class="bu">max</span><span class="op">=</span><span class="fl">1.3</span>, step<span class="op">=</span><span class="fl">0.02</span>, description<span class="op">=</span><span class="st">"c"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"08b380e0efb84be9ac0f04eb96dd66d6","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"c0778f5758ad47d3a2dfb428ec361600","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -408,7 +408,7 @@ window.Quarto = {
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>interact(ver_ascenso, k<span class="op">=</span>widgets.SelectionSlider(options<span class="op">=</span>pasos_ascenso, value<span class="op">=</span><span class="dv">0</span>, description<span class="op">=</span><span class="st">"Iteración"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"7492e0c15ba14593a3f594adf48fb60a","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"d4e980af74ed432b9c53bd804836b09a","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -449,13 +449,13 @@ window.Quarto = {
 <span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="86d4ba8f" class="cell">
+<div id="86d4ba8f" class="cell" data-execution_count="9">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>interact(ver_separables,</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>         iteracion<span class="op">=</span>widgets.FloatLogSlider(value<span class="op">=</span><span class="dv">1</span>, base<span class="op">=</span><span class="dv">10</span>, <span class="bu">min</span><span class="op">=</span><span class="dv">0</span>, <span class="bu">max</span><span class="op">=</span>np.log10(PASOS), step<span class="op">=</span><span class="fl">0.05</span>, description<span class="op">=</span><span class="st">"Iteración"</span>),</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         lam<span class="op">=</span>widgets.SelectionSlider(options<span class="op">=</span>[<span class="fl">0.0</span>, <span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">1.0</span>, <span class="fl">3.0</span>, <span class="fl">10.0</span>], value<span class="op">=</span><span class="fl">0.0</span>, description<span class="op">=</span><span class="st">"λ"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"83912eae4ddd4c00aab9715bad603bb7","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"5824bafc99ce4fbdb954628c5164e68e","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -472,7 +472,7 @@ window.Quarto = {
 <li>Al elevarlos, los <span class="math inline">\(-\)</span> de los extremos suben más que los <span class="math inline">\(+\)</span> del centro, porque <span class="math inline">\(x^2\)</span> crece con la distancia al cero. Al llegar a <span class="math inline">\(1\)</span>, la misma recta fija deja a los <span class="math inline">\(+\)</span> debajo (región roja) y a los <span class="math inline">\(-\)</span> encima (región azul): no movimos la frontera, movimos los puntos.</li>
 <li>Abajo, la recta original: la frontera en el plano corresponde a dos puntos sobre la recta, y la región de la clase 1 es el intervalo entre ellos.</li>
 </ul>
-<div id="81c1d9ff" class="cell" data-execution_count="10">
+<div id="81c1d9ff" class="cell" data-execution_count="11">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>x_1d <span class="op">=</span> np.array([<span class="op">-</span><span class="fl">3.0</span>, <span class="op">-</span><span class="fl">2.4</span>, <span class="op">-</span><span class="fl">1.9</span>, <span class="op">-</span><span class="fl">0.9</span>, <span class="op">-</span><span class="fl">0.4</span>, <span class="fl">0.2</span>, <span class="fl">0.7</span>, <span class="fl">1.2</span>, <span class="fl">2.0</span>, <span class="fl">2.5</span>, <span class="fl">3.1</span>])</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>y_1d <span class="op">=</span> np.array([<span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">0</span>, <span class="dv">0</span>], dtype<span class="op">=</span><span class="bu">float</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -515,11 +515,11 @@ window.Quarto = {
 <span id="cb10-40"><a href="#cb10-40" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb10-41"><a href="#cb10-41" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="b856388f" class="cell" data-execution_count="11">
+<div id="b856388f" class="cell" data-execution_count="12">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>interact(ver_una_feature, elevacion<span class="op">=</span>widgets.FloatSlider(<span class="bu">min</span><span class="op">=</span><span class="dv">0</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">1</span>, step<span class="op">=</span><span class="fl">0.02</span>, value<span class="op">=</span><span class="dv">0</span>, description<span class="op">=</span><span class="st">"Elevación"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"8a5ecc4abae542d695e7a903016216d1","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"6c64c7d3856f470582f092b4dfd9345f","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
