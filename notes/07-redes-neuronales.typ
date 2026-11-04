@@ -705,7 +705,21 @@ $
 
 donde $alpha$ es la tasa de aprendizaje. Cada componente del gradiente dice cuánto cambia el costo si movemos un poco ese parámetro, y en qué dirección. Restar el gradiente mueve cada parámetro en la dirección en la que el costo baja. En la práctica se usa la versión con mini-batches: en cada paso, el gradiente se calcula con un grupo pequeño de ejemplos escogidos al azar.
 
-Antes de ver cómo se calcula el gradiente de una red, hagamos algunos pasos a mano con la red más pequeña posible: una neurona sin activación, sin sesgo y con un solo peso, $hat(y) = w x$, un solo ejemplo $x = 2$, $y = 10$, y pérdida $L = (hat(y) - y)^2$. Para encontrar la derivada de $L$ respecto a $w$, notemos que $L$ no depende de $w$ directamente, sino a través de $hat(y)$: el peso determina la predicción, y la predicción determina la pérdida. En estos casos se usa la *regla de la cadena*: si $L$ depende de $hat(y)$ y $hat(y)$ depende de $w$, entonces
+Antes de ver cómo se calcula el gradiente de una red, hagamos algunos pasos a mano con la red más pequeña posible: una neurona sin activación, sin sesgo y con un solo peso, $hat(y) = w x$, un solo ejemplo $x = 2$, $y = 10$, y pérdida $L = (hat(y) - y)^2$ (@fig-red-un-peso).
+
+#figure(
+  caption: [La red más pequeña posible: una neurona sin activación, sin sesgo y con un solo peso $w$.],
+  red-diagrama(
+    (1, 1),
+    etiquetas: ("0-0": $x$, "1-0": $hat(y)$),
+    pesos: ("0-0-0": $w$),
+    pos-peso: 0.5,
+    nombres: ([$x = 2$], [$hat(y) = w x$]),
+    dx: 4,
+  ),
+) <fig-red-un-peso>
+
+Para encontrar la derivada de $L$ respecto a $w$, notemos que $L$ no depende de $w$ directamente, sino a través de $hat(y)$: el peso determina la predicción, y la predicción determina la pérdida. En estos casos se usa la *regla de la cadena*: si $L$ depende de $hat(y)$ y $hat(y)$ depende de $w$, entonces
 
 $
   (d L) / (d w) = (d L) / (d hat(y)) dot (d hat(y)) / (d w).
@@ -790,7 +804,19 @@ $
   a = "ReLU"(w_1 x), quad quad hat(y) = w_2 a, quad quad L = (hat(y) - y)^2,
 $
 
-con $x = 2$, $y = 10$, $w_1 = 1$ y $w_2 = 1$. El forward pass da $a = 2$, $hat(y) = 2$ y $L = 64$.
+con $x = 2$, $y = 10$, $w_1 = 1$ y $w_2 = 1$ (@fig-red-dos-pesos). El forward pass da $a = 2$, $hat(y) = 2$ y $L = 64$.
+
+#figure(
+  caption: [Una red de dos pesos: una unidad oculta con ReLU, $a = "ReLU"(w_1 x)$, y una salida sin activación, $hat(y) = w_2 a$.],
+  red-diagrama(
+    (1, 1, 1),
+    etiquetas: ("0-0": $x$, "1-0": $a$, "2-0": $hat(y)$),
+    pesos: ("0-0-0": $w_1$, "1-0-0": $w_2$),
+    pos-peso: 0.5,
+    nombres: ([entrada], [oculta (ReLU)], [salida]),
+    dx: 3,
+  ),
+) <fig-red-dos-pesos>
 
 Ahora vamos de derecha a izquierda, preguntándonos en cada paso cuánto cambia la pérdida si cambia ese valor:
 
@@ -805,7 +831,7 @@ Ese es todo el algoritmo. El error se calcula en la salida y viaja hacia atrás,
 Hay una forma intuitiva de leer esto. Si la salida debería ser más grande, cada conexión "pide" un cambio en la capa anterior, en la dirección que más ayudaría a la salida, y esos pedidos se pasan hacia atrás, capa por capa. Como la derivada de un peso es proporcional a la entrada que recibe, las conexiones que vienen de neuronas muy activas son las que más influyen en la salida, y por eso son las que más cambian. Las que vienen de neuronas apagadas no cambian.
 
 #ejercicio("Ejercicio 4 ")[
-  Para la red de dos pesos de arriba ($x = 2$, $y = 10$), calcula el forward pass y las dos derivadas $(partial L) / (partial w_1)$ y $(partial L) / (partial w_2)$ si empezamos con $w_1 = -1$ y $w_2 = 1$. ¿Qué pasa con $w_1$ si damos un paso de descenso por gradiente? ¿Por qué?
+  Para la red de dos pesos de la @fig-red-dos-pesos ($x = 2$, $y = 10$), calcula el forward pass y las dos derivadas $(partial L) / (partial w_1)$ y $(partial L) / (partial w_2)$ si empezamos con $w_1 = -1$ y $w_2 = 1$. ¿Qué pasa con $w_1$ si damos un paso de descenso por gradiente? ¿Por qué?
 ]
 
 #prof[Solución: $w_1 x = -2$, así que $a = 0$, $hat(y) = 0$, $L = 100$. La señal de error es $2(0 - 10) = -20$. $(partial L) / (partial w_2) = -20 dot a = 0$ y $(partial L) / (partial w_1) = -20 dot w_2 dot 0 dot x = 0$, porque la ReLU está apagada. Ningún peso cambia: la neurona está "muerta" para este ejemplo. Es una buena excusa para explicar por qué en el lab usamos más neuronas de las estrictamente necesarias.]
