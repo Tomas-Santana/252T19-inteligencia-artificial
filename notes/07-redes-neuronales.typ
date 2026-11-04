@@ -667,8 +667,6 @@ La fila $i$ de $fvec(Z)^(\(1\))$ contiene los scores de la primera capa para el 
 
 La suma del final tiene un detalle: $fvec(X) fvec(W)^(\(1\)T)$ es una matriz de $n times m_1$, pero $fvec(b)^(\(1\)T)$ es una sola fila. Lo que queremos es sumarle esa fila a cada una de las $n$ filas, porque todos los ejemplos usan los mismos sesgos. NumPy y PyTorch lo hacen automáticamente, copiando la fila $n$ veces. A esto se le llama *broadcasting*. Los sesgos no se multiplican: siguen siendo $m_1$ parámetros.
 
-En las notas de CS229 los ejemplos se ponen como columnas y la fórmula queda $fvec(Z) = fvec(W) fvec(X) + fvec(b)$; es lo mismo, transpuesto. Nosotros usamos filas porque es la convención de scikit-learn y de PyTorch: en PyTorch, `nn.Linear(d, m)` guarda una matriz de pesos de $m times d$ y calcula exactamente `X @ W.T + b`.
-
 #prof[Demo del Playground (unos 10 min). Antes de cada cambio, que la clase vote qué va a pasar: (1) dataset XOR, 2 neuronas ocultas, entrenar; (2) bajar a 1 neurona; (3) activación "Linear": la frontera vuelve a ser una recta (lo mismo del Ejercicio 2); (4) dataset espiral: ¿qué necesitamos? más capas y neuronas; (5) learning rate 3 o 10: la pérdida salta y no baja. Después: abrir labs/05/lab.ipynb, Parte 1 (ejercicios 1 a 3), unos 20 min.]
 
 = Parte 3: Cómo aprende una red
