@@ -38,7 +38,6 @@
 #let fvec(x) = math.bold(math.upright(x))
 #let phi = sym.phi.alt
 
-
 #set text(lang: "es")
 #set smartquote(quotes: "“”")
 
@@ -72,7 +71,7 @@
 
 // Datos de las figuras
 #let d-lunas = json("figs/07/lunas.json")
-#let d-perdida = json("figs/07/perdida.json")
+#let d-mnist = json("figs/07/mnist.json")
 
 #let num(x, digits: 2) = str(calc.round(x, digits: digits))
 #let pct(x) = str(calc.round(x * 100, digits: 1)) + "%"
@@ -197,6 +196,13 @@
   cuerpo,
 )
 
+// Un dígito de MNIST (784 píxeles en escala de grises), invertido para imprimir: trazo negro sobre blanco
+#let digito(px, ancho: 0.95cm) = box(image(
+  bytes(px.map(p => 255 - p)),
+  format: (encoding: "luma8", width: 28, height: 28),
+  width: ancho,
+))
+
 #let xor-neg = ((0, 0), (1, 1))
 #let xor-pos = ((0, 1), (1, 0))
 
@@ -207,12 +213,30 @@
     - *0:00–0:55 · Bloque 1.* Parte 1 y secciones 2.1 a 2.3. Ejercicios 1 y 2 en papel, en parejas (unos 25 min en total).
     - *0:55–1:05 · Descanso.*
     - *1:05–1:55 · Bloque 2.* Secciones 2.4 a 2.8 (unos 20 min; la 2.9 solo si van bien de tiempo). Demo del Playground (unos 10 min). Lab, Parte 1 (ejercicios 1 a 3 del notebook, unos 20 min).
-    - *1:55–2:50 · Bloque 3.* Parte 3. Ejercicios 3 y 4 en papel. Lab, Parte 2 (ejercicios 4 y 5 del notebook).
+    - *1:55–2:00 · Descanso corto.* Cinco minutos para levantarse antes de backpropagation.
+    - *2:00–2:50 · Bloque 3.* Parte 3. Ejercicios 3 y 4 en papel. Lab, Parte 2 (ejercicios 4 y 5 del notebook). Terminar mostrando los resultados de MNIST de la sección 3.4.
     - *2:50–3:00 · Cierre.* Las tres ideas del día (Resumen) y presentar la Tarea 4.
     - Si se acaba el tiempo: la sección 2.9, la 3.5 y el ejercicio 6 del notebook son lo primero que se corta. No cortar el ejercicio 4 del notebook (`loss.backward()` da −32): es el momento clave del Bloque 3.
     - Recordar: el Playground no funciona sin internet en el laboratorio. Abrirlo antes de clase desde tu máquina.
   ]
 ]
+
+Consideremos el problema de reconocer dígitos escritos a mano: dada una imagen pequeña de un dígito, queremos decir cuál es. Es lo que hace un banco para leer el monto de un cheque, o el correo para leer los códigos postales en los sobres. La @fig-mnist muestra algunos ejemplos de MNIST, una colección de #d-mnist.m_train imágenes de entrenamiento escritas por cientos de personas distintas. Cada imagen tiene $28 times 28 = 784$ píxeles, cada uno un número entre 0 (blanco) y 255 (negro).
+
+#figure(
+  caption: [Tres ejemplos de cada dígito del conjunto de entrenamiento de MNIST. Cada imagen es un vector de 784 números.],
+  grid(
+    columns: 10,
+    gutter: 3pt,
+    ..d-mnist.muestras.join().map(px => digito(px)),
+  ),
+) <fig-mnist>
+
+Para nosotros es un problema trivial. Pero intentemos escribir un programa que lo resuelva con reglas: ¿qué píxeles tienen que estar oscuros para que una imagen sea un 4? Los cuatros de la figura no tienen casi ningún píxel en común: unos están cerrados arriba y otros abiertos, unos están inclinados y otros derechos. Ninguna regla simple sobre los píxeles funciona, y tampoco es claro qué features diseñar a mano, como hacíamos en la clase 4.
+
+En esta clase vamos a construir una red neuronal que resuelve este problema aprendiendo de los ejemplos. Al final de la clase la entrenaremos: con solo 13002 parámetros, reconoce correctamente el #pct(d-mnist.exactitud) de #d-mnist.m_test imágenes que nunca vio durante el entrenamiento.
+
+#prof[Mostrar la figura de los dígitos al empezar y preguntar: "¿Cómo le explicarían a una computadora qué es un 4?" Dejar que propongan reglas (dos líneas que se cruzan, etc.) y mostrar en la figura que los cuatros no se parecen entre sí. Volver a esta pregunta al final, en la sección 3.4.]
 
 = Parte 1: Una neurona
 
@@ -563,7 +587,7 @@ $
 
 La última capa normalmente no lleva ReLU, para que la salida pueda ser negativa (o se le aplica la sigmoide o softmax, como veremos, si queremos probabilidades). A estas redes se les llama también *perceptrones multicapa* (MLP).
 
-*Conteo de parámetros.* La capa $k$ tiene $m_k m_(k-1)$ pesos y $m_k$ sesgos, es decir, $(m_(k-1) + 1) m_k$ parámetros. Por ejemplo, consideremos una red para reconocer dígitos escritos a mano. Cada imagen tiene $28 times 28 = 784$ píxeles, así que $d = 784$. Supongamos que la red tiene dos capas ocultas de 16 unidades y una salida con 10 unidades, una por dígito:
+*Conteo de parámetros.* La capa $k$ tiene $m_k m_(k-1)$ pesos y $m_k$ sesgos, es decir, $(m_(k-1) + 1) m_k$ parámetros. Por ejemplo, consideremos una red para los dígitos de MNIST del inicio de la clase. La entrada es la imagen convertida en un vector de $d = 784$ píxeles. Supongamos que la red tiene dos capas ocultas de 16 unidades y una salida con 10 unidades, una por dígito:
 
 #align(center, table(
   columns: 4,
@@ -671,7 +695,7 @@ La suma del final tiene un detalle: $fvec(X) fvec(W)^(\(1\)T)$ es una matriz de 
 
 = Parte 3: Cómo aprende una red
 
-#prof[Bloque 3 (1:55). Mensaje central: no hay nada nuevo. Es el descenso por gradiente de la clase 2 aplicado a muchos parámetros a la vez.]
+#prof[Bloque 3 (2:00). Mensaje central: no hay nada nuevo. Es el descenso por gradiente de la clase 2 aplicado a muchos parámetros a la vez.]
 
 Hasta ahora escogimos los parámetros a mano. Con 13000 parámetros eso es imposible. Igual que en regresión lineal y logística, los vamos a encontrar minimizando una función de pérdida con descenso por gradiente.
 
@@ -802,34 +826,64 @@ $
   a = "ReLU"(w_1 x), quad quad hat(y) = w_2 a, quad quad L = (hat(y) - y)^2,
 $
 
-con $x = 2$, $y = 10$, $w_1 = 1$ y $w_2 = 1$ (@fig-red-dos-pesos). El forward pass da $a = 2$, $hat(y) = 2$ y $L = 64$.
+con $x = 2$, $y = 10$, $w_1 = 1$ y $w_2 = 1$. Llamemos $z = w_1 x$ al score de la unidad oculta. El forward pass da $z = 2$, $a = 2$, $hat(y) = 2$ y $L = 64$ (@fig-grafo, arriba).
+
+#let nodo-grafo(p, etiqueta) = {
+  import cetz.draw: *
+  circle(p, radius: 0.42, fill: white, stroke: 0.9pt + black)
+  content(p, text(size: 10pt, etiqueta))
+}
 
 #figure(
-  caption: [Una red de dos pesos: una unidad oculta con ReLU, $a = "ReLU"(w_1 x)$, y una salida sin activación, $hat(y) = w_2 a$.],
-  red-diagrama(
-    (1, 1, 1),
-    etiquetas: ("0-0": $x$, "1-0": $a$, "2-0": $hat(y)$),
-    pesos: ("0-0-0": $w_1$, "1-0-0": $w_2$),
-    pos-peso: 0.5,
-    nombres: ([entrada], [oculta (ReLU)], [salida]),
-    dx: 3,
-  ),
-) <fig-red-dos-pesos>
+  caption: [El cálculo de la red de dos pesos como una cadena de operaciones. Arriba, en negro, el forward pass: cada valor se calcula a partir del anterior. Abajo, en rojo, backpropagation: la derivada de la pérdida respecto a cada valor se calcula a partir de la del valor siguiente, de derecha a izquierda. Las derivadas de los pesos (recuadros rojos) se obtienen multiplicando la señal que llega por la entrada de cada peso.],
+  cetz.canvas({
+    import cetz.draw: *
+    let xs = (0, 3.2, 6.4, 9.6, 12.8)
+    let nombres = ($x$, $z$, $a$, $hat(y)$, $L$)
+    let valores = ($2$, $2$, $2$, $2$, $64$)
+    let ops = ($times w_1$, $"ReLU"$, $times w_2$, $(dot - 10)^2$)
+    let grads = (none, $-16$, $-16$, $-16$, none)
+    // forward
+    for k in range(4) {
+      line((xs.at(k) + 0.45, 0), (xs.at(k + 1) - 0.45, 0), stroke: 0.9pt + black, mark: (end: ">", fill: black))
+      content(((xs.at(k) + xs.at(k + 1)) / 2, 0.32), text(size: 8.5pt, ops.at(k)))
+    }
+    for k in range(5) {
+      nodo-grafo((xs.at(k), 0), nombres.at(k))
+      content((xs.at(k), 0.82), text(size: 9pt)[$= #valores.at(k)$])
+    }
+    // backward
+    let yb = -1.25
+    for k in range(1, 4) {
+      line((xs.at(k + 1) - 0.3, yb), (xs.at(k) + 0.3, yb), stroke: 0.9pt + red, mark: (end: ">", fill: red))
+    }
+    let etiquetas-b = ($$, $display((partial L) / (partial z)) = -16$, $display((partial L) / (partial a)) = -16$, $display((partial L) / (partial hat(y))) = -16$, $$)
+    for k in (1, 2, 3) {
+      content((xs.at(k), yb - 0.7), text(size: 9pt, fill: red, etiquetas-b.at(k)))
+    }
+    content(((xs.at(3) + xs.at(4)) / 2, yb + 0.32), text(size: 7.5pt, fill: red)[$2(hat(y) - 10)$])
+    content(((xs.at(2) + xs.at(3)) / 2, yb + 0.32), text(size: 7.5pt, fill: red)[$times w_2$])
+    content(((xs.at(1) + xs.at(2)) / 2, yb + 0.32), text(size: 7.5pt, fill: red)[$times 1$ (pendiente de ReLU)])
+    // derivadas de los pesos
+    content(((xs.at(0) + xs.at(1)) / 2, yb - 1.7), box(stroke: 0.8pt + red, inset: 4pt, text(size: 9pt, fill: red)[$display((partial L) / (partial w_1)) = -16 dot x = -32$]))
+    content(((xs.at(2) + xs.at(3)) / 2, yb - 1.7), box(stroke: 0.8pt + red, inset: 4pt, text(size: 9pt, fill: red)[$display((partial L) / (partial w_2)) = -16 dot a = -32$]))
+  }),
+) <fig-grafo>
 
-Ahora vamos de derecha a izquierda, preguntándonos en cada paso cuánto cambia la pérdida si cambia ese valor:
+Ahora vamos de derecha a izquierda (@fig-grafo, abajo), preguntándonos en cada paso cuánto cambia la pérdida si cambia ese valor:
 
 + *En la salida.* $(partial L) / (partial hat(y)) = 2 (hat(y) - y) = -16$. Esta es la "señal de error". Es negativa porque la predicción es demasiado pequeña: si $hat(y)$ aumenta, la pérdida baja.
 + *El peso $w_2$.* Como $hat(y) = w_2 a$, mover $w_2$ mueve $hat(y)$ en proporción a $a$. Entonces $(partial L) / (partial w_2) = -16 dot a = -32$.
 + *La unidad oculta.* Mover $a$ mueve $hat(y)$ en proporción a $w_2$. La señal de error llega a $a$ multiplicada por el peso de la conexión: $(partial L) / (partial a) = -16 dot w_2 = -16$.
-+ *La ReLU.* Como $w_1 x = 2 > 0$, la ReLU deja pasar los cambios tal cual (su pendiente es 1). Si la neurona estuviera apagada ($w_1 x < 0$), la pendiente sería 0 y la señal se detendría aquí.
-+ *El peso $w_1$.* Igual que en el paso 2: $(partial L) / (partial w_1) = (partial L) / (partial a) dot 1 dot x = -16 dot 2 = -32$.
++ *La ReLU.* Como $z = 2 > 0$, la ReLU deja pasar los cambios tal cual (su pendiente es 1), así que $(partial L) / (partial z) = -16 dot 1 = -16$. Si la neurona estuviera apagada ($z < 0$), la pendiente sería 0 y la señal se detendría aquí.
++ *El peso $w_1$.* Igual que en el paso 2: como $z = w_1 x$, $(partial L) / (partial w_1) = (partial L) / (partial z) dot x = -16 dot 2 = -32$.
 
 Ese es todo el algoritmo. El error se calcula en la salida y viaja hacia atrás, capa por capa. Al cruzar cada conexión se multiplica por su peso, y al cruzar cada activación se multiplica por su pendiente. Cuando la señal llega a un peso, la derivada de ese peso es la señal multiplicada por la entrada que recibe ese peso. Es la regla de la cadena, aplicada de forma ordenada y reutilizando los cálculos que ya hicimos.
 
 Hay una forma intuitiva de leer esto. Si la salida debería ser más grande, cada conexión "pide" un cambio en la capa anterior, en la dirección que más ayudaría a la salida, y esos pedidos se pasan hacia atrás, capa por capa. Como la derivada de un peso es proporcional a la entrada que recibe, las conexiones que vienen de neuronas muy activas son las que más influyen en la salida, y por eso son las que más cambian. Las que vienen de neuronas apagadas no cambian.
 
 #ejercicio("Ejercicio 4 ")[
-  Para la red de dos pesos de la @fig-red-dos-pesos ($x = 2$, $y = 10$), calcula el forward pass y las dos derivadas $(partial L) / (partial w_1)$ y $(partial L) / (partial w_2)$ si empezamos con $w_1 = -1$ y $w_2 = 1$. ¿Qué pasa con $w_1$ si damos un paso de descenso por gradiente? ¿Por qué?
+  Para la red de dos pesos de arriba ($x = 2$, $y = 10$), calcula el forward pass y las dos derivadas $(partial L) / (partial w_1)$ y $(partial L) / (partial w_2)$ si empezamos con $w_1 = -1$ y $w_2 = 1$. ¿Qué pasa con $w_1$ si damos un paso de descenso por gradiente? ¿Por qué?
 ]
 
 #prof[Solución: $w_1 x = -2$, así que $a = 0$, $hat(y) = 0$, $L = 100$. La señal de error es $2(0 - 10) = -20$. $(partial L) / (partial w_2) = -20 dot a = 0$ y $(partial L) / (partial w_1) = -20 dot w_2 dot 0 dot x = 0$, porque la ReLU está apagada. Ningún peso cambia: la neurona está "muerta" para este ejemplo. Es una buena excusa para explicar por qué en el lab usamos más neuronas de las estrictamente necesarias.]
@@ -853,25 +907,54 @@ for paso in range(1000):
     optimizador.step()        # 5. un paso de descenso
 ```
 
-La @fig-perdida muestra la pérdida durante el entrenamiento de una red con una capa oculta de 32 unidades sobre los datos de la @fig-lunas. Baja rápido al principio y luego cada vez más despacio, como en regresión lineal. Igual que con los árboles, que la pérdida de entrenamiento baje no garantiza que la red generalice: una red grande también puede memorizar los datos. Eso lo veremos la próxima clase.
+Hay tres detalles de este código que conviene entender.
+
+*Los gradientes se acumulan.* Cada vez que se llama `L.backward()`, PyTorch *suma* los gradientes nuevos a los que ya están guardados, en lugar de reemplazarlos. Si no se borran con `optimizador.zero_grad()` al principio de cada paso, el gradiente que se usa es la suma de todos los pasos anteriores, y el entrenamiento falla sin dar ningún error.
+
+*La red entrega el score, no la probabilidad.* La última capa es `nn.Linear(8, 1)`, sin sigmoide. Su salida es el score $z$ de la neurona de salida, que en este contexto se llama *logit*. La pérdida `nn.BCEWithLogitsLoss` aplica la sigmoide internamente, porque calcular la sigmoide y el logaritmo juntos es numéricamente más estable que hacerlo por separado. Por eso *no* hay que agregar `nn.Sigmoid()` al final del modelo: se aplicaría dos veces. Lo mismo ocurre con softmax y `nn.CrossEntropyLoss`. Si queremos la probabilidad para predecir, la calculamos aparte con `torch.sigmoid(modelo(X))`; y como la sigmoide es mayor que 0.5 exactamente cuando su argumento es positivo, la red predice la clase 1 cuando `modelo(X) > 0`.
+
+*Los pesos empiezan al azar.* `nn.Linear` inicializa los pesos con valores aleatorios pequeños. ¿Por qué no empezar con todos en cero, como hacíamos en regresión lineal? Supongamos que todas las unidades ocultas de una capa empiezan con los mismos pesos y sesgos. Entonces calculan exactamente la misma activación, reciben exactamente el mismo gradiente en backpropagation y, después de cada paso, siguen teniendo los mismos pesos. Por más que entrenemos, nunca se diferencian, y la capa entera se comporta como una sola unidad. Inicializar al azar rompe esa simetría: cada unidad empieza distinta y puede aprender una feature distinta.
+
+*De vuelta a MNIST.* Con este mismo código entrenamos la red de la sección 2.5 ($784 -> 16 -> 16 -> 10$, con #d-mnist.parametros parámetros) sobre las #d-mnist.m_train imágenes de entrenamiento de MNIST, con descenso por gradiente con mini-batches de #d-mnist.lote imágenes, $alpha = 0.1$ y `nn.CrossEntropyLoss`. Cada imagen se pasa a la red como un vector de 784 píxeles divididos entre 255, para que estén entre 0 y 1. La @fig-perdida muestra cómo baja la pérdida. El entrenamiento tarda unos segundos en una computadora normal.
 
 #figure(
-  caption: [Entropía cruzada de entrenamiento de una red con 32 unidades ocultas sobre los datos de la @fig-lunas, en función del número de pasos de descenso por gradiente ($alpha = 0.1$). La exactitud final sobre datos de prueba es #pct(d-perdida.exactitud).],
+  caption: [Entropía cruzada de entrenamiento de la red $784 -> 16 -> 16 -> 10$ sobre MNIST, promediada cada 100 pasos de descenso por gradiente (#d-mnist.epocas pasadas por los datos de entrenamiento, #d-mnist.pasos pasos en total).],
   custom-plot(
     x-min: 0,
-    x-max: 1000,
+    x-max: d-mnist.pasos,
     y-min: 0,
-    y-max: 0.8,
+    y-max: 2.4,
     x-label: [paso],
     y-label: [pérdida],
-    x-tick-step: 200,
-    y-tick-step: 0.2,
+    x-tick-step: 1000,
+    y-tick-step: 0.5,
     size: (7, 3.6),
-    curva(d-perdida.perdida, color: c-pos, grosor: 1.5pt),
+    curva(d-mnist.curva, color: c-pos, grosor: 1.5pt),
   ),
 ) <fig-perdida>
 
-#prof[Ejercicio 4 en papel (aprox. 10 min) y después el lab, Parte 2 (ejercicios 4 y 5 del notebook, unos 25 min). El momento clave: `w.grad` da −32, lo mismo que calcularon a mano en el Ejercicio 3. Hacerlo notar en voz alta.]
+Después de entrenar, evaluamos la red sobre las #d-mnist.m_test imágenes de prueba, que no vio durante el entrenamiento. Reconoce correctamente el *#pct(d-mnist.exactitud)* de ellas: se equivoca en #d-mnist.errores de #d-mnist.m_test. La @fig-mnist-pred muestra algunos ejemplos. Vale la pena detenerse en esto. Nadie le dijo a la red qué es un 4, ni qué features mirar: solo vio ejemplos y sus etiquetas, y el descenso por gradiente ajustó 13002 números hasta que la red aprendió a reconocerlos, incluso escritos por personas que no aparecen en los datos de entrenamiento. Y es una red diminuta: las redes convolucionales que veremos la próxima clase pasan del 99%.
+
+Los errores también son instructivos. Muchos son dígitos que a una persona también le costaría leer, o que se parecen a otro dígito.
+
+#let caja-pred(e, acierto) = box(width: 1.25cm, align(center, {
+  digito(e.pixeles, ancho: 1.1cm)
+  linebreak()
+  set text(size: 7pt)
+  text(fill: if acierto { black } else { c-pos })[predice *#e.pred* \ #str(int(calc.round(e.prob * 100)))%]
+  if not acierto { linebreak(); [real: *#e.real*] }
+}))
+
+#figure(
+  caption: [Predicciones de la red sobre imágenes de prueba, que no vio durante el entrenamiento. Debajo de cada imagen, el dígito que predice y la probabilidad que le asigna (softmax). Arriba, aciertos. Abajo, en rojo, algunos de sus #d-mnist.errores errores, con la etiqueta real.],
+  [
+    #grid(columns: 12, gutter: 2pt, ..d-mnist.bien.map(e => caja-pred(e, true)))
+    #v(0.3cm)
+    #grid(columns: 6, column-gutter: 6pt, ..d-mnist.mal.map(e => caja-pred(e, false)))
+  ],
+) <fig-mnist-pred>
+
+#prof[Ejercicio 4 en papel (aprox. 10 min) y después el lab, Parte 2 (ejercicios 4 y 5 del notebook, unos 25 min). El momento clave: `w.grad` da −32, lo mismo que calcularon a mano en el Ejercicio 3. Hacerlo notar en voz alta. Antes del cierre, volver a la figura de las predicciones de MNIST y retomar la pregunta del inicio: "¿cómo le explicarían a una computadora qué es un 4?" Nadie se lo explicó: lo aprendió de los ejemplos.]
 
 == (Opcional) Backpropagation en general
 

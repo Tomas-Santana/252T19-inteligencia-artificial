@@ -90,19 +90,88 @@ guardar(
 )
 
 # ---------------------------------------------------------------------------
-# Curva de pérdida al entrenar una red sobre las lunas (descenso por gradiente)
+# MNIST: dígitos reales y la red 784-16-16-10 (13002 parámetros) de las notas
 # ---------------------------------------------------------------------------
-with warnings.catch_warnings():
-    warnings.simplefilter("ignore", ConvergenceWarning)
-    red = MLPClassifier(
-        hidden_layer_sizes=(32,),
-        activation="relu",
-        solver="sgd",
-        learning_rate_init=0.1,
-        momentum=0.0,
-        batch_size=200,
-        max_iter=1000,
-        n_iter_no_change=1000,
-        random_state=0,
-    ).fit(X, y)
-guardar("perdida", {"perdida": list(enumerate(red.loss_curve_, start=1)), "exactitud": red.score(X_te, y_te)})
+import gzip
+import urllib.request
+
+import torch
+from torch import nn
+
+CACHE = Path(__file__).parent / ".cache/mnist"
+URL = "https://raw.githubusercontent.com/fgnt/mnist/master/"
+
+
+def cargar(nombre, offset):
+    ruta = CACHE / nombre
+    if not ruta.exists():
+        CACHE.mkdir(parents=True, exist_ok=True)
+        print(f"descargando {nombre}")
+        urllib.request.urlretrieve(URL + nombre, ruta)
+    return np.frombuffer(gzip.open(ruta).read(), np.uint8, offset=offset)
+
+
+X_tr = cargar("train-images-idx3-ubyte.gz", 16).reshape(-1, 784)
+y_tr = cargar("train-labels-idx1-ubyte.gz", 8)
+X_te = cargar("t10k-images-idx3-ubyte.gz", 16).reshape(-1, 784)
+y_te = cargar("t10k-labels-idx1-ubyte.gz", 8)
+
+# Tres ejemplos de entrenamiento de cada dígito
+muestras = [[X_tr[np.flatnonzero(y_tr == d)[k]] for d in range(10)] for k in range(3)]
+
+torch.manual_seed(0)
+red = nn.Sequential(nn.Linear(784, 16), nn.ReLU(), nn.Linear(16, 16), nn.ReLU(), nn.Linear(16, 10))
+n_parametros = sum(p.numel() for p in red.parameters())
+perdida = nn.CrossEntropyLoss()
+optimizador = torch.optim.SGD(red.parameters(), lr=0.1)
+
+Xt = torch.tensor(X_tr / 255, dtype=torch.float32)
+yt = torch.tensor(y_tr, dtype=torch.long)
+EPOCAS, LOTE, CADA = 5, 64, 100
+curva, acumulado, paso = [], 0.0, 0
+for epoca in range(EPOCAS):
+    orden = torch.randperm(len(yt))
+    for k in range(0, len(yt), LOTE):
+        idx = orden[k : k + LOTE]
+        optimizador.zero_grad()
+        L = perdida(red(Xt[idx]), yt[idx])
+        L.backward()
+        optimizador.step()
+        acumulado += L.item()
+        paso += 1
+        if paso % CADA == 0:
+            curva.append((paso, acumulado / CADA))
+            acumulado = 0.0
+
+with torch.no_grad():
+    probs = torch.softmax(red(torch.tensor(X_te / 255, dtype=torch.float32)), dim=1).numpy()
+pred = probs.argmax(axis=1)
+exactitud = (pred == y_te).mean()
+print(f"MNIST: {n_parametros} parámetros, exactitud de prueba {exactitud:.4f}, {paso} pasos")
+
+rng = np.random.default_rng(1)
+bien = rng.choice(np.flatnonzero(pred == y_te), 12, replace=False)
+mal = rng.choice(np.flatnonzero(pred != y_te), 6, replace=False)
+
+
+def ejemplo(i):
+    return {"pixeles": X_te[i], "real": y_te[i], "pred": pred[i], "prob": probs[i, pred[i]]}
+
+
+guardar(
+    "mnist",
+    {
+        "muestras": muestras,
+        "parametros": n_parametros,
+        "m_train": len(y_tr),
+        "m_test": len(y_te),
+        "exactitud": exactitud,
+        "errores": int((pred != y_te).sum()),
+        "epocas": EPOCAS,
+        "lote": LOTE,
+        "pasos": paso,
+        "curva": curva,
+        "bien": [ejemplo(i) for i in bien],
+        "mal": [ejemplo(i) for i in mal],
+    },
+)
