@@ -95,7 +95,6 @@ La idea central es que podemos reutilizar casi todo lo que ya sabemos de regresi
 
 Seguimos la notación de regresión lineal: $m$ ejemplos de entrenamiento $(fvec(x)^(\(i\)), y^(\(i\)))$, parámetros $theta_0, ..., theta_(n-1)$, y la convención $x_0 = 1$, de forma que $theta^T fvec(x) = theta_0 + theta_1 x_1 + dots + theta_(n-1) x_(n-1)$.
 
-Estas notas siguen los capítulos 2 y 5 de las #link("https://cs229.stanford.edu/main_notes.pdf")[notas de Stanford CS229] y la sección 4.3 de #link("https://www.statlearning.com")[ISLP].
 
 = Parte 1: Clasificación lineal
 

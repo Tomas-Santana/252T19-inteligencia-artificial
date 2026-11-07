@@ -14,6 +14,9 @@ subtitle: "Material de la asignatura"
 - [3. Generalización, selección de modelos y regularización](notes/03-regularizacion.pdf)
 - [4. Clasificación lineal y regresión logística](notes/04-clasificacion.pdf)
 - [5. Máquinas de Soporte Vectorial](notes/05-svm.pdf)
+- [6. Árboles de decisión](notes/06-arboles.pdf)
+- [7. Redes neuronales](notes/07-redes-neuronales.pdf)
+
 
 ## Laboratorios
 
@@ -23,6 +26,9 @@ subtitle: "Material de la asignatura"
 ## Tareas
 
 - [Tarea 1](homework/01.pdf)
+- [Tarea 2](homework/02.pdf)
+- [Tarea 3](homework/03.pdf)
+- [Tarea 4](homework/04.pdf)
 
 ## Guía de estudio
 

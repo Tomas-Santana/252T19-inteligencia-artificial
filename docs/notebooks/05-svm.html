@@ -177,7 +177,7 @@ window.Quarto = {
 <p>Visualizaciones interactivas para acompañar las notas de la clase 5. Las figuras siguen el orden y los colores de las notas (clase <span class="math inline">\(y = -1\)</span>: círculos azules, clase <span class="math inline">\(y = 1\)</span>: triángulos rojos; los vectores de soporte llevan un círculo negro alrededor) y usan los mismos datos: se importan desde <code>notes/scripts/05-svm-figuras.py</code>, el script que genera las figuras del PDF. Los ejemplos que no están en las notas se indican en su sección.</p>
 <p>En las figuras con fondo de color, el color indica el score <span class="math inline">\(\mathbf{w}^T\mathbf{x} + b\)</span>: rojo donde es positivo (se predice <span class="math inline">\(y = 1\)</span>), azul donde es negativo y blanco cerca de la frontera. La línea negra es la frontera (<span class="math inline">\(\text{score} = 0\)</span>) y las punteadas son <span class="math inline">\(\text{score} = \pm 1\)</span>.</p>
 <p>Para usarlo en clase basta con ejecutar todas las celdas al inicio y luego mover los sliders.</p>
-<div id="d1ff203a" class="cell" data-execution_count="9">
+<div id="d1ff203a" class="cell" data-execution_count="17">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="op">%</span>matplotlib inline</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> importlib.util</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> timeit</span>
@@ -284,7 +284,7 @@ window.Quarto = {
 <li>Al cambiar <span class="math inline">\(c\)</span> la frontera no se mueve, pero todas las barras se estiran o se encogen: el margen funcional depende de la escala. El margen geométrico <span class="math inline">\(\gamma = \hat\gamma / \|\mathbf{w}\|\)</span> (el segmento verde) no cambia.</li>
 <li>Las rectas punteadas sí se mueven con <span class="math inline">\(c\)</span>. Para cierto valor de <span class="math inline">\(c\)</span> pasan justo por el peor ejemplo: es la escala con <span class="math inline">\(\hat\gamma = 1\)</span>, el truco de la Parte 2.</li>
 </ul>
-<div id="f7f5c93b" class="cell" data-execution_count="10">
+<div id="f7f5c93b" class="cell" data-execution_count="18">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X_sep, y_sep <span class="op">=</span> fig05.X_sep, fig05.y_sep</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -319,14 +319,14 @@ window.Quarto = {
 <span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="c9c6a06d" class="cell" data-execution_count="11">
+<div id="c9c6a06d" class="cell" data-execution_count="19">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>interact(ver_margenes,</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>         angulo<span class="op">=</span>widgets.IntSlider(<span class="bu">min</span><span class="op">=</span><span class="dv">0</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">90</span>, value<span class="op">=</span><span class="dv">45</span>, description<span class="op">=</span><span class="st">"Ángulo de w"</span>),</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>         b0<span class="op">=</span>widgets.FloatSlider(<span class="bu">min</span><span class="op">=-</span><span class="fl">4.5</span>, <span class="bu">max</span><span class="op">=-</span><span class="dv">2</span>, step<span class="op">=</span><span class="fl">0.05</span>, value<span class="op">=-</span><span class="fl">3.3</span>, description<span class="op">=</span><span class="st">"b₀"</span>),</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>         c<span class="op">=</span>widgets.FloatLogSlider(value<span class="op">=</span><span class="dv">1</span>, base<span class="op">=</span><span class="dv">10</span>, <span class="bu">min</span><span class="op">=-</span><span class="fl">0.6</span>, <span class="bu">max</span><span class="op">=</span><span class="fl">0.6</span>, step<span class="op">=</span><span class="fl">0.02</span>, description<span class="op">=</span><span class="st">"c"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"29ea4b3f9f4940ee8e247de674d19545","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"2be6e872bee34950a65a2595ec247f2b","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -340,7 +340,7 @@ window.Quarto = {
 <li>El clasificador de margen óptimo es la dirección donde la curva alcanza su máximo. La línea punteada vertical marca la solución que encuentra <code>SVC</code>, y coincide con el máximo de la curva.</li>
 <li>En el máximo, la calle es lo más ancha posible y la tocan exactamente los tres vectores de soporte de la Figura 3. Fuera del máximo, la tocan solo dos ejemplos.</li>
 </ul>
-<div id="c77c6fa2" class="cell" data-execution_count="12">
+<div id="c77c6fa2" class="cell" data-execution_count="20">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>opt <span class="op">=</span> fig05.separables[<span class="st">"opt"</span>]</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>angulo_opt <span class="op">=</span> np.degrees(np.arctan2(opt[<span class="st">"w"</span>][<span class="dv">1</span>], opt[<span class="st">"w"</span>][<span class="dv">0</span>]))</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -385,11 +385,11 @@ window.Quarto = {
 <span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="a2615aa4" class="cell" data-execution_count="13">
+<div id="a2615aa4" class="cell" data-execution_count="21">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>interact(ver_margen_optimo, angulo<span class="op">=</span>widgets.FloatSlider(<span class="bu">min</span><span class="op">=-</span><span class="dv">30</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">120</span>, step<span class="op">=</span><span class="fl">0.5</span>, value<span class="op">=</span><span class="dv">15</span>, description<span class="op">=</span><span class="st">"Ángulo de w"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"24cc258cb18643e6bd13fb2b3fdfc4db","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"d423b31ded4c4984932bcfeccaffe5c2","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -404,7 +404,7 @@ window.Quarto = {
 <li>La frontera (naranja) gira, pero los scores de los seis ejemplos (abajo a la izquierda) no cambian: la componente perpendicular no afecta ninguna restricción.</li>
 <li><span class="math inline">\(\|\mathbf{w}\|\)</span> sí crece, así que el margen geométrico <span class="math inline">\(\gamma = 1/\|\mathbf{w}\|\)</span> baja. A la derecha, <span class="math inline">\(\gamma\)</span> es máximo con <span class="math inline">\(t = 0\)</span>: en el óptimo, <span class="math inline">\(\mathbf{w}\)</span> está en la dirección de los ejemplos.</li>
 </ul>
-<div id="09972515" class="cell" data-execution_count="14">
+<div id="09972515" class="cell" data-execution_count="22">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Los mismos valores que la Figura 4 de las notas</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>u_span, u_perp <span class="op">=</span> np.array([<span class="fl">0.894</span>, <span class="fl">0.447</span>]), np.array([<span class="op">-</span><span class="fl">0.447</span>, <span class="fl">0.894</span>])</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>t_span <span class="op">=</span> np.array([<span class="op">-</span><span class="fl">2.4</span>, <span class="op">-</span><span class="fl">1.8</span>, <span class="op">-</span><span class="fl">1.3</span>, <span class="fl">1.0</span>, <span class="fl">1.6</span>, <span class="fl">2.3</span>])</span>
@@ -443,11 +443,11 @@ window.Quarto = {
 <span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="f2037ea7" class="cell" data-execution_count="15">
+<div id="f2037ea7" class="cell" data-execution_count="23">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>interact(ver_perpendicular, t<span class="op">=</span>widgets.FloatSlider(<span class="bu">min</span><span class="op">=-</span><span class="dv">2</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">2</span>, step<span class="op">=</span><span class="fl">0.05</span>, value<span class="op">=</span><span class="fl">0.6</span>, description<span class="op">=</span><span class="st">"t"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"723684b7bd1e4048b533d7ca38f4b2cd","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"3f941bc31a1a4c05aa9b2b248a886d57","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -462,7 +462,7 @@ window.Quarto = {
 <li>Si movemos un vector de soporte, la frontera se mueve con él. Si lo alejamos de la frontera, otro ejemplo puede tomar su lugar como vector de soporte.</li>
 <li>Si lo llevamos al otro lado, los datos dejan de ser separables y el margen duro ya no tiene solución (Parte 5).</li>
 </ul>
-<div id="b1ee22cc" class="cell" data-execution_count="16">
+<div id="b1ee22cc" class="cell" data-execution_count="24">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>m_sep <span class="op">=</span> <span class="bu">len</span>(y_sep)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>modelo_sep <span class="op">=</span> svm_lineal(X_sep, y_sep)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>es_sv <span class="op">=</span> np.isin(np.arange(m_sep), modelo_sep.support_)</span>
@@ -507,14 +507,14 @@ window.Quarto = {
 <span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="00d42d69" class="cell" data-execution_count="17">
+<div id="00d42d69" class="cell" data-execution_count="25">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>interact(ver_soporte,</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>         i<span class="op">=</span>widgets.Dropdown(options<span class="op">=</span>opciones_sv, value<span class="op">=</span><span class="bu">int</span>(modelo_sep.support_[<span class="dv">0</span>]), description<span class="op">=</span><span class="st">"Ejemplo"</span>),</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>         dx<span class="op">=</span>widgets.FloatSlider(<span class="bu">min</span><span class="op">=-</span><span class="dv">2</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">2</span>, step<span class="op">=</span><span class="fl">0.05</span>, value<span class="op">=</span><span class="dv">0</span>, description<span class="op">=</span><span class="st">"Mover en x₁"</span>),</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>         dy<span class="op">=</span>widgets.FloatSlider(<span class="bu">min</span><span class="op">=-</span><span class="dv">2</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">2</span>, step<span class="op">=</span><span class="fl">0.05</span>, value<span class="op">=</span><span class="dv">0</span>, description<span class="op">=</span><span class="st">"Mover en x₂"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"36e0555e28214fbca0ffe25c6b46a5f9","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"0deb2912262b47c5ae5b489799467ea9","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -525,7 +525,7 @@ window.Quarto = {
 <section id="el-kernel-polinomial-sin-calcular-phi" class="level3">
 <h3 class="anchored" data-anchor-id="el-kernel-polinomial-sin-calcular-phi">El kernel polinomial sin calcular <span class="math inline">\(\phi\)</span></h3>
 <p>Para <span class="math inline">\(\phi(\mathbf{x})\)</span> con todos los productos <span class="math inline">\(x_i x_j\)</span>, las notas muestran que <span class="math inline">\(\phi(\mathbf{x})^T\phi(\mathbf{z}) = (\mathbf{x}^T\mathbf{z})^2\)</span>. Comprobémoslo con vectores al azar, y comparemos el tiempo de las dos formas de calcularlo: construir <span class="math inline">\(\phi\)</span> cuesta del orden de <span class="math inline">\(d^2\)</span> operaciones, el kernel del orden de <span class="math inline">\(d\)</span>.</p>
-<div id="78f8332e" class="cell" data-execution_count="8">
+<div id="78f8332e" class="cell" data-execution_count="26">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'d'</span><span class="sc">:&gt;5}</span><span class="ss">  </span><span class="sc">{</span><span class="st">'componentes de ϕ'</span><span class="sc">:&gt;16}</span><span class="ss">  </span><span class="sc">{</span><span class="st">'ϕ(x)ᵀϕ(z)'</span><span class="sc">:&gt;12}</span><span class="ss">  </span><span class="sc">{</span><span class="st">'(xᵀz)²'</span><span class="sc">:&gt;12}</span><span class="ss">  </span><span class="sc">{</span><span class="st">'tiempo con ϕ'</span><span class="sc">:&gt;13}</span><span class="ss">  </span><span class="sc">{</span><span class="st">'tiempo con K'</span><span class="sc">:&gt;13}</span><span class="ss">"</span>)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> d <span class="kw">in</span> (<span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">100</span>, <span class="dv">1000</span>, <span class="dv">3000</span>):</span>
@@ -537,11 +537,11 @@ window.Quarto = {
 <span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>d<span class="sc">:&gt;5}</span><span class="ss">  </span><span class="sc">{</span>d <span class="op">*</span> d<span class="sc">:&gt;16,}</span><span class="ss">  </span><span class="sc">{</span>con_phi()<span class="sc">:&gt;12.4f}</span><span class="ss">  </span><span class="sc">{</span>con_k()<span class="sc">:&gt;12.4f}</span><span class="ss">  </span><span class="sc">{</span>t_phi <span class="op">*</span> <span class="fl">1e6</span><span class="sc">:&gt;10.1f}</span><span class="ss"> µs  </span><span class="sc">{</span>t_k <span class="op">*</span> <span class="fl">1e6</span><span class="sc">:&gt;10.1f}</span><span class="ss"> µs"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>    d  componentes de ϕ     ϕ(x)ᵀϕ(z)        (xᵀz)²   tiempo con ϕ   tiempo con K
-    3                 9        0.0996        0.0996        11.9 µs         1.8 µs
-   10               100        4.8681        4.8681         8.8 µs         1.6 µs
-  100            10,000        9.4532        9.4532       167.3 µs         1.6 µs
- 1000         1,000,000     3611.5864     3611.5864     16592.7 µs         3.7 µs
- 3000         9,000,000       13.6362       13.6362     48358.5 µs         3.5 µs</code></pre>
+    3                 9        0.0996        0.0996         7.9 µs         1.4 µs
+   10               100        4.8681        4.8681         5.5 µs         1.1 µs
+  100            10,000        9.4532        9.4532       138.2 µs         1.4 µs
+ 1000         1,000,000     3611.5864     3611.5864     19190.6 µs         2.7 µs
+ 3000         9,000,000       13.6362       13.6362     49102.1 µs         3.5 µs</code></pre>
 </div>
 </div>
 </section>
@@ -559,7 +559,7 @@ window.Quarto = {
 <li>Con elevación 0 y azimut −90 se mira el plano de canto, en los ejes <span class="math inline">\((x_1^2, x_2^2)\)</span>: se ve como una recta que separa las clases.</li>
 <li>Las curvas punteadas de la izquierda (<span class="math inline">\(\text{score} = \pm 1\)</span>) también son elipses: son los planos paralelos <span class="math inline">\(\mathbf{w}^T\phi(\mathbf{x}) + b = \pm 1\)</span>.</li>
 </ul>
-<div id="6114a8e9" class="cell" data-execution_count="18">
+<div id="6114a8e9" class="cell" data-execution_count="27">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>rng_circ <span class="op">=</span> np.random.default_rng(<span class="dv">4</span>)</span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -616,13 +616,13 @@ window.Quarto = {
 Diferencia máxima entre w^T ϕ(x) + b y el score de SVC: 1.3e-15</code></pre>
 </div>
 </div>
-<div id="0ee6b85a" class="cell" data-execution_count="19">
+<div id="0ee6b85a" class="cell" data-execution_count="28">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>interact(ver_levantar,</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>         elevacion<span class="op">=</span>widgets.IntSlider(<span class="bu">min</span><span class="op">=</span><span class="dv">0</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">90</span>, value<span class="op">=</span><span class="dv">20</span>, description<span class="op">=</span><span class="st">"Elevación"</span>),</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>         azimut<span class="op">=</span>widgets.IntSlider(<span class="bu">min</span><span class="op">=-</span><span class="dv">180</span>, <span class="bu">max</span><span class="op">=</span><span class="dv">180</span>, value<span class="op">=-</span><span class="dv">60</span>, description<span class="op">=</span><span class="st">"Azimut"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"65f1c95ced9446f6825b09f213c869a4","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"47c18da7d45746a9a5796706ace22d27","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -634,7 +634,7 @@ K(\mathbf{x}, \mathbf{z}) = \exp\left(-\frac{\|\mathbf{x} - \mathbf{z}\|^2}{2\si
 \]</span></p>
 <p>A la izquierda, <span class="math inline">\(K\)</span> en función de la distancia entre los puntos, con las tres curvas de la Figura 6 como referencia. A la derecha, la similitud de cada punto del plano con un punto fijo <span class="math inline">\(\mathbf{z}\)</span> (la estrella); el círculo punteado está a distancia <span class="math inline">\(\sigma\)</span> de <span class="math inline">\(\mathbf{z}\)</span>, donde <span class="math inline">\(K \approx 0.61\)</span>.</p>
 <p>Qué observar: <span class="math inline">\(\sigma\)</span> es la distancia a la que los puntos dejan de parecerse. Con <span class="math inline">\(\sigma\)</span> pequeño, solo los puntos muy cercanos a <span class="math inline">\(\mathbf{z}\)</span> tienen similitud apreciable.</p>
-<div id="92b31a33" class="cell" data-execution_count="20">
+<div id="92b31a33" class="cell" data-execution_count="29">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gaussiano(X, Z, sigma):</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Matriz con K(x, z) = exp(-||x - z||² / (2σ²)) para cada fila x de X y z de Z."""</span></span>
 <span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    d2 <span class="op">=</span> ((X[:, <span class="va">None</span>, :] <span class="op">-</span> Z[<span class="va">None</span>, :, :]) <span class="op">**</span> <span class="dv">2</span>).<span class="bu">sum</span>(axis<span class="op">=-</span><span class="dv">1</span>)</span>
@@ -664,11 +664,11 @@ K(\mathbf{x}, \mathbf{z}) = \exp\left(-\frac{\|\mathbf{x} - \mathbf{z}\|^2}{2\si
 <span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="c73d9912" class="cell">
+<div id="c73d9912" class="cell" data-execution_count="30">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>interact(ver_similitud, sigma<span class="op">=</span>widgets.FloatLogSlider(value<span class="op">=</span><span class="dv">1</span>, base<span class="op">=</span><span class="dv">10</span>, <span class="bu">min</span><span class="op">=-</span><span class="dv">1</span>, <span class="bu">max</span><span class="op">=</span><span class="fl">0.5</span>, step<span class="op">=</span><span class="fl">0.02</span>, description<span class="op">=</span><span class="st">"σ"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"8245642073534d67a6c84f1f90ee5c7f","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"575731b360764fb4a8d52ccaa6b0ce31","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -686,7 +686,7 @@ f(x) = \sum_{i=1}^m \alpha_i y^{(i)} K(x^{(i)}, x) + b,
 <li>Con <span class="math inline">\(\sigma\)</span> grande las campanas son anchas y se mezclan: <span class="math inline">\(f\)</span> es suave y la frontera es simple, pero puede no separar bien los datos.</li>
 <li>Con <span class="math inline">\(\sigma\)</span> pequeño cada campana cubre solo a su ejemplo, todos se vuelven vectores de soporte, y lejos de los datos <span class="math inline">\(f(x) \approx b\)</span>: el modelo solo “conoce” los puntos que vio. Es el overfitting de la Figura 7, en una dimensión.</li>
 </ul>
-<div id="eefe9236" class="cell" data-execution_count="22">
+<div id="eefe9236" class="cell" data-execution_count="31">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Los datos de la Figura 5</span></span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>x_1d <span class="op">=</span> np.array([<span class="op">-</span><span class="fl">2.6</span>, <span class="op">-</span><span class="fl">2.1</span>, <span class="op">-</span><span class="fl">1.7</span>, <span class="fl">1.6</span>, <span class="fl">2.0</span>, <span class="fl">2.5</span>, <span class="op">-</span><span class="fl">0.9</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">0.1</span>, <span class="fl">0.3</span>, <span class="fl">0.8</span>])</span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>y_1d <span class="op">=</span> np.array([<span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>])</span>
@@ -719,11 +719,11 @@ f(x) = \sum_{i=1}^m \alpha_i y^{(i)} K(x^{(i)}, x) + b,
 <span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="411a948a" class="cell" data-execution_count="23">
+<div id="411a948a" class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>interact(ver_campanas, sigma<span class="op">=</span>widgets.FloatLogSlider(value<span class="op">=</span><span class="fl">0.8</span>, base<span class="op">=</span><span class="dv">10</span>, <span class="bu">min</span><span class="op">=-</span><span class="fl">1.3</span>, <span class="bu">max</span><span class="op">=</span><span class="fl">0.7</span>, step<span class="op">=</span><span class="fl">0.02</span>, description<span class="op">=</span><span class="st">"σ"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"ba5ee6be8f7341d6ba735352fe473be6","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"fbe1932ddb5d4d60abed058bda542b8d","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>
@@ -737,7 +737,7 @@ f(x) = \sum_{i=1}^m \alpha_i y^{(i)} K(x^{(i)}, x) + b,
 <li>Al bajar <span class="math inline">\(\sigma\)</span> la frontera se vuelve más flexible. Con <span class="math inline">\(\sigma\)</span> muy pequeño rodea ejemplos individuales y casi todos son vectores de soporte: la exactitud de entrenamiento llega a 100%, pero la de prueba baja (overfitting).</li>
 <li>El mejor <span class="math inline">\(\sigma\)</span> está en el medio, y se escoge con validación. <span class="math inline">\(C\)</span> también cambia la complejidad: con <span class="math inline">\(C\)</span> grande, el modelo intenta clasificar bien todos los ejemplos de entrenamiento (Parte 5).</li>
 </ul>
-<div id="2998799f" class="cell" data-execution_count="24">
+<div id="2998799f" class="cell" data-execution_count="33">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>X_moon, y_moon <span class="op">=</span> fig05.X_moon, fig05.y_moon</span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>X_test, y_test <span class="op">=</span> fig05.X_test, fig05.y_test</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>sigmas <span class="op">=</span> [<span class="fl">0.05</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.3</span>, <span class="fl">0.5</span>, <span class="fl">1.0</span>, <span class="fl">2.0</span>, <span class="fl">5.0</span>]</span>
@@ -769,13 +769,13 @@ f(x) = \sum_{i=1}^m \alpha_i y^{(i)} K(x^{(i)}, x) + b,
 <span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
 <span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<div id="bc139542" class="cell" data-execution_count="25">
+<div id="bc139542" class="cell" data-execution_count="34">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>interact(ver_gaussiano,</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>         sigma<span class="op">=</span>widgets.SelectionSlider(options<span class="op">=</span>sigmas, value<span class="op">=</span><span class="fl">0.5</span>, description<span class="op">=</span><span class="st">"σ"</span>),</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>         C<span class="op">=</span>widgets.SelectionSlider(options<span class="op">=</span>valores_C, value<span class="op">=</span><span class="dv">10</span>, description<span class="op">=</span><span class="st">"C"</span>))<span class="op">;</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <script type="application/vnd.jupyter.widget-view+json">
-{"model_id":"ff0ce400cb6f4a59a822a05d0ca8aefa","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
+{"model_id":"ad5e21c1a6914612a9fd8ea29f006492","version_major":2,"version_minor":0,"quarto_mimetype":"application/vnd.jupyter.widget-view+json"}
 </script>
 </div>
 </div>

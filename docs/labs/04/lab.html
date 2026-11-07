@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio – Inteligencia Artificial</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-deae0c18f5b5cd7b9158b1169a045e04.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Este notebook tiene dos tipos de secciones:</p>
+<ul>
+<li><strong>Secciones con código</strong>: muestran cómo se usan en scikit-learn los métodos de la clase. Ejecuta las celdas en orden y lee las explicaciones.</li>
+<li><strong>Ejercicios</strong>: tienes que escribir código o experimentar. Después de cada ejercicio hay una <strong>celda de verificación</strong> que te dice si tu respuesta es correcta (✅) o qué está mal (❌). Puedes ver tambien pistas (▶ Pista).</li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Ejercicio</th>
+<th>Tema</th>
+<th>Tiempo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Ejercicio 1</td>
+<td>Implementar Gini y encontrar la mejor pregunta</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Ejercicio 2</td>
+<td>Competencia: árbol vs.&nbsp;random forest vs.&nbsp;boosting</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p>Solo se necesita <code>numpy</code>, <code>matplotlib</code> y <code>scikit-learn</code>.</p>
+<section id="preparación" class="level2">
+<h2 class="anchored" data-anchor-id="preparación">Preparación</h2>
+<p>Esta celda importa las librerías y define los datos y algunas funciones para dibujar. No hace falta que la leas con detalle.</p>
+<div id="2d9046c9" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.colors <span class="im">import</span> ListedColormap</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_moons, make_hastie_10_2</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score, confusion_matrix, ConfusionMatrixDisplay</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier, DecisionTreeRegressor, plot_tree, export_text</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> (</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    BaggingClassifier,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    RandomForestClassifier,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    AdaBoostClassifier,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    GradientBoostingRegressor,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    HistGradientBoostingClassifier,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>C_NEG, C_POS <span class="op">=</span> <span class="st">"#1f77b4"</span>, <span class="st">"#d62728"</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>FONDO <span class="op">=</span> ListedColormap([<span class="st">"#d6e4f2"</span>, <span class="st">"#f6d5d5"</span>])</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> datos_esqui(m<span class="op">=</span><span class="dv">140</span>, semilla<span class="op">=</span><span class="dv">3</span>):</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Mes (de 1 a 13) y latitud (de -90 a 90). y = 1 si se puede esquiar."""</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(semilla)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    mes <span class="op">=</span> rng.uniform(<span class="dv">1</span>, <span class="dv">13</span>, m)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>    lat <span class="op">=</span> rng.uniform(<span class="op">-</span><span class="dv">90</span>, <span class="dv">90</span>, m)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    norte <span class="op">=</span> (lat <span class="op">&gt;</span> <span class="dv">30</span>) <span class="op">&amp;</span> ((mes <span class="op">&lt;</span> <span class="dv">3</span>) <span class="op">|</span> (mes <span class="op">&gt;=</span> <span class="dv">12</span>))</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    sur <span class="op">=</span> (lat <span class="op">&lt;</span> <span class="op">-</span><span class="dv">30</span>) <span class="op">&amp;</span> (mes <span class="op">&gt;=</span> <span class="dv">6</span>) <span class="op">&amp;</span> (mes <span class="op">&lt;</span> <span class="dv">9</span>)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.c_[mes, lat], (norte <span class="op">|</span> sur).astype(<span class="bu">int</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> datos_nieve(m<span class="op">=</span><span class="dv">80</span>, semilla<span class="op">=</span><span class="dv">7</span>):</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Centímetros de nieve por día según el mes (hemisferio norte)."""</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(semilla)</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a>    x <span class="op">=</span> np.sort(rng.uniform(<span class="dv">1</span>, <span class="dv">13</span>, m))</span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a>    verdad <span class="op">=</span> <span class="dv">20</span> <span class="op">*</span> np.maximum(<span class="dv">0</span>, np.cos(<span class="dv">2</span> <span class="op">*</span> np.pi <span class="op">*</span> (x <span class="op">-</span> <span class="dv">1</span>) <span class="op">/</span> <span class="dv">12</span>)) <span class="op">**</span> <span class="fl">1.5</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a>    y <span class="op">=</span> np.maximum(<span class="dv">0</span>, verdad <span class="op">+</span> rng.normal(<span class="dv">0</span>, <span class="fl">2.5</span>, m))</span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> x.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>), y</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dibujar_puntos(ax, X, y, tam<span class="op">=</span><span class="dv">20</span>):</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    ax.scatter(X[y <span class="op">==</span> <span class="dv">0</span>, <span class="dv">0</span>], X[y <span class="op">==</span> <span class="dv">0</span>, <span class="dv">1</span>], c<span class="op">=</span>C_NEG, marker<span class="op">=</span><span class="st">"o"</span>, s<span class="op">=</span>tam, label<span class="op">=</span><span class="st">"negativo"</span>)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>    ax.scatter(X[y <span class="op">==</span> <span class="dv">1</span>, <span class="dv">0</span>], X[y <span class="op">==</span> <span class="dv">1</span>, <span class="dv">1</span>], c<span class="op">=</span>C_POS, marker<span class="op">=</span><span class="st">"^"</span>, s<span class="op">=</span>tam, label<span class="op">=</span><span class="st">"positivo"</span>)</span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dibujar_regiones(ax, predecir, X, y, limites, n<span class="op">=</span><span class="dv">300</span>):</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Pinta la clase que predice `predecir` en cada punto del plano."""</span></span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>    x0, x1, y0, y1 <span class="op">=</span> limites</span>
+<span id="cb1-48"><a href="#cb1-48" aria-hidden="true" tabindex="-1"></a>    xs, ys <span class="op">=</span> np.meshgrid(np.linspace(x0, x1, n), np.linspace(y0, y1, n))</span>
+<span id="cb1-49"><a href="#cb1-49" aria-hidden="true" tabindex="-1"></a>    Z <span class="op">=</span> predecir(np.c_[xs.ravel(), ys.ravel()]).reshape(xs.shape)</span>
+<span id="cb1-50"><a href="#cb1-50" aria-hidden="true" tabindex="-1"></a>    ax.contourf(xs, ys, Z, levels<span class="op">=</span>[<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>], cmap<span class="op">=</span>FONDO)</span>
+<span id="cb1-51"><a href="#cb1-51" aria-hidden="true" tabindex="-1"></a>    dibujar_puntos(ax, X, y)</span>
+<span id="cb1-52"><a href="#cb1-52" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(x0, x1)</span>
+<span id="cb1-53"><a href="#cb1-53" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(y0, y1)</span>
+<span id="cb1-54"><a href="#cb1-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-55"><a href="#cb1-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-56"><a href="#cb1-56" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> verificar(condicion, ok, error):</span>
+<span id="cb1-57"><a href="#cb1-57" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>((<span class="st">"✅ "</span> <span class="op">+</span> ok) <span class="cf">if</span> condicion <span class="cf">else</span> (<span class="st">"❌ "</span> <span class="op">+</span> error))</span>
+<span id="cb1-58"><a href="#cb1-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-59"><a href="#cb1-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-60"><a href="#cb1-60" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Listo"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="parte-1-un-árbol-de-clasificación-con-scikit-learn" class="level1">
+<h1>Parte 1: Un árbol de clasificación con scikit-learn</h1>
+<section id="los-datos" class="level2">
+<h2 class="anchored" data-anchor-id="los-datos">1.1 Los datos</h2>
+<p>Usamos el ejemplo del esquí de las notas: dos features, el <strong>mes</strong> (de 1 a 13, donde 1 es el inicio de enero) y la <strong>latitud</strong> (de −90° a 90°). La etiqueta es 1 si se puede esquiar.</p>
+<p>En scikit-learn los datos siempre tienen la misma forma: - <code>X</code> es una matriz de <span class="math inline">\(m \times d\)</span>: una fila por ejemplo, una columna por feature. - <code>y</code> es un vector de largo <span class="math inline">\(m\)</span> con las etiquetas.</p>
+<div id="60ff6f4a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> datos_esqui(m<span class="op">=</span><span class="dv">400</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"X:"</span>, X.shape, <span class="st">" y:"</span>, y.shape)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Primeros 3 ejemplos:</span><span class="ch">\n</span><span class="st">"</span>, X[:<span class="dv">3</span>].<span class="bu">round</span>(<span class="dv">1</span>), y[:<span class="dv">3</span>])</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Positivos: </span><span class="sc">{</span>y<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">}</span><span class="ss"> de </span><span class="sc">{</span><span class="bu">len</span>(y)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>))</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>dibujar_puntos(ax, X, y)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"mes"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"latitud"</span>)<span class="op">;</span> ax.legend()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Separamos los datos en <strong>entrenamiento</strong> (para ajustar el modelo) y <strong>prueba</strong> (para medir qué tan bien generaliza). <code>stratify=y</code> hace que las dos partes tengan la misma proporción de positivos, lo que es importante cuando una clase es poco frecuente.</p>
+<div id="1ab2e834" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>X_tr, X_te, y_tr, y_te <span class="op">=</span> train_test_split(X, y, test_size<span class="op">=</span><span class="fl">0.3</span>, stratify<span class="op">=</span>y, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Entrenamiento:"</span>, X_tr.shape, <span class="st">" Prueba:"</span>, X_te.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="entrenar-un-árbol" class="level2">
+<h2 class="anchored" data-anchor-id="entrenar-un-árbol">1.2 Entrenar un árbol</h2>
+<p>Todos los modelos de scikit-learn se usan igual:</p>
+<ol type="1">
+<li>Se crea el modelo con sus hiperparámetros: <code>modelo = DecisionTreeClassifier(...)</code>.</li>
+<li>Se entrena: <code>modelo.fit(X, y)</code>.</li>
+<li>Se predice: <code>modelo.predict(X_nuevo)</code>.</li>
+</ol>
+<p>Los hiperparámetros más importantes de <code>DecisionTreeClassifier</code> son:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>Qué hace</th>
+<th>Valor por defecto</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>criterion</code></td>
+<td>Medida de impureza: <code>"gini"</code> o <code>"entropy"</code></td>
+<td><code>"gini"</code></td>
+</tr>
+<tr class="even">
+<td><code>max_depth</code></td>
+<td>Profundidad máxima</td>
+<td><code>None</code> (sin límite)</td>
+</tr>
+<tr class="odd">
+<td><code>min_samples_leaf</code></td>
+<td>Mínimo de ejemplos por hoja</td>
+<td><code>1</code></td>
+</tr>
+<tr class="even">
+<td><code>ccp_alpha</code></td>
+<td>Intensidad de la poda</td>
+<td><code>0</code> (sin poda)</td>
+</tr>
+<tr class="odd">
+<td><code>random_state</code></td>
+<td>Semilla (en empates se escoge al azar)</td>
+<td><code>None</code></td>
+</tr>
+</tbody>
+</table>
+<div id="a50dd41f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>arbol <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">4</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>arbol.fit(X_tr, y_tr)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Hojas:"</span>, arbol.get_n_leaves(), <span class="st">" Profundidad:"</span>, arbol.get_depth())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="ver-el-árbol" class="level2">
+<h2 class="anchored" data-anchor-id="ver-el-árbol">1.3 Ver el árbol</h2>
+<p>Una gran ventaja de los árboles es que se pueden leer. Hay dos formas: dibujarlo con <code>plot_tree</code> o imprimirlo con <code>export_text</code>.</p>
+<p>En cada nodo, <code>plot_tree</code> muestra la pregunta, la impureza de Gini, el número de ejemplos (<code>samples</code>), cuántos hay de cada clase (<code>value = [negativos, positivos]</code>) y la clase mayoritaria. Si la respuesta a la pregunta es <strong>verdadera</strong>, se sigue la rama <strong>izquierda</strong>.</p>
+<div id="0f5278a6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">14</span>, <span class="dv">6</span>))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>plot_tree(arbol, feature_names<span class="op">=</span>[<span class="st">"mes"</span>, <span class="st">"latitud"</span>], class_names<span class="op">=</span>[<span class="st">"no"</span>, <span class="st">"sí"</span>], filled<span class="op">=</span><span class="va">True</span>, rounded<span class="op">=</span><span class="va">True</span>, ax<span class="op">=</span>ax, fontsize<span class="op">=</span><span class="dv">9</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="predecir" class="level2">
+<h2 class="anchored" data-anchor-id="predecir">1.4 Predecir</h2>
+<p><code>predict</code> devuelve la clase y <code>predict_proba</code> la proporción de cada clase en la hoja donde cae el punto. Probemos con tres lugares: Canadá en febrero, el Ecuador en julio y Chile en julio.</p>
+<div id="71034c3d" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nuevos <span class="op">=</span> np.array([[<span class="fl">2.5</span>, <span class="dv">55</span>],    <span class="co"># Canadá, mediados de febrero</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                   [<span class="fl">7.5</span>, <span class="dv">0</span>],     <span class="co"># Ecuador, julio</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                   [<span class="fl">7.5</span>, <span class="op">-</span><span class="dv">40</span>]])  <span class="co"># Chile, julio</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Clase predicha:"</span>, arbol.predict(nuevos))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Probabilidades [no, sí]:</span><span class="ch">\n</span><span class="st">"</span>, arbol.predict_proba(nuevos).<span class="bu">round</span>(<span class="dv">2</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="evaluar-exactitud-y-matriz-de-confusión" class="level2">
+<h2 class="anchored" data-anchor-id="evaluar-exactitud-y-matriz-de-confusión">1.5 Evaluar: exactitud y matriz de confusión</h2>
+<p>La <strong>exactitud</strong> (accuracy) es la fracción de ejemplos bien clasificados. Cuando una clase es poco frecuente puede engañar: aquí solo uno de cada cinco ejemplos es positivo, así que un “modelo” que siempre dice “no se puede esquiar” ya tiene ~80% de exactitud.</p>
+<p>La <strong>matriz de confusión</strong> da más información. Las filas son la clase real y las columnas la predicha:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th></th>
+<th>predice “no”</th>
+<th>predice “sí”</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>en realidad “no”</strong></td>
+<td>verdaderos negativos</td>
+<td>falsos positivos: decimos que se puede esquiar y no se puede</td>
+</tr>
+<tr class="even">
+<td><strong>en realidad “sí”</strong></td>
+<td>falsos negativos: nos perdemos un buen día de esquí</td>
+<td>verdaderos positivos</td>
+</tr>
+</tbody>
+</table>
+<div id="132d5e7e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exactitud: entrenamiento </span><span class="sc">{</span>arbol<span class="sc">.</span>score(X_tr, y_tr)<span class="sc">:.1%}</span><span class="ss">, prueba </span><span class="sc">{</span>arbol<span class="sc">.</span>score(X_te, y_te)<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Siempre decir 'no' tendría exactitud </span><span class="sc">{</span><span class="dv">1</span> <span class="op">-</span> y_te<span class="sc">.</span>mean()<span class="sc">:.1%}</span><span class="ss"> en prueba"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">9</span>, <span class="fl">3.6</span>))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, (Xs, ys, nombre) <span class="kw">in</span> <span class="bu">zip</span>(axs, [(X_tr, y_tr, <span class="st">"Entrenamiento"</span>), (X_te, y_te, <span class="st">"Prueba"</span>)]):</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    ConfusionMatrixDisplay.from_estimator(arbol, Xs, ys, display_labels<span class="op">=</span>[<span class="st">"no"</span>, <span class="st">"sí"</span>], cmap<span class="op">=</span><span class="st">"Blues"</span>, colorbar<span class="op">=</span><span class="va">False</span>, ax<span class="op">=</span>ax)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    ax.set_title(nombre)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="las-regiones-del-árbol" class="level2">
+<h2 class="anchored" data-anchor-id="las-regiones-del-árbol">1.6 Las regiones del árbol</h2>
+<p>Como cada pregunta compara una feature con un umbral, las regiones son rectángulos. Probemos varias profundidades. ¿Con qué profundidad el árbol ya encuentra las tres zonas donde se puede esquiar?</p>
+<div id="ee88cc3d" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">3</span>, figsize<span class="op">=</span>(<span class="dv">15</span>, <span class="dv">4</span>))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, prof <span class="kw">in</span> <span class="bu">zip</span>(axs, [<span class="dv">2</span>, <span class="dv">4</span>, <span class="va">None</span>]):</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span>prof, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_tr, y_tr)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    dibujar_regiones(ax, a.predict, X_tr, y_tr, (<span class="dv">1</span>, <span class="dv">13</span>, <span class="op">-</span><span class="dv">90</span>, <span class="dv">90</span>))</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"max_depth=</span><span class="sc">{</span>prof<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>a<span class="sc">.</span>get_n_leaves()<span class="sc">}</span><span class="ss"> hojas, prueba </span><span class="sc">{</span>a<span class="sc">.</span>score(X_te, y_te)<span class="sc">:.0%}</span><span class="ss">"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    ax.set_xlabel(<span class="st">"mes"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"latitud"</span>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Gini vs.&nbsp;entropía.</strong> Como vimos en clase, casi siempre producen el mismo árbol:</p>
+<div id="96b71224" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> criterio <span class="kw">in</span> [<span class="st">"gini"</span>, <span class="st">"entropy"</span>]:</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> DecisionTreeClassifier(criterion<span class="op">=</span>criterio, max_depth<span class="op">=</span><span class="dv">4</span>, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_tr, y_tr)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>criterio<span class="sc">:8s}</span><span class="ss"> raíz: feature </span><span class="sc">{</span>[<span class="st">'mes'</span>, <span class="st">'latitud'</span>][a.tree_.feature[<span class="dv">0</span>]]<span class="sc">}</span><span class="ss"> &lt; </span><span class="sc">{</span>a<span class="sc">.</span>tree_<span class="sc">.</span>threshold[<span class="dv">0</span>]<span class="sc">:.2f}</span><span class="ss">   prueba: </span><span class="sc">{</span>a<span class="sc">.</span>score(X_te, y_te)<span class="sc">:.1%}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="parte-2-overfitting-y-cómo-escoger-la-profundidad" class="level1">
+<h1>Parte 2: Overfitting y cómo escoger la profundidad</h1>
+<p>Un árbol sin límite clasifica perfecto el entrenamiento, pero memoriza el ruido. Para escoger la profundidad usamos un conjunto de <strong>validación</strong>, separado del de prueba:</p>
+<ul>
+<li><strong>entrenamiento</strong>: para ajustar el modelo;</li>
+<li><strong>validación</strong>: para escoger hiperparámetros (como <code>max_depth</code>);</li>
+<li><strong>prueba</strong>: se usa <strong>una sola vez, al final</strong>, para reportar el resultado.</li>
+</ul>
+<p>Si escogiéramos <code>max_depth</code> mirando el error de prueba, ese error ya no sería una estimación honesta: habríamos ajustado el modelo a esos datos también.</p>
+<p>Usamos datos más ruidosos, en forma de dos lunas.</p>
+<div id="25ff5cd6" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>X_l, y_l <span class="op">=</span> make_moons(n_samples<span class="op">=</span><span class="dv">600</span>, noise<span class="op">=</span><span class="fl">0.35</span>, random_state<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>X_l_tr, X_l_resto, y_l_tr, y_l_resto <span class="op">=</span> train_test_split(X_l, y_l, test_size<span class="op">=</span><span class="fl">0.5</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>X_l_va, X_l_te, y_l_va, y_l_te <span class="op">=</span> train_test_split(X_l_resto, y_l_resto, test_size<span class="op">=</span><span class="fl">0.5</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Entrenamiento:"</span>, <span class="bu">len</span>(y_l_tr), <span class="st">" Validación:"</span>, <span class="bu">len</span>(y_l_va), <span class="st">" Prueba:"</span>, <span class="bu">len</span>(y_l_te))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>profundidades <span class="op">=</span> <span class="bu">range</span>(<span class="dv">1</span>, <span class="dv">16</span>)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>exact_tr, exact_va <span class="op">=</span> [], []</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> prof <span class="kw">in</span> profundidades:</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span>prof, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_l_tr, y_l_tr)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    exact_tr.append(a.score(X_l_tr, y_l_tr))</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    exact_va.append(a.score(X_l_va, y_l_va))</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>mejor <span class="op">=</span> profundidades[<span class="bu">int</span>(np.argmax(exact_va))]</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">3.5</span>))</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>plt.plot(profundidades, exact_tr, <span class="st">"-o"</span>, c<span class="op">=</span>C_NEG, label<span class="op">=</span><span class="st">"entrenamiento"</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>plt.plot(profundidades, exact_va, <span class="st">"-o"</span>, c<span class="op">=</span>C_POS, label<span class="op">=</span><span class="st">"validación"</span>)</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>plt.axvline(mejor, c<span class="op">=</span><span class="st">"k"</span>, ls<span class="op">=</span><span class="st">":"</span>)</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"max_depth"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"exactitud"</span>)<span class="op">;</span> plt.legend()</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>final <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span>mejor, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_l_tr, y_l_tr)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Mejor profundidad según validación: </span><span class="sc">{</span>mejor<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exactitud de prueba (se mide una sola vez): </span><span class="sc">{</span>final<span class="sc">.</span>score(X_l_te, y_l_te)<span class="sc">:.1%}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Compara la frontera del árbol sin límite con la del árbol escogido por validación:</p>
+<div id="6e80ad18" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">4</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> ax, prof <span class="kw">in</span> <span class="bu">zip</span>(axs, [<span class="va">None</span>, mejor]):</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span>prof, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_l_tr, y_l_tr)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    dibujar_regiones(ax, a.predict, X_l_tr, y_l_tr, (<span class="op">-</span><span class="fl">1.8</span>, <span class="fl">2.8</span>, <span class="op">-</span><span class="fl">1.4</span>, <span class="fl">1.9</span>))</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    ax.set_title(<span class="ss">f"max_depth=</span><span class="sc">{</span>prof<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>a<span class="sc">.</span>get_n_leaves()<span class="sc">}</span><span class="ss"> hojas, validación </span><span class="sc">{</span>a<span class="sc">.</span>score(X_l_va, y_l_va)<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="ejercicio-1-gini-y-la-mejor-pregunta-15-min" class="level1">
+<h1>Ejercicio 1: Gini y la mejor pregunta (~15 min)</h1>
+<p>Vas a implementar la parte central del algoritmo que construye un árbol: encontrar la mejor pregunta <span class="math inline">\(x_j &lt; t\)</span> en un nodo. Son tres funciones cortas. Después de cada una hay una celda que la verifica.</p>
+<section id="a.-impureza-de-gini" class="level3">
+<h3 class="anchored" data-anchor-id="a.-impureza-de-gini">1a. Impureza de Gini</h3>
+<p><span class="math display">\[L_\text{Gini}(R) = \sum_c \hat p_c (1 - \hat p_c),\]</span></p>
+<p>donde <span class="math inline">\(\hat p_c\)</span> es la proporción de ejemplos de la clase <span class="math inline">\(c\)</span>. La función recibe un arreglo de etiquetas, por ejemplo <code>np.array([1, 1, 0, 1])</code>, y devuelve un número. Debe funcionar con cualquier cantidad de clases.</p>
+<details>
+<summary>
+▶ Pista
+</summary>
+<code>np.unique(y, return_counts=True)</code> devuelve las clases distintas y cuántas veces aparece cada una. Dividiendo los conteos entre <code>len(y)</code> obtienes las proporciones <span class="math inline">\(\hat p_c\)</span>. Con numpy no necesitas un <code>for</code>: <code>np.sum(p * (1 - p))</code>.
+</details>
+<div id="8409a112" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> gini(y):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Impureza de Gini de un arreglo de etiquetas y."""</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TU CÓDIGO AQUÍ</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    _, counts <span class="op">=</span> np.unique(y, return_counts<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Usando counts, calcula las proporciones de cada clase</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>   </span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Calcula la impureza de Gini usando la fórmula 1 - sum(p^2) </span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>    </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="6c6581ae" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Celda de verificación: no la modifiques</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> _cerca(a, b):</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> a <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="bu">abs</span>(<span class="bu">float</span>(a) <span class="op">-</span> b) <span class="op">&lt;</span> <span class="fl">1e-9</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>ej_900 <span class="op">=</span> np.array([<span class="dv">1</span>] <span class="op">*</span> <span class="dv">900</span> <span class="op">+</span> [<span class="dv">0</span>] <span class="op">*</span> <span class="dv">100</span>)</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>verificar(_cerca(gini(ej_900), <span class="fl">0.18</span>), <span class="st">"gini con 900 positivos y 100 negativos = 0.18"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"gini con 900 positivos y 100 negativos debería dar 0.18, y da </span><span class="sc">{</span>gini(ej_900)<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>verificar(_cerca(gini(np.array([<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>])), <span class="fl">0.0</span>), <span class="st">"una región pura tiene impureza 0"</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"una región pura debería tener impureza 0, y da </span><span class="sc">{</span>gini(np.array([<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>]))<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>verificar(_cerca(gini(np.array([<span class="dv">0</span>, <span class="dv">1</span>])), <span class="fl">0.5</span>), <span class="st">"mitad y mitad = 0.5"</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"mitad y mitad debería dar 0.5, y da </span><span class="sc">{</span>gini(np.array([<span class="dv">0</span>, <span class="dv">1</span>]))<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>verificar(_cerca(gini(np.array([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>])), <span class="dv">2</span> <span class="op">/</span> <span class="dv">3</span>), <span class="st">"funciona con 3 clases (= 2/3)"</span>,</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"con 3 clases igual de frecuentes debería dar 2/3, y da </span><span class="sc">{</span>gini(np.array([<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>]))<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="b.-ganancia-de-una-división" class="level3">
+<h3 class="anchored" data-anchor-id="b.-ganancia-de-una-división">1b. Ganancia de una división</h3>
+<p>Una división se representa con un arreglo booleano <code>izq</code> del mismo largo que <code>y</code>: <code>izq[i]</code> es <code>True</code> si el ejemplo <span class="math inline">\(i\)</span> va al hijo izquierdo. La ganancia es</p>
+<p><span class="math display">\[\text{ganancia} = L(R_p) - \left(\frac{|R_1|}{|R_p|} L(R_1) + \frac{|R_2|}{|R_p|} L(R_2)\right).\]</span></p>
+<p>Puedes suponer que los dos hijos tienen al menos un ejemplo.</p>
+<details>
+<summary>
+▶ Pista
+</summary>
+<p><code>y[izq]</code> son las etiquetas del hijo izquierdo y <code>y[~izq]</code> las del derecho (<code>~</code> niega un arreglo booleano). <code>izq.sum()</code> es el número de ejemplos que van a la izquierda.</p>
+<p>Es decir</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>izq <span class="op">=</span> y[izq]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>der <span class="op">=</span> y[<span class="op">~</span>izq]</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># |R_1| = n_izq, |R_2| = n_der, |R_p| = n </span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>n_izq <span class="op">=</span> izq.<span class="bu">sum</span>()</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>n_der <span class="op">=</span> der.<span class="bu">sum</span>()</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> <span class="bu">len</span>(y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+y la perdida se calcula con <code>gini(izq)</code> y <code>gini(der)</code>.
+</details>
+<div id="cb4c6c8c" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ganancia(y, izq):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Ganancia de Gini de dividir y en y[izq] y y[~izq]."""</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TU CÓDIGO AQUÍ</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="4ee040c0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Celda de verificación: no la modifiques</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="co"># El ejemplo de las notas: padre (900+, 100-). Los primeros 900 son positivos.</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> np.arange(<span class="dv">1000</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>division_A <span class="op">=</span> (indices <span class="op">&gt;=</span> <span class="dv">200</span>)                       <span class="co"># izq: 700 positivos y 100 negativos</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>division_B <span class="op">=</span> (indices <span class="op">&gt;=</span> <span class="dv">500</span>)                       <span class="co"># izq: 400 positivos y 100 negativos</span></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>gA, gB <span class="op">=</span> ganancia(ej_900, division_A), ganancia(ej_900, division_B)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>verificar(_cerca(gA, <span class="fl">0.005</span>), <span class="st">"división A: ganancia 0.005"</span>, <span class="ss">f"la división A debería tener ganancia 0.005, y da </span><span class="sc">{</span>gA<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>verificar(_cerca(gB, <span class="fl">0.02</span>), <span class="st">"división B: ganancia 0.02 (¡cuatro veces la de A!)"</span>, <span class="ss">f"la división B debería tener ganancia 0.02, y da </span><span class="sc">{</span>gB<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="c.-la-mejor-pregunta" class="level3">
+<h3 class="anchored" data-anchor-id="c.-la-mejor-pregunta">1c. La mejor pregunta</h3>
+<p>Ahora busca, entre <strong>todas</strong> las features <span class="math inline">\(j\)</span> y <strong>todos</strong> los umbrales <span class="math inline">\(t\)</span>, la pregunta <span class="math inline">\(x_j &lt; t\)</span> con mayor ganancia. Devuelve una tupla <code>(j, t, g)</code>: la feature, el umbral y la ganancia.</p>
+<p>¿Qué umbrales hay que probar? Como vimos en clase, basta con los puntos medios entre valores consecutivos de la feature (ordenados). Por ejemplo, si una feature toma los valores 1, 4 y 6, los umbrales son 2.5 y 5.</p>
+<details>
+<summary>
+▶ Pista 1: la estructura
+</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>mejor <span class="op">=</span> (<span class="va">None</span>, <span class="va">None</span>, <span class="op">-</span><span class="dv">1</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Por cada feature j</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(X.shape[<span class="dv">1</span>]):</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    valores <span class="op">=</span> np.unique(X[:, j])                      <span class="co"># ordenados y sin repetidos</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    umbrales <span class="op">=</span> (valores[:<span class="op">-</span><span class="dv">1</span>] <span class="op">+</span> valores[<span class="dv">1</span>:]) <span class="op">/</span> <span class="dv">2</span>       <span class="co"># puntos medios</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> t <span class="kw">in</span> umbrales:</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>        izq <span class="op">=</span> X[:, j] <span class="op">&lt;</span> t</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        g <span class="op">=</span> ...</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> g <span class="op">&gt;</span> mejor[<span class="dv">2</span>]:</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>            mejor <span class="op">=</span> ...</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="cf">return</span> mejor</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div id="4f519112" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> mejor_division(X, y):</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Devuelve (j, t, g): la feature, el umbral y la ganancia de la mejor pregunta x_j &lt; t."""</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TU CÓDIGO AQUÍ</span></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="va">None</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="186d015c" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Celda de verificación: no la modifiques</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Comparamos con la raíz que escoge scikit-learn (un árbol de profundidad 1) sobre todos los datos del esquí</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>tocon <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">1</span>).fit(X, y)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>t_sk <span class="op">=</span> tocon.tree_</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>j_sk, umbral_sk <span class="op">=</span> t_sk.feature[<span class="dv">0</span>], t_sk.threshold[<span class="dv">0</span>]</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> t_sk.n_node_samples</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>g_sk <span class="op">=</span> t_sk.impurity[<span class="dv">0</span>] <span class="op">-</span> (n[<span class="dv">1</span>] <span class="op">*</span> t_sk.impurity[<span class="dv">1</span>] <span class="op">+</span> n[<span class="dv">2</span>] <span class="op">*</span> t_sk.impurity[<span class="dv">2</span>]) <span class="op">/</span> n[<span class="dv">0</span>]</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>resultado <span class="op">=</span> mejor_division(X, y)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> resultado <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"❌ mejor_division todavía devuelve None"</span>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span>:</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    j, t, g <span class="op">=</span> resultado</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    nombres <span class="op">=</span> [<span class="st">"mes"</span>, <span class="st">"latitud"</span>]</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"Tu pregunta:     </span><span class="sc">{</span>nombres[j]<span class="sc">}</span><span class="ss"> &lt; </span><span class="sc">{</span>t<span class="sc">:.3f}</span><span class="ss">  (ganancia </span><span class="sc">{</span>g<span class="sc">:.5f}</span><span class="ss">)"</span>)</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"scikit-learn:    </span><span class="sc">{</span>nombres[j_sk]<span class="sc">}</span><span class="ss"> &lt;= </span><span class="sc">{</span>umbral_sk<span class="sc">:.3f}</span><span class="ss">  (ganancia </span><span class="sc">{</span>g_sk<span class="sc">:.5f}</span><span class="ss">)"</span>)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>    verificar(<span class="bu">abs</span>(g <span class="op">-</span> g_sk) <span class="op">&lt;</span> <span class="fl">1e-9</span>, <span class="st">"la ganancia coincide con la de scikit-learn"</span>,</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>              <span class="st">"la ganancia no coincide: ¿estás probando todas las features y todos los puntos medios?"</span>)</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    verificar(j <span class="op">==</span> j_sk <span class="kw">and</span> <span class="bu">abs</span>(t <span class="op">-</span> umbral_sk) <span class="op">&lt;</span> <span class="fl">1e-6</span>, <span class="st">"y es la misma pregunta"</span>,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>              <span class="st">"la pregunta es distinta (si la ganancia coincide, puede ser un empate)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="tu-propio-árbol" class="level3">
+<h3 class="anchored" data-anchor-id="tu-propio-árbol">Tu propio árbol</h3>
+<p>Con <code>mejor_division</code> ya puedes construir un árbol completo: se aplica la función en la raíz, se dividen los datos y se repite en cada hijo. La siguiente celda hace eso usando <strong>tus</strong> funciones (no hace falta modificarla) y compara el resultado con scikit-learn.</p>
+<p>Fíjate en la primera pregunta: no es la “natural” de la clase (latitud &gt; 30°). El algoritmo es <strong>codicioso</strong>: escoge la que más ganancia da en este paso, aunque no sea la que un humano haría primero.</p>
+<div id="42e9413a" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> construir(X, y, profundidad):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Árbol como diccionario anidado. Las hojas son la clase mayoritaria."""</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> profundidad <span class="op">==</span> <span class="dv">0</span> <span class="kw">or</span> gini(y) <span class="op">==</span> <span class="dv">0</span>:</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">int</span>(np.<span class="bu">round</span>(y.mean()))</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>    j, t, g <span class="op">=</span> mejor_division(X, y)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    izq <span class="op">=</span> X[:, j] <span class="op">&lt;</span> t</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> {<span class="st">"j"</span>: j, <span class="st">"t"</span>: t, <span class="st">"izq"</span>: construir(X[izq], y[izq], profundidad <span class="op">-</span> <span class="dv">1</span>),</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>            <span class="st">"der"</span>: construir(X[<span class="op">~</span>izq], y[<span class="op">~</span>izq], profundidad <span class="op">-</span> <span class="dv">1</span>)}</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> predecir_uno(nodo, x):</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">while</span> <span class="bu">isinstance</span>(nodo, <span class="bu">dict</span>):</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>        nodo <span class="op">=</span> nodo[<span class="st">"izq"</span>] <span class="cf">if</span> x[nodo[<span class="st">"j"</span>]] <span class="op">&lt;</span> nodo[<span class="st">"t"</span>] <span class="cf">else</span> nodo[<span class="st">"der"</span>]</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> nodo</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> imprimir(nodo, nombres, nivel<span class="op">=</span><span class="dv">0</span>, rama<span class="op">=</span><span class="st">""</span>):</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    sangria <span class="op">=</span> <span class="st">"      "</span> <span class="op">*</span> nivel <span class="op">+</span> rama</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> <span class="bu">isinstance</span>(nodo, <span class="bu">dict</span>):</span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(sangria <span class="op">+</span> (<span class="st">"se puede esquiar"</span> <span class="cf">if</span> nodo <span class="op">==</span> <span class="dv">1</span> <span class="cf">else</span> <span class="st">"no se puede"</span>))</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span></span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>sangria<span class="sc">}</span><span class="ss">¿</span><span class="sc">{</span>nombres[nodo[<span class="st">'j'</span>]]<span class="sc">}</span><span class="ss"> &lt; </span><span class="sc">{</span>nodo[<span class="st">'t'</span>]<span class="sc">:.2f}</span><span class="ss">?"</span>)</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    imprimir(nodo[<span class="st">"izq"</span>], nombres, nivel <span class="op">+</span> <span class="dv">1</span>, <span class="st">"sí → "</span>)</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    imprimir(nodo[<span class="st">"der"</span>], nombres, nivel <span class="op">+</span> <span class="dv">1</span>, <span class="st">"no → "</span>)</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> mejor_division(X, y) <span class="kw">is</span> <span class="va">None</span>:</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">raise</span> <span class="pp">RuntimeError</span>(<span class="st">"Primero completa gini, ganancia y mejor_division (Ejercicio 1a a 1c)"</span>)</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>mi_arbol <span class="op">=</span> construir(X, y, profundidad<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>imprimir(mi_arbol, [<span class="st">"mes"</span>, <span class="st">"latitud"</span>])</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a>mi_pred <span class="op">=</span> np.array([predecir_uno(mi_arbol, x) <span class="cf">for</span> x <span class="kw">in</span> X])</span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>sk_pred <span class="op">=</span> DecisionTreeClassifier(max_depth<span class="op">=</span><span class="dv">3</span>).fit(X, y).predict(X)</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="ch">\n</span><span class="ss">Exactitud de entrenamiento: tu árbol </span><span class="sc">{</span>np<span class="sc">.</span>mean(mi_pred <span class="op">==</span> y)<span class="sc">:.1%}</span><span class="ss">, scikit-learn </span><span class="sc">{</span>np<span class="sc">.</span>mean(sk_pred <span class="op">==</span> y)<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Las predicciones coinciden en </span><span class="sc">{</span>np<span class="sc">.</span>mean(mi_pred <span class="op">==</span> sk_pred)<span class="sc">:.0%}</span><span class="ss"> de los ejemplos"</span>)</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">4</span>))</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>dibujar_regiones(ax, <span class="kw">lambda</span> Z: np.array([predecir_uno(mi_arbol, z) <span class="cf">for</span> z <span class="kw">in</span> Z]), X, y, (<span class="dv">1</span>, <span class="dv">13</span>, <span class="op">-</span><span class="dv">90</span>, <span class="dv">90</span>), n<span class="op">=</span><span class="dv">150</span>)</span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Tu árbol de profundidad 3"</span>)<span class="op">;</span> ax.set_xlabel(<span class="st">"mes"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"latitud"</span>)</span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="parte-3-árboles-de-regresión" class="level1">
+<h1>Parte 3: Árboles de regresión</h1>
+<p>Para regresión se usa <code>DecisionTreeRegressor</code>. Cada hoja predice el <strong>promedio</strong> de las etiquetas de sus ejemplos, y la impureza es el error cuadrático medio (<code>criterion="squared_error"</code>). Usamos los datos de nieve por mes.</p>
+<div id="a7700f4c" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>X_n, y_n <span class="op">=</span> datos_nieve()</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> DecisionTreeRegressor(max_depth<span class="op">=</span><span class="dv">2</span>).fit(X_n, y_n)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(export_text(reg, feature_names<span class="op">=</span>[<span class="st">"mes"</span>], decimals<span class="op">=</span><span class="dv">1</span>))</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> np.linspace(<span class="dv">1</span>, <span class="dv">13</span>, <span class="dv">500</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">3.5</span>))</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>plt.scatter(X_n, y_n, s<span class="op">=</span><span class="dv">12</span>, c<span class="op">=</span><span class="st">"0.4"</span>)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>plt.plot(xs, reg.predict(xs), c<span class="op">=</span>C_POS, lw<span class="op">=</span><span class="dv">2</span>)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"mes"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"cm de nieve por día"</span>)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Comprobemos que el valor de cada hoja es el promedio de sus ejemplos. <code>apply</code> devuelve el número de hoja donde cae cada ejemplo:</p>
+<div id="4703d1f0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>hojas <span class="op">=</span> reg.<span class="bu">apply</span>(X_n)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> h <span class="kw">in</span> np.unique(hojas):</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>    sel <span class="op">=</span> hojas <span class="op">==</span> h</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"hoja </span><span class="sc">{</span>h<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>sel<span class="sc">.</span><span class="bu">sum</span>()<span class="sc">:2d}</span><span class="ss"> ejemplos, promedio </span><span class="sc">{</span>y_n[sel]<span class="sc">.</span>mean()<span class="sc">:5.2f}</span><span class="ss">, el árbol predice </span><span class="sc">{</span>reg<span class="sc">.</span>predict(X_n[sel])[<span class="dv">0</span>]<span class="sc">:5.2f}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="parte-4-bagging-y-random-forests" class="level1">
+<h1>Parte 4: Bagging y random forests</h1>
+<p><strong>Bagging</strong> entrena <span class="math inline">\(B\)</span> árboles, cada uno con una muestra bootstrap de los datos, y promedia sus predicciones. <strong>Random forest</strong> además sortea, en cada división, un subconjunto de <code>max_features</code> features entre las que el árbol puede escoger.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>Bagging (<code>BaggingClassifier</code>)</th>
+<th>Random forest (<code>RandomForestClassifier</code>)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>número de árboles <span class="math inline">\(B\)</span></td>
+<td><code>n_estimators</code></td>
+<td><code>n_estimators</code></td>
+</tr>
+<tr class="even">
+<td>modelo base</td>
+<td><code>estimator=DecisionTreeClassifier()</code></td>
+<td>siempre árboles</td>
+</tr>
+<tr class="odd">
+<td>features por división</td>
+<td>todas</td>
+<td><code>max_features</code> (por defecto <code>"sqrt"</code>, es decir <span class="math inline">\(\sqrt{d}\)</span>)</td>
+</tr>
+</tbody>
+</table>
+<p>Comparemos un árbol, bagging y random forest en los datos de las lunas, a medida que crece <span class="math inline">\(B\)</span>. Los conjuntos de validación y prueba de la Parte 2 tienen solo 150 ejemplos, y con tan pocos las exactitudes cambian mucho por azar. Por eso, para estas comparaciones generamos 5000 ejemplos <strong>nuevos</strong> del mismo problema.</p>
+<div id="b65ed636" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>X_l_nuevo, y_l_nuevo <span class="op">=</span> make_moons(n_samples<span class="op">=</span><span class="dv">5000</span>, noise<span class="op">=</span><span class="fl">0.35</span>, random_state<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>Bs <span class="op">=</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">20</span>, <span class="dv">50</span>, <span class="dv">100</span>, <span class="dv">200</span>]</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>exact <span class="op">=</span> {<span class="st">"bagging"</span>: [], <span class="st">"random forest"</span>: []}</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> B <span class="kw">in</span> Bs:</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>    bag <span class="op">=</span> BaggingClassifier(DecisionTreeClassifier(), n_estimators<span class="op">=</span>B, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_l_tr, y_l_tr)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>    rf <span class="op">=</span> RandomForestClassifier(n_estimators<span class="op">=</span>B, max_features<span class="op">=</span><span class="dv">1</span>, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_l_tr, y_l_tr)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>    exact[<span class="st">"bagging"</span>].append(bag.score(X_l_nuevo, y_l_nuevo))</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>    exact[<span class="st">"random forest"</span>].append(rf.score(X_l_nuevo, y_l_nuevo))</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>un_arbol <span class="op">=</span> DecisionTreeClassifier(random_state<span class="op">=</span><span class="dv">0</span>).fit(X_l_tr, y_l_tr).score(X_l_nuevo, y_l_nuevo)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">3.5</span>))</span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a>plt.plot(Bs, exact[<span class="st">"bagging"</span>], <span class="st">"-o"</span>, c<span class="op">=</span>C_NEG, label<span class="op">=</span><span class="st">"bagging"</span>)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>plt.plot(Bs, exact[<span class="st">"random forest"</span>], <span class="st">"-o"</span>, c<span class="op">=</span><span class="st">"#2a9d3a"</span>, label<span class="op">=</span><span class="st">"random forest (max_features=1)"</span>)</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>plt.axhline(un_arbol, c<span class="op">=</span><span class="st">"gray"</span>, ls<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="st">"un árbol"</span>)</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>plt.xscale(<span class="st">"log"</span>)<span class="op">;</span> plt.xlabel(<span class="st">"B (número de árboles)"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"exactitud (datos nuevos)"</span>)<span class="op">;</span> plt.legend()</span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Fíjate en que la exactitud sube y luego <strong>se estabiliza</strong>: a partir de cierto <span class="math inline">\(B\)</span>, más árboles ya no ayudan, pero tampoco producen overfitting. Las pequeñas oscilaciones se deben al azar del bootstrap.</p>
+<section id="importancia-de-las-features" class="level3">
+<h3 class="anchored" data-anchor-id="importancia-de-las-features">Importancia de las features</h3>
+<p>Un random forest también estima qué tan importante es cada feature: cuánto reducen la impureza, en promedio, las divisiones que la usan. Para probarlo, agregamos a los datos del esquí tres features de <strong>puro ruido</strong>. Un buen modelo debería darse cuenta de que no sirven.</p>
+<div id="795cb38b" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>X_ruido <span class="op">=</span> np.c_[X, rng.normal(size<span class="op">=</span>(<span class="bu">len</span>(X), <span class="dv">3</span>))]</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>nombres <span class="op">=</span> [<span class="st">"mes"</span>, <span class="st">"latitud"</span>, <span class="st">"ruido 1"</span>, <span class="st">"ruido 2"</span>, <span class="st">"ruido 3"</span>]</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>rf <span class="op">=</span> RandomForestClassifier(n_estimators<span class="op">=</span><span class="dv">300</span>, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_ruido, y)</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>orden <span class="op">=</span> np.argsort(rf.feature_importances_)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="dv">3</span>))</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>plt.barh(np.array(nombres)[orden], rf.feature_importances_[orden], color<span class="op">=</span>C_NEG)</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"importancia"</span>)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="parte-5-boosting" class="level1">
+<h1>Parte 5: Boosting</h1>
+<p>Boosting entrena los modelos <strong>uno después de otro</strong>, y cada uno corrige los errores de los anteriores. scikit-learn tiene varias versiones:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Clase</th>
+<th>Qué es</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>AdaBoostClassifier</code></td>
+<td>AdaBoost: repesa los ejemplos mal clasificados. Por defecto usa tocones (árboles de profundidad 1).</td>
+</tr>
+<tr class="even">
+<td><code>GradientBoostingClassifier</code> / <code>Regressor</code></td>
+<td>Gradient boosting: cada árbol se ajusta a los residuos (gradientes negativos).</td>
+</tr>
+<tr class="odd">
+<td><code>HistGradientBoostingClassifier</code> / <code>Regressor</code></td>
+<td>Gradient boosting moderno y rápido, en la línea de XGBoost y LightGBM. Tiene regularización <span class="math inline">\(L_2\)</span> de las hojas (<code>l2_regularization</code>, la <span class="math inline">\(\lambda\)</span> de XGBoost) y early stopping.</td>
+</tr>
+</tbody>
+</table>
+<p>En la industria es muy común usar la librería <code>xgboost</code>, cuya clase <code>XGBClassifier</code> tiene una interfaz casi idéntica (<code>n_estimators</code>, <code>learning_rate</code>, <code>max_depth</code>, <code>reg_lambda</code>, …). Aquí usaremos <code>HistGradientBoostingClassifier</code>, que viene con scikit-learn.</p>
+<p>Veamos AdaBoost en las lunas. <code>staged_score</code> da la exactitud después de cada ronda. Un solo tocón es un modelo muy débil, pero en pocas rondas la combinación supera a un árbol completo:</p>
+<div id="ce083775" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>ada <span class="op">=</span> AdaBoostClassifier(n_estimators<span class="op">=</span><span class="dv">300</span>, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_l_tr, y_l_tr)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>exact_ada <span class="op">=</span> <span class="bu">list</span>(ada.staged_score(X_l_nuevo, y_l_nuevo))</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">3.5</span>))</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>plt.plot(<span class="bu">range</span>(<span class="dv">1</span>, <span class="bu">len</span>(exact_ada) <span class="op">+</span> <span class="dv">1</span>), exact_ada, c<span class="op">=</span>C_POS, label<span class="op">=</span><span class="st">"AdaBoost con tocones"</span>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>plt.axhline(un_arbol, c<span class="op">=</span><span class="st">"gray"</span>, ls<span class="op">=</span><span class="st">"--"</span>, label<span class="op">=</span><span class="st">"un árbol completo"</span>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"ronda"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"exactitud (datos nuevos)"</span>)<span class="op">;</span> plt.legend()</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>plt.show()</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Un tocón solo: </span><span class="sc">{</span>exact_ada[<span class="dv">0</span>]<span class="sc">:.1%}</span><span class="ss">   Después de 300 rondas: </span><span class="sc">{</span>exact_ada[<span class="op">-</span><span class="dv">1</span>]<span class="sc">:.1%}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Y <code>HistGradientBoostingClassifier</code>. Sus parámetros principales son:</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Parámetro</th>
+<th>En las notas</th>
+<th>Por defecto</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>max_iter</code></td>
+<td>número de árboles <span class="math inline">\(B\)</span></td>
+<td>100</td>
+</tr>
+<tr class="even">
+<td><code>learning_rate</code></td>
+<td>tasa de aprendizaje <span class="math inline">\(\nu\)</span></td>
+<td>0.1</td>
+</tr>
+<tr class="odd">
+<td><code>max_depth</code> / <code>max_leaf_nodes</code></td>
+<td>tamaño de cada árbol</td>
+<td><code>None</code> / 31</td>
+</tr>
+<tr class="even">
+<td><code>l2_regularization</code></td>
+<td><span class="math inline">\(\lambda\)</span> de XGBoost</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td><code>early_stopping</code></td>
+<td>parar cuando la validación deja de mejorar</td>
+<td><code>"auto"</code> (activo si hay más de 10 000 ejemplos)</td>
+</tr>
+</tbody>
+</table>
+<div id="d4669ef4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>hgb <span class="op">=</span> HistGradientBoostingClassifier(max_iter<span class="op">=</span><span class="dv">200</span>, learning_rate<span class="op">=</span><span class="fl">0.1</span>, max_depth<span class="op">=</span><span class="dv">3</span>, random_state<span class="op">=</span><span class="dv">0</span>).fit(X_l_tr, y_l_tr)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Exactitud en datos nuevos: </span><span class="sc">{</span>hgb<span class="sc">.</span>score(X_l_nuevo, y_l_nuevo)<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">11</span>, <span class="dv">4</span>))</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>dibujar_regiones(axs[<span class="dv">0</span>], ada.predict, X_l_tr, y_l_tr, (<span class="op">-</span><span class="fl">1.8</span>, <span class="fl">2.8</span>, <span class="op">-</span><span class="fl">1.4</span>, <span class="fl">1.9</span>))</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_title(<span class="ss">f"AdaBoost (300 tocones): </span><span class="sc">{</span>ada<span class="sc">.</span>score(X_l_nuevo, y_l_nuevo)<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>dibujar_regiones(axs[<span class="dv">1</span>], hgb.predict, X_l_tr, y_l_tr, (<span class="op">-</span><span class="fl">1.8</span>, <span class="fl">2.8</span>, <span class="op">-</span><span class="fl">1.4</span>, <span class="fl">1.9</span>))</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="ss">f"HistGradientBoosting: </span><span class="sc">{</span>hgb<span class="sc">.</span>score(X_l_nuevo, y_l_nuevo)<span class="sc">:.1%}</span><span class="ss">"</span>)</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="ejercicio-2-competencia" class="level1">
+<h1>Ejercicio 2: Competencia</h1>
+<p>Vas a competir con tres modelos sobre el mismo problema: <strong>un árbol</strong>, <strong>un random forest</strong> y <strong>gradient boosting</strong>. Tu trabajo es ajustar sus hiperparámetros para alcanzar las metas.</p>
+<p><strong>Los datos.</strong> Es un problema clásico del libro <em>The Elements of Statistical Learning</em>. Hay 10 features con distribución normal estándar, y la clase es positiva cuando <span class="math inline">\(x_1^2 + x_2^2 + \dots + x_{10}^2\)</span> es mayor que cierto umbral, es decir, cuando el punto está lejos del origen.</p>
+<p><strong>Las reglas</strong> 1. Solo puedes cambiar los hiperparámetros en las celdas marcadas. 2. Para comparar modelos usas el error de <strong>validación</strong>. 3. El conjunto de <strong>prueba</strong> se usa una sola vez, al final, en la última celda.</p>
+<div id="2777590b" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>X_h, y_h <span class="op">=</span> make_hastie_10_2(n_samples<span class="op">=</span><span class="dv">12000</span>, random_state<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>y_h <span class="op">=</span> (y_h <span class="op">&gt;</span> <span class="dv">0</span>).astype(<span class="bu">int</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>X_h_tr, y_h_tr <span class="op">=</span> X_h[:<span class="dv">2000</span>], y_h[:<span class="dv">2000</span>]          <span class="co"># entrenamiento</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>X_h_va, y_h_va <span class="op">=</span> X_h[<span class="dv">2000</span>:<span class="dv">4000</span>], y_h[<span class="dv">2000</span>:<span class="dv">4000</span>]  <span class="co"># validación</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>X_h_te, y_h_te <span class="op">=</span> X_h[<span class="dv">4000</span>:], y_h[<span class="dv">4000</span>:]          <span class="co"># prueba (¡no la toques hasta el final!)</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Entrenamiento </span><span class="sc">{</span><span class="bu">len</span>(y_h_tr)<span class="sc">}</span><span class="ss">, validación </span><span class="sc">{</span><span class="bu">len</span>(y_h_va)<span class="sc">}</span><span class="ss">, prueba </span><span class="sc">{</span><span class="bu">len</span>(y_h_te)<span class="sc">}</span><span class="ss">. Positivos: </span><span class="sc">{</span>y_h<span class="sc">.</span>mean()<span class="sc">:.0%}</span><span class="ss">"</span>)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>resultados <span class="op">=</span> {}</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> evaluar(nombre, modelo, meta):</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    modelo.fit(X_h_tr, y_h_tr)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    error <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> modelo.score(X_h_va, y_h_va)</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>    resultados[nombre] <span class="op">=</span> (modelo, error)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>    marca <span class="op">=</span> <span class="st">"🎯 ¡meta alcanzada!"</span> <span class="cf">if</span> error <span class="op">&lt;</span> meta <span class="cf">else</span> <span class="ss">f"(meta: menos de </span><span class="sc">{</span>meta<span class="sc">:.1%}</span><span class="ss">)"</span></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>nombre<span class="sc">}</span><span class="ss">: error de validación </span><span class="sc">{</span>error<span class="sc">:.1%}</span><span class="ss">  </span><span class="sc">{</span>marca<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="modelo-1-un-árbol.-meta-error-de-validación-24.5" class="level3">
+<h3 class="anchored" data-anchor-id="modelo-1-un-árbol.-meta-error-de-validación-24.5">Modelo 1: un árbol. Meta: error de validación &lt; 24.5%</h3>
+<details>
+<summary>
+▶ Pista
+</summary>
+El árbol sin límite sobreajusta. ¿Qué regularización de la Parte 2 podrías usar? Prueba <code>max_depth</code> y también <code>min_samples_leaf</code> (por ejemplo, 10, 20, 50).
+</details>
+<div id="ce58d5d4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambia los hiperparámetros</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>modelo_arbol <span class="op">=</span> DecisionTreeClassifier(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>evaluar(<span class="st">"árbol"</span>, modelo_arbol, meta<span class="op">=</span><span class="fl">0.245</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="modelo-2-random-forest.-meta-error-de-validación-13.5" class="level3">
+<h3 class="anchored" data-anchor-id="modelo-2-random-forest.-meta-error-de-validación-13.5">Modelo 2: random forest. Meta: error de validación &lt; 13.5%</h3>
+<details>
+<summary>
+▶ Pista
+</summary>
+Más árboles no hacen daño, pero el parámetro que más importa aquí es <code>max_features</code>. Recuerda: random forest funciona mejor cuando los árboles están <strong>poco correlacionados</strong>. ¿Con qué valor de <code>max_features</code> serán más distintos entre sí? Prueba valores entre 1 y 10.
+</details>
+<div id="90c70e9f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambia los hiperparámetros</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>modelo_rf <span class="op">=</span> RandomForestClassifier(</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>    max_features<span class="op">=</span><span class="st">"sqrt"</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a>evaluar(<span class="st">"random forest"</span>, modelo_rf, meta<span class="op">=</span><span class="fl">0.135</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="modelo-3-gradient-boosting.-meta-error-de-validación-9" class="level3">
+<h3 class="anchored" data-anchor-id="modelo-3-gradient-boosting.-meta-error-de-validación-9">Modelo 3: gradient boosting. Meta: error de validación &lt; 9%</h3>
+<details>
+<summary>
+▶ Pista 1
+</summary>
+La clase depende de una <strong>suma</strong> de términos, uno por feature: <span class="math inline">\(x_1^2 + \dots + x_{10}^2\)</span>. En las notas vimos que a los árboles les cuesta capturar estructuras aditivas, pero que boosting <strong>suma</strong> árboles. ¿Qué tan profundo tiene que ser cada árbol para representar un solo término <span class="math inline">\(x_j^2\)</span>?
+</details>
+<details>
+<summary>
+▶ Pista 2
+</summary>
+Prueba <code>max_depth=1</code> (tocones). Con árboles tan pequeños hacen falta muchos más (<code>max_iter</code> de 500 o 1000) y quizás un <code>learning_rate</code> más grande.
+</details>
+<div id="26b26054" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cambia los hiperparámetros</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>modelo_gb <span class="op">=</span> HistGradientBoostingClassifier(</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>    max_iter<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>    learning_rate<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a>    l2_regularization<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    early_stopping<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>evaluar(<span class="st">"gradient boosting"</span>, modelo_gb, meta<span class="op">=</span><span class="fl">0.09</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="resultado-final" class="level3">
+<h3 class="anchored" data-anchor-id="resultado-final">Resultado final</h3>
+<p>Cuando estés conforme con tus tres modelos, ejecuta esta celda <strong>una sola vez</strong>. Evalúa cada modelo en el conjunto de prueba, que ninguno ha visto.</p>
+<div id="32d38c78" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span><span class="st">'modelo'</span><span class="sc">:20s}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'validación'</span><span class="sc">:&gt;12s}</span><span class="ss"> </span><span class="sc">{</span><span class="st">'prueba'</span><span class="sc">:&gt;10s}</span><span class="ss">"</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> nombre, (modelo, error_va) <span class="kw">in</span> resultados.items():</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    error_te <span class="op">=</span> <span class="dv">1</span> <span class="op">-</span> modelo.score(X_h_te, y_h_te)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>nombre<span class="sc">:20s}</span><span class="ss"> </span><span class="sc">{</span>error_va<span class="sc">:12.1%}</span><span class="ss"> </span><span class="sc">{</span>error_te<span class="sc">:10.1%}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="preguntas" class="level3">
+<h3 class="anchored" data-anchor-id="preguntas">Preguntas</h3>
+<p>Responde brevemente en esta celda (doble clic para editar):</p>
+<ol type="1">
+<li>¿Qué modelo ganó? ¿Los errores de prueba se parecen a los de validación? ¿Por qué deberían parecerse?</li>
+<li>¿Por qué un solo árbol es tan malo en este problema?</li>
+<li>¿Qué hiperparámetro del random forest tuvo más efecto?</li>
+<li>¿Por qué funcionan tan bien los tocones en boosting para este problema en particular?</li>
+</ol>
+<p><em>Tus respuestas:</em></p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

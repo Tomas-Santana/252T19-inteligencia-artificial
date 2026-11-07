@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.18">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Clase 7: Redes neuronales. Laboratorio – Inteligencia Artificial</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-64a204ab8560d761af7679ceaba22944.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap-deae0c18f5b5cd7b9158b1169a045e04.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent quarto-light">
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Clase 7: Redes neuronales. Laboratorio</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Este notebook tiene dos tipos de secciones:</p>
+<ul>
+<li><strong>Secciones con código</strong>: muestran cómo se usan en PyTorch las ideas de la clase. Ejecuta las celdas en orden y lee las explicaciones.</li>
+<li><strong>Ejercicios</strong>: tienes que escribir código o experimentar. Después de cada ejercicio hay una <strong>celda de verificación</strong> que te dice si tu respuesta es correcta (✅) o qué está mal (❌). Puedes ver también pistas (▶ Pista).</li>
+</ul>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Ejercicio</th>
+<th>Tema</th>
+<th>Tiempo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>La red de XOR con los pesos de las notas</td>
+<td>~10 min</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>La misma red sin ReLU</td>
+<td>~5 min</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>Contar parámetros</td>
+<td>~5 min</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>El gradiente con <code>backward()</code></td>
+<td>~10 min</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>Entrenar una red</td>
+<td>~15 min</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>Explorar (opcional)</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>Las partes 1 y 2 corresponden a las secciones 2 y 3 de las notas.</p>
+<section id="preparación" class="level2">
+<h2 class="anchored" data-anchor-id="preparación">Preparación</h2>
+<p>Esta celda importa las librerías y define algunas funciones para dibujar. No hace falta que la leas con detalle.</p>
+<div id="99eb372b" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> matplotlib.colors <span class="im">import</span> ListedColormap</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> torch <span class="im">import</span> nn</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_moons</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>C_NEG, C_POS <span class="op">=</span> <span class="st">"#1f77b4"</span>, <span class="st">"#d62728"</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>FONDO <span class="op">=</span> ListedColormap([<span class="st">"#d6e4f2"</span>, <span class="st">"#f6d5d5"</span>])</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dibujar_puntos(ax, X, y, tam<span class="op">=</span><span class="dv">30</span>):</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>    X, y <span class="op">=</span> np.asarray(X), np.asarray(y).ravel()</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    ax.scatter(X[y <span class="op">==</span> <span class="dv">0</span>, <span class="dv">0</span>], X[y <span class="op">==</span> <span class="dv">0</span>, <span class="dv">1</span>], c<span class="op">=</span>C_NEG, marker<span class="op">=</span><span class="st">"o"</span>, s<span class="op">=</span>tam, label<span class="op">=</span><span class="st">"clase 0"</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    ax.scatter(X[y <span class="op">==</span> <span class="dv">1</span>, <span class="dv">0</span>], X[y <span class="op">==</span> <span class="dv">1</span>, <span class="dv">1</span>], c<span class="op">=</span>C_POS, marker<span class="op">=</span><span class="st">"^"</span>, s<span class="op">=</span>tam, label<span class="op">=</span><span class="st">"clase 1"</span>)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dibujar_frontera(ax, modelo, X, y, limites, n<span class="op">=</span><span class="dv">300</span>):</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""Pinta la clase que predice el modelo (salida &gt; 0, es decir, probabilidad &gt; 0.5)."""</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    x0, x1, y0, y1 <span class="op">=</span> limites</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>    xs, ys <span class="op">=</span> np.meshgrid(np.linspace(x0, x1, n), np.linspace(y0, y1, n))</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    P <span class="op">=</span> torch.tensor(np.c_[xs.ravel(), ys.ravel()], dtype<span class="op">=</span>torch.float32)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        Z <span class="op">=</span> (modelo(P) <span class="op">&gt;</span> <span class="dv">0</span>).<span class="bu">float</span>().numpy().reshape(xs.shape)</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    ax.contourf(xs, ys, Z, levels<span class="op">=</span>[<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="fl">1.5</span>], cmap<span class="op">=</span>FONDO)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    dibujar_puntos(ax, X, y)</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    ax.set_xlim(x0, x1)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    ax.set_ylim(y0, y1)</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> verificar(condicion, ok, error):</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>((<span class="st">"✅ "</span> <span class="op">+</span> ok) <span class="cf">if</span> condicion <span class="cf">else</span> (<span class="st">"❌ "</span> <span class="op">+</span> error))</span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Listo. PyTorch"</span>, torch.__version__)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="parte-1-la-red-como-función" class="level1">
+<h1>Parte 1: La red como función</h1>
+<section id="tensores" class="level2">
+<h2 class="anchored" data-anchor-id="tensores">1.1 Tensores</h2>
+<p>En PyTorch los datos se guardan en <strong>tensores</strong>, que funcionan casi igual que los arreglos de NumPy. Igual que en scikit-learn, los ejemplos van en las <strong>filas</strong>: <code>X</code> es de <span class="math inline">\(m \times n\)</span> (un ejemplo por fila) y <code>y</code> es de <span class="math inline">\(m \times 1\)</span>.</p>
+<p>PyTorch trabaja por defecto con números <code>float32</code>, por eso escribimos <code>0.</code> en lugar de <code>0</code>.</p>
+<div id="8fdddf39" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>X_xor <span class="op">=</span> torch.tensor([[<span class="fl">0.</span>, <span class="fl">0.</span>],</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>                      [<span class="fl">0.</span>, <span class="fl">1.</span>],</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                      [<span class="fl">1.</span>, <span class="fl">0.</span>],</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>                      [<span class="fl">1.</span>, <span class="fl">1.</span>]])</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>y_xor <span class="op">=</span> torch.tensor([[<span class="fl">0.</span>], [<span class="fl">1.</span>], [<span class="fl">1.</span>], [<span class="fl">0.</span>]])</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"X:"</span>, X_xor.shape, <span class="st">" y:"</span>, y_xor.shape)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="una-neurona" class="level2">
+<h2 class="anchored" data-anchor-id="una-neurona">1.2 Una neurona</h2>
+<p>Una capa densa (totalmente conectada) es <code>nn.Linear(n_entradas, n_salidas)</code>. Con <code>n_salidas = 1</code> es una sola neurona: calcula <span class="math inline">\(z = \mathbf{w}^T\mathbf{x} + b\)</span>. Si le aplicamos la sigmoide, es exactamente la regresión logística de la clase 4.</p>
+<p>PyTorch inicializa los pesos al azar. Para ver qué hace la neurona, le ponemos pesos a mano: con <span class="math inline">\(\mathbf{w} = (1, 1)\)</span> y <span class="math inline">\(b = -1.5\)</span>, el score solo es positivo si las dos entradas son 1.</p>
+<p>Fíjate en la forma de <code>weight</code>: es de <strong>(salidas × entradas)</strong>. Cada fila son los pesos de una neurona.</p>
+<div id="224b0f84" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>neurona <span class="op">=</span> nn.Linear(<span class="dv">2</span>, <span class="dv">1</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"pesos:"</span>, neurona.weight.shape, <span class="st">" sesgo:"</span>, neurona.bias.shape)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():                      <span class="co"># no queremos que PyTorch registre esto para el gradiente</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    neurona.weight.copy_(torch.tensor([[<span class="fl">1.</span>, <span class="fl">1.</span>]]))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    neurona.bias.copy_(torch.tensor([<span class="op">-</span><span class="fl">1.5</span>]))</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>z <span class="op">=</span> neurona(X_xor)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"scores z:"</span>, z.detach().ravel().tolist())</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"probabilidades:"</span>, [<span class="bu">round</span>(p, <span class="dv">2</span>) <span class="cf">for</span> p <span class="kw">in</span> torch.sigmoid(z).ravel().tolist()])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Esta neurona calcula el AND (y lógico): solo el ejemplo <span class="math inline">\((1, 1)\)</span> tiene probabilidad mayor que 0.5. Con otros pesos podríamos obtener el OR. Pero ningún par de pesos da el XOR, porque la frontera de una neurona es una recta.</p>
+<hr>
+</section>
+</section>
+<section id="ejercicio-1-la-red-de-xor" class="level1">
+<h1>Ejercicio 1: La red de XOR</h1>
+<p>Construye la red de XOR de la <strong>sección 2.1 de las notas</strong> y comprueba que resuelve XOR. La red ya está creada con <code>nn.Sequential</code>, que aplica las capas en orden:</p>
+<ul>
+<li><code>red_xor[0]</code>: la capa oculta, <code>nn.Linear(2, 2)</code>;</li>
+<li><code>red_xor[1]</code>: la ReLU;</li>
+<li><code>red_xor[2]</code>: la salida, <code>nn.Linear(2, 1)</code>, sin activación.</li>
+</ul>
+<p>Tienes que asignar los pesos y sesgos de las notas: <span class="math inline">\(a_1 = \text{ReLU}(x_1 + x_2)\)</span>, <span class="math inline">\(a_2 = \text{ReLU}(x_1 + x_2 - 1)\)</span>, <span class="math inline">\(\hat y = a_1 - 2a_2\)</span>.</p>
+<details>
+<summary>
+▶ Pista
+</summary>
+La matriz de pesos de la capa oculta es de 2 × 2: la fila 1 son los pesos de <span class="math inline">\(a_1\)</span> y la fila 2 los de <span class="math inline">\(a_2\)</span>. El vector de sesgos tiene un número por neurona: <code>torch.tensor([0., -1.])</code>. La salida tiene una matriz de 1 × 2: <code>torch.tensor([[1., -2.]])</code>.
+</details>
+<div id="53999e43" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>red_xor <span class="op">=</span> nn.Sequential(nn.Linear(<span class="dv">2</span>, <span class="dv">2</span>), nn.ReLU(), nn.Linear(<span class="dv">2</span>, <span class="dv">1</span>))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TU CÓDIGO AQUÍ: completa los valores</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    red_xor[<span class="dv">0</span>].weight.copy_(torch.tensor([[<span class="fl">1.</span>, <span class="fl">1.</span>], [<span class="fl">1.</span>, <span class="fl">1.</span>]]))</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    red_xor[<span class="dv">0</span>].bias.copy_(torch.tensor([<span class="fl">0.</span>, <span class="op">-</span><span class="fl">1.</span>]))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    red_xor[<span class="dv">2</span>].weight.copy_(torch.tensor([[<span class="fl">1.</span>, <span class="op">-</span><span class="fl">2.</span>]]))</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    red_xor[<span class="dv">2</span>].bias.copy_(torch.tensor([<span class="fl">1.</span>]))</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"y_hat:"</span>, red_xor(X_xor).detach().ravel().tolist())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="c9510ce0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Celda de verificación: no la modifiques</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    h <span class="op">=</span> red_xor[<span class="dv">1</span>](red_xor[<span class="dv">0</span>](X_xor))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    salida <span class="op">=</span> red_xor(X_xor)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>verificar(torch.allclose(h, torch.tensor([[<span class="fl">0.</span>, <span class="fl">0.</span>], [<span class="fl">1.</span>, <span class="fl">0.</span>], [<span class="fl">1.</span>, <span class="fl">0.</span>], [<span class="fl">2.</span>, <span class="fl">1.</span>]])),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>          <span class="st">"la capa oculta da (a1, a2) = (0,0), (1,0), (1,0), (2,1), como en el Ejercicio 1 de las notas"</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"las activaciones de la capa oculta deberían ser (0,0), (1,0), (1,0), (2,1), y son </span><span class="sc">{</span>h<span class="sc">.</span>tolist()<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>verificar(torch.allclose(salida, y_xor),</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>          <span class="st">"la red resuelve XOR: y_hat = 0, 1, 1, 0"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"y_hat debería ser 0, 1, 1, 0, y es </span><span class="sc">{</span>salida<span class="sc">.</span>ravel()<span class="sc">.</span>tolist()<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Compara con tu tabla del Ejercicio 1 de las notas. La celda siguiente dibuja la región donde la red predice <span class="math inline">\(\hat y &gt; 0.5\)</span> (como en la sección 2.2 de las notas). Para dibujarla restamos 0.5 a la salida, porque <code>dibujar_frontera</code> pinta donde la salida es positiva.</p>
+<div id="d9cac002" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize<span class="op">=</span>(<span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dibujar_frontera(ax, <span class="kw">lambda</span> P: red_xor(P) <span class="op">-</span> <span class="fl">0.5</span>, X_xor, y_xor, (<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1.5</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ax.set_xlabel(<span class="st">"$x_1$"</span>)<span class="op">;</span> ax.set_ylabel(<span class="st">"$x_2$"</span>)<span class="op">;</span> ax.legend(loc<span class="op">=</span><span class="st">"upper right"</span>)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="ejercicio-2-sin-relu" class="level1">
+<h1>Ejercicio 2: Sin ReLU</h1>
+<p>Construye <code>red_lineal</code>, igual a <code>red_xor</code> pero <strong>sin la ReLU</strong>, y cópiale los mismos pesos y sesgos. Antes de ejecutar, escribe en papel qué salida esperas (es el Ejercicio 2 de las notas).</p>
+<details>
+<summary>
+▶ Pista
+</summary>
+<code>nn.Sequential(nn.Linear(2, 2), nn.Linear(2, 1))</code>. Para copiar los pesos: <code>red_lineal[0].weight.copy_(red_xor[0].weight)</code>, y lo mismo con el sesgo. Cuidado: en <code>red_lineal</code> la segunda capa es <code>red_lineal[1]</code>, no <code>red_lineal[2]</code>.
+</details>
+<div id="754b5c44" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TU CÓDIGO AQUÍ</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>red_lineal <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> red_lineal <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span>:</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"y_hat sin ReLU:"</span>, red_lineal(X_xor).detach().ravel().tolist())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="0f76fb73" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Celda de verificación: no la modifiques</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    salida <span class="op">=</span> red_lineal(X_xor) <span class="cf">if</span> red_lineal <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> torch.zeros(<span class="dv">4</span>, <span class="dv">1</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>verificar(red_lineal <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="bu">len</span>(red_lineal) <span class="op">==</span> <span class="dv">2</span> <span class="kw">and</span> torch.allclose(salida, torch.tensor([[<span class="fl">2.</span>], [<span class="fl">1.</span>], [<span class="fl">1.</span>], [<span class="fl">0.</span>]])),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>          <span class="st">"sin ReLU, y_hat = 2, 1, 1, 0 = 2 - x1 - x2: una función lineal que ya no resuelve XOR"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"y_hat debería ser 2, 1, 1, 0, y es </span><span class="sc">{</span>salida<span class="sc">.</span>ravel()<span class="sc">.</span>tolist()<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Pregunta.</strong> ¿Puedes escoger <em>otros</em> pesos para <code>red_lineal</code> que sí resuelvan XOR? ¿Por qué no? (Recuerda: sin activación, toda la red es una función lineal de <span class="math inline">\(x_1\)</span> y <span class="math inline">\(x_2\)</span>.)</p>
+<hr>
+</section>
+<section id="ejercicio-3-contar-parámetros" class="level1">
+<h1>Ejercicio 3: Contar parámetros</h1>
+<p>Construye la red para reconocer dígitos de la sección 2.5 de las notas: 784 entradas, dos capas ocultas de 16 neuronas con ReLU y una salida de 10 neuronas. Después cuenta sus parámetros.</p>
+<p><code>modelo.parameters()</code> recorre todos los tensores de pesos y sesgos del modelo, y <code>p.numel()</code> es el número de elementos de un tensor <code>p</code>.</p>
+<details>
+<summary>
+▶ Pista
+</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>red_mnist <span class="op">=</span> nn.Sequential(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">784</span>, <span class="dv">16</span>), nn.ReLU(),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">16</span>, <span class="dv">16</span>), nn.ReLU(),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    nn.Linear(<span class="dv">16</span>, <span class="dv">10</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+Para contar: <code>sum(p.numel() for p in red_mnist.parameters())</code>.
+</details>
+<div id="4c563324" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># TU CÓDIGO AQUÍ</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>red_mnist <span class="op">=</span> nn.Sequential(nn.Linear(<span class="dv">784</span>, <span class="dv">16</span>), nn.ReLU(), nn.Linear(<span class="dv">16</span>, <span class="dv">16</span>), nn.ReLU(), nn.Linear(<span class="dv">16</span>, <span class="dv">10</span>))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>n_parametros <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Parámetros:"</span>, n_parametros)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="13acb77e" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Celda de verificación: no la modifiques</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>verificar(n_parametros <span class="op">==</span> <span class="dv">13002</span>, <span class="st">"13002 parámetros, igual que en las notas"</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"deberían ser 13002 parámetros, y son </span><span class="sc">{</span>n_parametros<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>imagenes <span class="op">=</span> torch.rand(<span class="dv">5</span>, <span class="dv">784</span>)          <span class="co"># 5 "imágenes" al azar, una por fila</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>salida <span class="op">=</span> red_mnist(imagenes) <span class="cf">if</span> red_mnist <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="cf">else</span> torch.zeros(<span class="dv">5</span>, <span class="dv">1</span>)</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>verificar(<span class="bu">tuple</span>(salida.shape) <span class="op">==</span> (<span class="dv">5</span>, <span class="dv">10</span>), <span class="st">"la salida es de 5 × 10: un score por dígito para cada imagen"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"la salida debería ser de 5 × 10, y es </span><span class="sc">{</span><span class="bu">tuple</span>(salida.shape)<span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Con softmax, los 10 scores de cada imagen se convierten en probabilidades que suman 1. Como la red no está entrenada, las probabilidades son parecidas entre sí: la red todavía no sabe nada.</p>
+<div id="73e3e880" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>probs <span class="op">=</span> torch.softmax(salida.detach(), dim<span class="op">=</span><span class="dv">1</span>)    <span class="co"># dim=1: softmax sobre cada fila</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"probabilidades de la primera imagen:"</span>, [<span class="bu">round</span>(p, <span class="dv">2</span>) <span class="cf">for</span> p <span class="kw">in</span> probs[<span class="dv">0</span>].tolist()])</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"suma por fila:"</span>, [<span class="bu">round</span>(s, <span class="dv">4</span>) <span class="cf">for</span> s <span class="kw">in</span> probs.<span class="bu">sum</span>(dim<span class="op">=</span><span class="dv">1</span>).tolist()])</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"dígito predicho para cada imagen:"</span>, probs.argmax(dim<span class="op">=</span><span class="dv">1</span>).tolist())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+<section id="parte-2-cómo-aprende-una-red" class="level1">
+<h1>Parte 2: Cómo aprende una red</h1>
+<section id="autograd" class="level2">
+<h2 class="anchored" data-anchor-id="autograd">2.1 Autograd</h2>
+<p>PyTorch puede calcular derivadas automáticamente. Si un tensor se crea con <code>requires_grad=True</code>, PyTorch registra todas las operaciones que se hacen con él. Al llamar <code>.backward()</code> sobre un resultado, recorre esas operaciones hacia atrás (backpropagation) y guarda la derivada de ese resultado respecto al tensor en el atributo <code>.grad</code>.</p>
+</section>
+</section>
+<section id="ejercicio-4-el-gradiente-con-backward-10-min" class="level1">
+<h1>Ejercicio 4: El gradiente con <code>backward()</code> (~10 min)</h1>
+<p>Repite el primer paso del Ejercicio 3 de las notas: la neurona <span class="math inline">\(\hat y = w x\)</span> con <span class="math inline">\(w = 1\)</span>, <span class="math inline">\(x = 2\)</span>, <span class="math inline">\(y = 10\)</span> y pérdida <span class="math inline">\(L = (\hat y - y)^2\)</span>. Calcula <code>y_hat</code> y <code>L</code>, y llama <code>L.backward()</code>. A mano obtuvimos <span class="math inline">\(dL/dw = 2(\hat y - y)x = -32\)</span>.</p>
+<details>
+<summary>
+▶ Pista
+</summary>
+<code>y_hat = w * x</code> y <code>L = (y_hat - y) ** 2</code>. Después, <code>L.backward()</code> y mira <code>w.grad</code>.
+</details>
+<div id="f65794c0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>w <span class="op">=</span> torch.tensor(<span class="fl">1.0</span>, requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>x, y <span class="op">=</span> <span class="fl">2.0</span>, <span class="fl">10.0</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a><span class="co"># TU CÓDIGO AQUÍ (3 líneas)</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>y_hat <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>L <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"L ="</span>, L <span class="cf">if</span> L <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> L.item(), <span class="st">"  dL/dw ="</span>, w.grad <span class="cf">if</span> w.grad <span class="kw">is</span> <span class="va">None</span> <span class="cf">else</span> w.grad.item())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="fcf524a3" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Celda de verificación: no la modifiques</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>verificar(L <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="bu">abs</span>(L.item() <span class="op">-</span> <span class="dv">64</span>) <span class="op">&lt;</span> <span class="fl">1e-6</span>, <span class="st">"L = 64"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"L debería ser 64, y es </span><span class="sc">{</span>L<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>verificar(w.grad <span class="kw">is</span> <span class="kw">not</span> <span class="va">None</span> <span class="kw">and</span> <span class="bu">abs</span>(w.grad.item() <span class="op">+</span> <span class="dv">32</span>) <span class="op">&lt;</span> <span class="fl">1e-6</span>,</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>          <span class="st">"dL/dw = -32: PyTorch calculó lo mismo que nosotros a mano"</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"dL/dw debería ser -32, y es </span><span class="sc">{</span>w<span class="sc">.</span>grad<span class="sc">}</span><span class="ss"> (¿llamaste L.backward()?)"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="descenso-por-gradiente-a-mano" class="level2">
+<h2 class="anchored" data-anchor-id="descenso-por-gradiente-a-mano">2.2 Descenso por gradiente a mano</h2>
+<p>Con <code>backward()</code> ya podemos hacer descenso por gradiente: calcular el gradiente, restarle <span class="math inline">\(\alpha\)</span> veces el gradiente al peso, y repetir. Dos detalles de PyTorch:</p>
+<ul>
+<li>La actualización se hace dentro de <code>torch.no_grad()</code>, porque no queremos que PyTorch la registre como parte del cálculo de la pérdida.</li>
+<li>PyTorch <strong>suma</strong> los gradientes de cada <code>backward()</code> a lo que ya hay en <code>.grad</code>. Por eso hay que borrarlo en cada paso con <code>w.grad.zero_()</code>.</li>
+</ul>
+<p>Compara los primeros valores con tu tabla del Ejercicio 3 de las notas.</p>
+<div id="7f52c20f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> descenso(alfa, pasos<span class="op">=</span><span class="dv">10</span>):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    w <span class="op">=</span> torch.tensor(<span class="fl">1.0</span>, requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    valores <span class="op">=</span> [w.item()]</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(pasos):</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>        L <span class="op">=</span> (w <span class="op">*</span> <span class="fl">2.0</span> <span class="op">-</span> <span class="fl">10.0</span>) <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>        L.backward()</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>            w <span class="op">-=</span> alfa <span class="op">*</span> w.grad</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>        w.grad.zero_()</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>        valores.append(w.item())</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> valores</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"alfa = 0.05:"</span>, [<span class="bu">round</span>(v, <span class="dv">3</span>) <span class="cf">for</span> v <span class="kw">in</span> descenso(<span class="fl">0.05</span>)[:<span class="dv">4</span>]])</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">6</span>, <span class="fl">3.5</span>))</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> alfa <span class="kw">in</span> [<span class="fl">0.05</span>, <span class="fl">0.3</span>]:</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>    plt.plot(descenso(alfa, <span class="dv">6</span>), <span class="st">"o-"</span>, label<span class="op">=</span><span class="ss">f"alfa = </span><span class="sc">{</span>alfa<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>plt.axhline(<span class="dv">5</span>, c<span class="op">=</span><span class="st">"gray"</span>, ls<span class="op">=</span><span class="st">":"</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">"paso"</span>)<span class="op">;</span> plt.ylabel(<span class="st">"w"</span>)<span class="op">;</span> plt.legend()</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><strong>Pregunta.</strong> Prueba <code>descenso(0.125, 3)</code>. ¿Qué pasa? ¿Y con <code>0.25</code>? ¿Puedes explicarlo? (Pista: el gradiente es <span class="math inline">\(8(w - 5)\)</span>.)</p>
+</section>
+<section id="backpropagation-en-una-red-de-dos-pesos" class="level2">
+<h2 class="anchored" data-anchor-id="backpropagation-en-una-red-de-dos-pesos">2.3 Backpropagation en una red de dos pesos</h2>
+<p>Ahora comprobemos el ejemplo de la sección 3.3 de las notas: <span class="math inline">\(a = \text{ReLU}(w_1 x)\)</span>, <span class="math inline">\(\hat y = w_2 a\)</span>. A mano obtuvimos <span class="math inline">\(\partial L/\partial w_1 = \partial L/\partial w_2 = -32\)</span> con <span class="math inline">\(w_1 = w_2 = 1\)</span>, y 0 para los dos con <span class="math inline">\(w_1 = -1\)</span> (la neurona está apagada).</p>
+<div id="c2a67133" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> w1_inicial <span class="kw">in</span> [<span class="fl">1.0</span>, <span class="op">-</span><span class="fl">1.0</span>]:</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    w1 <span class="op">=</span> torch.tensor(w1_inicial, requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    w2 <span class="op">=</span> torch.tensor(<span class="fl">1.0</span>, requires_grad<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    a <span class="op">=</span> torch.relu(w1 <span class="op">*</span> <span class="fl">2.0</span>)</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    y_hat <span class="op">=</span> w2 <span class="op">*</span> a</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> (y_hat <span class="op">-</span> <span class="fl">10.0</span>) <span class="op">**</span> <span class="dv">2</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    L.backward()</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"w1 = </span><span class="sc">{</span>w1_inicial<span class="sc">:4}</span><span class="ss">:  a = </span><span class="sc">{</span>a<span class="sc">.</span>item()<span class="sc">}</span><span class="ss">,  L = </span><span class="sc">{</span>L<span class="sc">.</span>item()<span class="sc">}</span><span class="ss">,  dL/dw1 = </span><span class="sc">{</span>w1<span class="sc">.</span>grad<span class="sc">.</span>item() <span class="op">+</span> <span class="fl">0.0</span><span class="sc">}</span><span class="ss">,  dL/dw2 = </span><span class="sc">{</span>w2<span class="sc">.</span>grad<span class="sc">.</span>item() <span class="op">+</span> <span class="fl">0.0</span><span class="sc">}</span><span class="ss">"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<hr>
+</section>
+</section>
+<section id="ejercicio-5-entrenar-una-red" class="level1">
+<h1>Ejercicio 5: Entrenar una red</h1>
+<p>Ahora entrenamos una red para XOR <strong>sin darle los pesos</strong>: empieza con pesos al azar y el descenso por gradiente los encuentra. Usamos 8 neuronas ocultas en lugar de 2, porque con tan pocas neuronas a veces alguna queda “apagada” y el entrenamiento se atasca.</p>
+<p>Completa las <strong>5 líneas</strong> del ciclo de entrenamiento (están en la sección 3.4 de las notas):</p>
+<ol type="1">
+<li>borrar los gradientes del paso anterior: <code>optimizador.zero_grad()</code>;</li>
+<li>forward pass: <code>y_hat = modelo(X_xor)</code>;</li>
+<li>pérdida: <code>L = perdida(y_hat, y_xor)</code>;</li>
+<li>backpropagation: <code>L.backward()</code>;</li>
+<li>un paso de descenso por gradiente: <code>optimizador.step()</code>.</li>
+</ol>
+<p>La salida de la red es el score <span class="math inline">\(z\)</span>, sin sigmoide: <code>nn.BCEWithLogitsLoss</code> aplica la sigmoide por nosotros. Por eso la red predice la clase 1 cuando su salida es mayor que 0.</p>
+<details>
+<summary>
+▶ Pista
+</summary>
+El orden importa: si llamas <code>step()</code> antes de <code>backward()</code>, no hay gradiente que usar; y si no llamas <code>zero_grad()</code>, los gradientes de todos los pasos se acumulan.
+</details>
+<div id="d542ebf1" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>torch.manual_seed(<span class="dv">0</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>modelo <span class="op">=</span> nn.Sequential(nn.Linear(<span class="dv">2</span>, <span class="dv">8</span>), nn.ReLU(), nn.Linear(<span class="dv">8</span>, <span class="dv">1</span>))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>perdida <span class="op">=</span> nn.BCEWithLogitsLoss()</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>optimizador <span class="op">=</span> torch.optim.SGD(modelo.parameters(), lr<span class="op">=</span><span class="fl">0.1</span>)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>historia <span class="op">=</span> []</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> paso <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">2000</span>):</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># TU CÓDIGO AQUÍ (5 líneas)</span></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    L <span class="op">=</span> torch.tensor(<span class="fl">0.0</span>)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>    historia.append(L.item())</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"pérdida inicial:"</span>, <span class="bu">round</span>(historia[<span class="dv">0</span>], <span class="dv">3</span>), <span class="st">"  pérdida final:"</span>, <span class="bu">round</span>(historia[<span class="op">-</span><span class="dv">1</span>], <span class="dv">4</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="7154ece9" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Celda de verificación: no la modifiques</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="cf">with</span> torch.no_grad():</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    pred <span class="op">=</span> (modelo(X_xor) <span class="op">&gt;</span> <span class="dv">0</span>).<span class="bu">float</span>()</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>verificar(historia[<span class="op">-</span><span class="dv">1</span>] <span class="op">&lt;</span> historia[<span class="dv">0</span>], <span class="st">"la pérdida bajó durante el entrenamiento"</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>          <span class="st">"la pérdida no bajó: revisa el orden de las 5 líneas"</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>verificar(torch.equal(pred, y_xor), <span class="st">"la red aprendió XOR: acierta en los 4 ejemplos"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>          <span class="ss">f"la red predice </span><span class="sc">{</span>pred<span class="sc">.</span>ravel()<span class="sc">.</span>tolist()<span class="sc">}</span><span class="ss"> y debería predecir [0, 1, 1, 0]. "</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>          <span class="st">"Si la pérdida sí bajó, prueba otra semilla en torch.manual_seed o más pasos"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="31de2bb4" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">3.8</span>))</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].plot(historia)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">0</span>].set_xlabel(<span class="st">"paso"</span>)<span class="op">;</span> axs[<span class="dv">0</span>].set_ylabel(<span class="st">"pérdida"</span>)<span class="op">;</span> axs[<span class="dv">0</span>].set_title(<span class="st">"Pérdida de entrenamiento"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>dibujar_frontera(axs[<span class="dv">1</span>], modelo, X_xor, y_xor, (<span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1.5</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">1.5</span>))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>axs[<span class="dv">1</span>].set_title(<span class="st">"Frontera aprendida"</span>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>La frontera aprendida no es igual a la franja de la sección 2.2 de las notas: hay muchas redes distintas que resuelven XOR, y el entrenamiento encuentra una de ellas.</p>
+<hr>
+</section>
+<section id="ejercicio-6-explorar-opcional" class="level1">
+<h1>Ejercicio 6: Explorar (opcional)</h1>
+<p>La función <code>entrenar</code> entrena una red con una capa oculta sobre los datos de las <strong>lunas</strong> (los de la sección 2.7 de las notas) y dibuja la frontera. No hace falta modificarla: solo cambia los argumentos en la celda de abajo y observa qué pasa.</p>
+<ul>
+<li><code>ocultas</code>: número de neuronas de la capa oculta;</li>
+<li><code>relu</code>: si es <code>False</code>, la capa oculta no tiene activación;</li>
+<li><code>lr</code>: tasa de aprendizaje;</li>
+<li><code>pasos</code>: número de pasos de descenso por gradiente.</li>
+</ul>
+<p>Responde:</p>
+<ol type="1">
+<li>¿Cuántas neuronas ocultas hacen falta para que la frontera deje de ser una recta? ¿Y para separar bien las lunas? Con <code>ocultas=1</code> y la semilla 0, la red predice la misma clase para todos los puntos: ¿qué le pasó a esa neurona? (Revisa el Ejercicio 4 de las notas y prueba con <code>semilla=1</code>.)</li>
+<li>Con <code>relu=False</code> y muchas neuronas, ¿cómo es la frontera? ¿Por qué?</li>
+<li>¿Qué pasa con la pérdida si usas <code>lr=5</code>? ¿Y con <code>lr=0.001</code>?</li>
+</ol>
+<div id="788fa897" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>X_lunas, y_lunas <span class="op">=</span> make_moons(n_samples<span class="op">=</span><span class="dv">200</span>, noise<span class="op">=</span><span class="fl">0.2</span>, random_state<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>X_lunas <span class="op">=</span> torch.tensor(X_lunas, dtype<span class="op">=</span>torch.float32)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>y_lunas <span class="op">=</span> torch.tensor(y_lunas, dtype<span class="op">=</span>torch.float32).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> entrenar(ocultas<span class="op">=</span><span class="dv">8</span>, relu<span class="op">=</span><span class="va">True</span>, lr<span class="op">=</span><span class="fl">0.1</span>, pasos<span class="op">=</span><span class="dv">2000</span>, semilla<span class="op">=</span><span class="dv">0</span>):</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    torch.manual_seed(semilla)</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    capas <span class="op">=</span> [nn.Linear(<span class="dv">2</span>, ocultas)] <span class="op">+</span> ([nn.ReLU()] <span class="cf">if</span> relu <span class="cf">else</span> []) <span class="op">+</span> [nn.Linear(ocultas, <span class="dv">1</span>)]</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>    modelo <span class="op">=</span> nn.Sequential(<span class="op">*</span>capas)</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>    perdida <span class="op">=</span> nn.BCEWithLogitsLoss()</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    optimizador <span class="op">=</span> torch.optim.SGD(modelo.parameters(), lr<span class="op">=</span>lr)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    historia <span class="op">=</span> []</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(pasos):</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>        optimizador.zero_grad()</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>        L <span class="op">=</span> perdida(modelo(X_lunas), y_lunas)</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>        L.backward()</span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>        optimizador.step()</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        historia.append(L.item())</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> torch.no_grad():</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>        exactitud <span class="op">=</span> ((modelo(X_lunas) <span class="op">&gt;</span> <span class="dv">0</span>).<span class="bu">float</span>() <span class="op">==</span> y_lunas).<span class="bu">float</span>().mean().item()</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    n_par <span class="op">=</span> <span class="bu">sum</span>(p.numel() <span class="cf">for</span> p <span class="kw">in</span> modelo.parameters())</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    fig, axs <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">2</span>, figsize<span class="op">=</span>(<span class="dv">10</span>, <span class="fl">3.8</span>))</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">0</span>].plot(historia)</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">0</span>].set_xlabel(<span class="st">"paso"</span>)<span class="op">;</span> axs[<span class="dv">0</span>].set_ylabel(<span class="st">"pérdida"</span>)</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>    dibujar_frontera(axs[<span class="dv">1</span>], modelo, X_lunas, y_lunas, (<span class="op">-</span><span class="fl">1.6</span>, <span class="fl">2.6</span>, <span class="op">-</span><span class="fl">1.2</span>, <span class="fl">1.7</span>), n<span class="op">=</span><span class="dv">200</span>)</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    axs[<span class="dv">1</span>].set_title(<span class="ss">f"</span><span class="sc">{</span>ocultas<span class="sc">}</span><span class="ss"> ocultas, relu=</span><span class="sc">{</span>relu<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>n_par<span class="sc">}</span><span class="ss"> parámetros, exactitud </span><span class="sc">{</span>exactitud<span class="sc">:.0%}</span><span class="ss">"</span>)</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    plt.tight_layout()</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="ec9c0a1f" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>entrenar(ocultas<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div id="c82a6a24" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Prueba otros valores aquí</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>entrenar(ocultas<span class="op">=</span><span class="dv">32</span>, relu<span class="op">=</span><span class="va">True</span>, lr<span class="op">=</span><span class="fl">0.1</span>, pasos<span class="op">=</span><span class="dv">2000</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
