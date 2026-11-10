@@ -18,7 +18,7 @@
     "href": "index.html#notas",
     "title": "Inteligencia Artificial",
     "section": "Notas",
-    "text": "Notas\n\n1. Nociones básicas\n2. Aprendizaje supervisado y regresión lineal\n3. Generalización, selección de modelos y regularización\n4. Clasificación lineal y regresión logística\n5. Máquinas de Soporte Vectorial\n6. Árboles de decisión\n7. Redes neuronales"
+    "text": "Notas\n\n1. Nociones básicas\n2. Aprendizaje supervisado y regresión lineal\n3. Generalización, selección de modelos y regularización\n4. Clasificación lineal y regresión logística\n5. Máquinas de Soporte Vectorial\n6. Árboles de decisión\n7. Redes neuronales\n8. Redes convolucionales"
   },
   {
     "objectID": "index.html#laboratorios",
@@ -210,88 +210,53 @@
     "text": "Preguntas\nResponde brevemente en esta celda.\n\n¿Por qué el RMSE de entrenamiento siempre aumenta al aumentar \\(\\alpha\\)?\n¿Por qué no elegimos \\(\\alpha\\) con el conjunto de prueba?\n¿Qué problema habría si ajustamos StandardScaler con todo X_train antes de llamar a GridSearchCV, en lugar de ponerlo dentro del pipeline?\nSi \\(\\alpha\\) es extremadamente grande, ¿a qué valor tienden las predicciones de Ridge?"
   },
   {
-    "objectID": "labs/04/lab.html",
-    "href": "labs/04/lab.html",
-    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
+    "objectID": "labs/05/lab.html",
+    "href": "labs/05/lab.html",
+    "title": "Clase 7: Redes neuronales. Laboratorio",
     "section": "",
-    "text": "Este notebook tiene dos tipos de secciones:\nSolo se necesita numpy, matplotlib y scikit-learn."
+    "text": "Este notebook tiene dos tipos de secciones:\nLas partes 1 y 2 corresponden a las secciones 2 y 3 de las notas."
   },
   {
-    "objectID": "labs/04/lab.html#preparación",
-    "href": "labs/04/lab.html#preparación",
-    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
+    "objectID": "labs/05/lab.html#preparación",
+    "href": "labs/05/lab.html#preparación",
+    "title": "Clase 7: Redes neuronales. Laboratorio",
     "section": "Preparación",
-    "text": "Preparación\nEsta celda importa las librerías y define los datos y algunas funciones para dibujar. No hace falta que la leas con detalle.\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom matplotlib.colors import ListedColormap\n\nfrom sklearn.datasets import make_moons, make_hastie_10_2\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay\nfrom sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, plot_tree, export_text\nfrom sklearn.ensemble import (\n    BaggingClassifier,\n    RandomForestClassifier,\n    AdaBoostClassifier,\n    GradientBoostingRegressor,\n    HistGradientBoostingClassifier,\n)\n\nC_NEG, C_POS = \"#1f77b4\", \"#d62728\"\nFONDO = ListedColormap([\"#d6e4f2\", \"#f6d5d5\"])\n\n\ndef datos_esqui(m=140, semilla=3):\n    \"\"\"Mes (de 1 a 13) y latitud (de -90 a 90). y = 1 si se puede esquiar.\"\"\"\n    rng = np.random.default_rng(semilla)\n    mes = rng.uniform(1, 13, m)\n    lat = rng.uniform(-90, 90, m)\n    norte = (lat &gt; 30) & ((mes &lt; 3) | (mes &gt;= 12))\n    sur = (lat &lt; -30) & (mes &gt;= 6) & (mes &lt; 9)\n    return np.c_[mes, lat], (norte | sur).astype(int)\n\n\ndef datos_nieve(m=80, semilla=7):\n    \"\"\"Centímetros de nieve por día según el mes (hemisferio norte).\"\"\"\n    rng = np.random.default_rng(semilla)\n    x = np.sort(rng.uniform(1, 13, m))\n    verdad = 20 * np.maximum(0, np.cos(2 * np.pi * (x - 1) / 12)) ** 1.5\n    y = np.maximum(0, verdad + rng.normal(0, 2.5, m))\n    return x.reshape(-1, 1), y\n\n\ndef dibujar_puntos(ax, X, y, tam=20):\n    ax.scatter(X[y == 0, 0], X[y == 0, 1], c=C_NEG, marker=\"o\", s=tam, label=\"negativo\")\n    ax.scatter(X[y == 1, 0], X[y == 1, 1], c=C_POS, marker=\"^\", s=tam, label=\"positivo\")\n\n\ndef dibujar_regiones(ax, predecir, X, y, limites, n=300):\n    \"\"\"Pinta la clase que predice `predecir` en cada punto del plano.\"\"\"\n    x0, x1, y0, y1 = limites\n    xs, ys = np.meshgrid(np.linspace(x0, x1, n), np.linspace(y0, y1, n))\n    Z = predecir(np.c_[xs.ravel(), ys.ravel()]).reshape(xs.shape)\n    ax.contourf(xs, ys, Z, levels=[-0.5, 0.5, 1.5], cmap=FONDO)\n    dibujar_puntos(ax, X, y)\n    ax.set_xlim(x0, x1)\n    ax.set_ylim(y0, y1)\n\n\ndef verificar(condicion, ok, error):\n    print((\"✅ \" + ok) if condicion else (\"❌ \" + error))\n\n\nprint(\"Listo\")"
+    "text": "Preparación\nEsta celda importa las librerías y define algunas funciones para dibujar. No hace falta que la leas con detalle.\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom matplotlib.colors import ListedColormap\n\nimport torch\nfrom torch import nn\nfrom sklearn.datasets import make_moons\n\nC_NEG, C_POS = \"#1f77b4\", \"#d62728\"\nFONDO = ListedColormap([\"#d6e4f2\", \"#f6d5d5\"])\n\n\ndef dibujar_puntos(ax, X, y, tam=30):\n    X, y = np.asarray(X), np.asarray(y).ravel()\n    ax.scatter(X[y == 0, 0], X[y == 0, 1], c=C_NEG, marker=\"o\", s=tam, label=\"clase 0\")\n    ax.scatter(X[y == 1, 0], X[y == 1, 1], c=C_POS, marker=\"^\", s=tam, label=\"clase 1\")\n\n\ndef dibujar_frontera(ax, modelo, X, y, limites, n=300):\n    \"\"\"Pinta la clase que predice el modelo (salida &gt; 0, es decir, probabilidad &gt; 0.5).\"\"\"\n    x0, x1, y0, y1 = limites\n    xs, ys = np.meshgrid(np.linspace(x0, x1, n), np.linspace(y0, y1, n))\n    P = torch.tensor(np.c_[xs.ravel(), ys.ravel()], dtype=torch.float32)\n    with torch.no_grad():\n        Z = (modelo(P) &gt; 0).float().numpy().reshape(xs.shape)\n    ax.contourf(xs, ys, Z, levels=[-0.5, 0.5, 1.5], cmap=FONDO)\n    dibujar_puntos(ax, X, y)\n    ax.set_xlim(x0, x1)\n    ax.set_ylim(y0, y1)\n\n\ndef verificar(condicion, ok, error):\n    print((\"✅ \" + ok) if condicion else (\"❌ \" + error))\n\n\nprint(\"Listo. PyTorch\", torch.__version__)"
   },
   {
-    "objectID": "labs/04/lab.html#los-datos",
-    "href": "labs/04/lab.html#los-datos",
-    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
-    "section": "1.1 Los datos",
-    "text": "1.1 Los datos\nUsamos el ejemplo del esquí de las notas: dos features, el mes (de 1 a 13, donde 1 es el inicio de enero) y la latitud (de −90° a 90°). La etiqueta es 1 si se puede esquiar.\nEn scikit-learn los datos siempre tienen la misma forma: - X es una matriz de \\(m \\times d\\): una fila por ejemplo, una columna por feature. - y es un vector de largo \\(m\\) con las etiquetas.\n\nX, y = datos_esqui(m=400)\nprint(\"X:\", X.shape, \" y:\", y.shape)\nprint(\"Primeros 3 ejemplos:\\n\", X[:3].round(1), y[:3])\nprint(f\"Positivos: {y.sum()} de {len(y)}\")\n\nfig, ax = plt.subplots(figsize=(6, 4))\ndibujar_puntos(ax, X, y)\nax.set_xlabel(\"mes\"); ax.set_ylabel(\"latitud\"); ax.legend()\nplt.show()\n\nSeparamos los datos en entrenamiento (para ajustar el modelo) y prueba (para medir qué tan bien generaliza). stratify=y hace que las dos partes tengan la misma proporción de positivos, lo que es importante cuando una clase es poco frecuente.\n\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.3, stratify=y, random_state=0)\nprint(\"Entrenamiento:\", X_tr.shape, \" Prueba:\", X_te.shape)"
+    "objectID": "labs/05/lab.html#tensores",
+    "href": "labs/05/lab.html#tensores",
+    "title": "Clase 7: Redes neuronales. Laboratorio",
+    "section": "1.1 Tensores",
+    "text": "1.1 Tensores\nEn PyTorch los datos se guardan en tensores, que funcionan casi igual que los arreglos de NumPy. Igual que en scikit-learn, los ejemplos van en las filas: X es de \\(m \\times n\\) (un ejemplo por fila) y y es de \\(m \\times 1\\).\nPyTorch trabaja por defecto con números float32, por eso escribimos 0. en lugar de 0.\n\nX_xor = torch.tensor([[0., 0.],\n                      [0., 1.],\n                      [1., 0.],\n                      [1., 1.]])\ny_xor = torch.tensor([[0.], [1.], [1.], [0.]])\nprint(\"X:\", X_xor.shape, \" y:\", y_xor.shape)"
   },
   {
-    "objectID": "labs/04/lab.html#entrenar-un-árbol",
-    "href": "labs/04/lab.html#entrenar-un-árbol",
-    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
-    "section": "1.2 Entrenar un árbol",
-    "text": "1.2 Entrenar un árbol\nTodos los modelos de scikit-learn se usan igual:\n\nSe crea el modelo con sus hiperparámetros: modelo = DecisionTreeClassifier(...).\nSe entrena: modelo.fit(X, y).\nSe predice: modelo.predict(X_nuevo).\n\nLos hiperparámetros más importantes de DecisionTreeClassifier son:\n\n\n\nParámetro\nQué hace\nValor por defecto\n\n\n\n\ncriterion\nMedida de impureza: \"gini\" o \"entropy\"\n\"gini\"\n\n\nmax_depth\nProfundidad máxima\nNone (sin límite)\n\n\nmin_samples_leaf\nMínimo de ejemplos por hoja\n1\n\n\nccp_alpha\nIntensidad de la poda\n0 (sin poda)\n\n\nrandom_state\nSemilla (en empates se escoge al azar)\nNone\n\n\n\n\narbol = DecisionTreeClassifier(max_depth=4, random_state=0)\narbol.fit(X_tr, y_tr)\nprint(\"Hojas:\", arbol.get_n_leaves(), \" Profundidad:\", arbol.get_depth())"
+    "objectID": "labs/05/lab.html#una-neurona",
+    "href": "labs/05/lab.html#una-neurona",
+    "title": "Clase 7: Redes neuronales. Laboratorio",
+    "section": "1.2 Una neurona",
+    "text": "1.2 Una neurona\nUna capa densa (totalmente conectada) es nn.Linear(n_entradas, n_salidas). Con n_salidas = 1 es una sola neurona: calcula \\(z = \\mathbf{w}^T\\mathbf{x} + b\\). Si le aplicamos la sigmoide, es exactamente la regresión logística de la clase 4.\nPyTorch inicializa los pesos al azar. Para ver qué hace la neurona, le ponemos pesos a mano: con \\(\\mathbf{w} = (1, 1)\\) y \\(b = -1.5\\), el score solo es positivo si las dos entradas son 1.\nFíjate en la forma de weight: es de (salidas × entradas). Cada fila son los pesos de una neurona.\n\nneurona = nn.Linear(2, 1)\nprint(\"pesos:\", neurona.weight.shape, \" sesgo:\", neurona.bias.shape)\n\nwith torch.no_grad():                      # no queremos que PyTorch registre esto para el gradiente\n    neurona.weight.copy_(torch.tensor([[1., 1.]]))\n    neurona.bias.copy_(torch.tensor([-1.5]))\n\nz = neurona(X_xor)\nprint(\"scores z:\", z.detach().ravel().tolist())\nprint(\"probabilidades:\", [round(p, 2) for p in torch.sigmoid(z).ravel().tolist()])\n\nEsta neurona calcula el AND (y lógico): solo el ejemplo \\((1, 1)\\) tiene probabilidad mayor que 0.5. Con otros pesos podríamos obtener el OR. Pero ningún par de pesos da el XOR, porque la frontera de una neurona es una recta."
   },
   {
-    "objectID": "labs/04/lab.html#ver-el-árbol",
-    "href": "labs/04/lab.html#ver-el-árbol",
-    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
-    "section": "1.3 Ver el árbol",
-    "text": "1.3 Ver el árbol\nUna gran ventaja de los árboles es que se pueden leer. Hay dos formas: dibujarlo con plot_tree o imprimirlo con export_text.\nEn cada nodo, plot_tree muestra la pregunta, la impureza de Gini, el número de ejemplos (samples), cuántos hay de cada clase (value = [negativos, positivos]) y la clase mayoritaria. Si la respuesta a la pregunta es verdadera, se sigue la rama izquierda.\n\nfig, ax = plt.subplots(figsize=(14, 6))\nplot_tree(arbol, feature_names=[\"mes\", \"latitud\"], class_names=[\"no\", \"sí\"], filled=True, rounded=True, ax=ax, fontsize=9)\nplt.show()"
+    "objectID": "labs/05/lab.html#autograd",
+    "href": "labs/05/lab.html#autograd",
+    "title": "Clase 7: Redes neuronales. Laboratorio",
+    "section": "2.1 Autograd",
+    "text": "2.1 Autograd\nPyTorch puede calcular derivadas automáticamente. Si un tensor se crea con requires_grad=True, PyTorch registra todas las operaciones que se hacen con él. Al llamar .backward() sobre un resultado, recorre esas operaciones hacia atrás (backpropagation) y guarda la derivada de ese resultado respecto al tensor en el atributo .grad."
   },
   {
-    "objectID": "labs/04/lab.html#predecir",
-    "href": "labs/04/lab.html#predecir",
-    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
-    "section": "1.4 Predecir",
-    "text": "1.4 Predecir\npredict devuelve la clase y predict_proba la proporción de cada clase en la hoja donde cae el punto. Probemos con tres lugares: Canadá en febrero, el Ecuador en julio y Chile en julio.\n\nnuevos = np.array([[2.5, 55],    # Canadá, mediados de febrero\n                   [7.5, 0],     # Ecuador, julio\n                   [7.5, -40]])  # Chile, julio\nprint(\"Clase predicha:\", arbol.predict(nuevos))\nprint(\"Probabilidades [no, sí]:\\n\", arbol.predict_proba(nuevos).round(2))"
+    "objectID": "labs/05/lab.html#descenso-por-gradiente-a-mano",
+    "href": "labs/05/lab.html#descenso-por-gradiente-a-mano",
+    "title": "Clase 7: Redes neuronales. Laboratorio",
+    "section": "2.2 Descenso por gradiente a mano",
+    "text": "2.2 Descenso por gradiente a mano\nCon backward() ya podemos hacer descenso por gradiente: calcular el gradiente, restarle \\(\\alpha\\) veces el gradiente al peso, y repetir. Dos detalles de PyTorch:\n\nLa actualización se hace dentro de torch.no_grad(), porque no queremos que PyTorch la registre como parte del cálculo de la pérdida.\nPyTorch suma los gradientes de cada backward() a lo que ya hay en .grad. Por eso hay que borrarlo en cada paso con w.grad.zero_().\n\nCompara los primeros valores con tu tabla del Ejercicio 3 de las notas.\n\ndef descenso(alfa, pasos=10):\n    w = torch.tensor(1.0, requires_grad=True)\n    valores = [w.item()]\n    for _ in range(pasos):\n        L = (w * 2.0 - 10.0) ** 2\n        L.backward()\n        with torch.no_grad():\n            w -= alfa * w.grad\n        w.grad.zero_()\n        valores.append(w.item())\n    return valores\n\n\nprint(\"alfa = 0.05:\", [round(v, 3) for v in descenso(0.05)[:4]])\n\nplt.figure(figsize=(6, 3.5))\nfor alfa in [0.05, 0.3]:\n    plt.plot(descenso(alfa, 6), \"o-\", label=f\"alfa = {alfa}\")\nplt.axhline(5, c=\"gray\", ls=\":\")\nplt.xlabel(\"paso\"); plt.ylabel(\"w\"); plt.legend()\nplt.show()\n\nPregunta. Prueba descenso(0.125, 3). ¿Qué pasa? ¿Y con 0.25? ¿Puedes explicarlo? (Pista: el gradiente es \\(8(w - 5)\\).)"
   },
   {
-    "objectID": "labs/04/lab.html#evaluar-exactitud-y-matriz-de-confusión",
-    "href": "labs/04/lab.html#evaluar-exactitud-y-matriz-de-confusión",
-    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
-    "section": "1.5 Evaluar: exactitud y matriz de confusión",
-    "text": "1.5 Evaluar: exactitud y matriz de confusión\nLa exactitud (accuracy) es la fracción de ejemplos bien clasificados. Cuando una clase es poco frecuente puede engañar: aquí solo uno de cada cinco ejemplos es positivo, así que un “modelo” que siempre dice “no se puede esquiar” ya tiene ~80% de exactitud.\nLa matriz de confusión da más información. Las filas son la clase real y las columnas la predicha:\n\n\n\n\n\n\n\n\n\npredice “no”\npredice “sí”\n\n\n\n\nen realidad “no”\nverdaderos negativos\nfalsos positivos: decimos que se puede esquiar y no se puede\n\n\nen realidad “sí”\nfalsos negativos: nos perdemos un buen día de esquí\nverdaderos positivos\n\n\n\n\nprint(f\"Exactitud: entrenamiento {arbol.score(X_tr, y_tr):.1%}, prueba {arbol.score(X_te, y_te):.1%}\")\nprint(f\"Siempre decir 'no' tendría exactitud {1 - y_te.mean():.1%} en prueba\")\n\nfig, axs = plt.subplots(1, 2, figsize=(9, 3.6))\nfor ax, (Xs, ys, nombre) in zip(axs, [(X_tr, y_tr, \"Entrenamiento\"), (X_te, y_te, \"Prueba\")]):\n    ConfusionMatrixDisplay.from_estimator(arbol, Xs, ys, display_labels=[\"no\", \"sí\"], cmap=\"Blues\", colorbar=False, ax=ax)\n    ax.set_title(nombre)\nplt.tight_layout()\nplt.show()"
-  },
-  {
-    "objectID": "labs/04/lab.html#las-regiones-del-árbol",
-    "href": "labs/04/lab.html#las-regiones-del-árbol",
-    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
-    "section": "1.6 Las regiones del árbol",
-    "text": "1.6 Las regiones del árbol\nComo cada pregunta compara una feature con un umbral, las regiones son rectángulos. Probemos varias profundidades. ¿Con qué profundidad el árbol ya encuentra las tres zonas donde se puede esquiar?\n\nfig, axs = plt.subplots(1, 3, figsize=(15, 4))\nfor ax, prof in zip(axs, [2, 4, None]):\n    a = DecisionTreeClassifier(max_depth=prof, random_state=0).fit(X_tr, y_tr)\n    dibujar_regiones(ax, a.predict, X_tr, y_tr, (1, 13, -90, 90))\n    ax.set_title(f\"max_depth={prof}: {a.get_n_leaves()} hojas, prueba {a.score(X_te, y_te):.0%}\")\n    ax.set_xlabel(\"mes\"); ax.set_ylabel(\"latitud\")\nplt.tight_layout()\nplt.show()\n\nGini vs. entropía. Como vimos en clase, casi siempre producen el mismo árbol:\n\nfor criterio in [\"gini\", \"entropy\"]:\n    a = DecisionTreeClassifier(criterion=criterio, max_depth=4, random_state=0).fit(X_tr, y_tr)\n    print(f\"{criterio:8s} raíz: feature {['mes', 'latitud'][a.tree_.feature[0]]} &lt; {a.tree_.threshold[0]:.2f}   prueba: {a.score(X_te, y_te):.1%}\")"
-  },
-  {
-    "objectID": "READINGS.html",
-    "href": "READINGS.html",
-    "title": "Material de estudio semanal",
-    "section": "",
-    "text": "En este archivo se listan los materiales de estudio de cada semana. El estudiante debe revisar los materiales antes de cada clase.\n\n\n\nVer: StatQuest with Josh Starmer. A Gentle Introduction to Machine Learning (Una introducción ligera al aprendizaje automático)\n\n\n\n\n\nVer o leer alguno de los siguientes materiales:\n\nISLP 25-34 pp (desde la sección 2.1.4.)\nStatQuest with Josh Starmer. Machine Learning Fundamentals: Bias And Variance (Fundamentos del aprendizaje automático: sesgo y varianza)\n\nLeer: MIT. Intro to Machine Learning. Apendix A: Matrix Calculus (Introducción al aprendizaje automático. Apéndice A: Cálculo matricial) (Secciones A.1, A.2, A.3 y A.4, opcionalmente A.5, A.6, A.7)\n\n\n\n\n\nVer los siguientes videos:\n\nStatQuest with Josh Starmer. Regularization Part 1: Ridge (L2) Regression\nStatQuest with Josh Starmer. Regularization Part 2: Lasso (L1) Regression\nDeberían familiarizarse con el concepto de Validación Cruzada (Cross Validation). Pueden ver el siguiente video: StatQuest with Josh Starmer. Machine Learning Fundamentals: Cross Validation\n\nOpcionalmente, leer: MIT. Intro to Machine Learning. Regression (Secciones 2.6 y 2.7)"
-  },
-  {
-    "objectID": "READINGS.html#semana-1",
-    "href": "READINGS.html#semana-1",
-    "title": "Material de estudio semanal",
-    "section": "",
-    "text": "Ver: StatQuest with Josh Starmer. A Gentle Introduction to Machine Learning (Una introducción ligera al aprendizaje automático)"
-  },
-  {
-    "objectID": "READINGS.html#semana-2",
-    "href": "READINGS.html#semana-2",
-    "title": "Material de estudio semanal",
-    "section": "",
-    "text": "Ver o leer alguno de los siguientes materiales:\n\nISLP 25-34 pp (desde la sección 2.1.4.)\nStatQuest with Josh Starmer. Machine Learning Fundamentals: Bias And Variance (Fundamentos del aprendizaje automático: sesgo y varianza)\n\nLeer: MIT. Intro to Machine Learning. Apendix A: Matrix Calculus (Introducción al aprendizaje automático. Apéndice A: Cálculo matricial) (Secciones A.1, A.2, A.3 y A.4, opcionalmente A.5, A.6, A.7)"
-  },
-  {
-    "objectID": "READINGS.html#semana-3",
-    "href": "READINGS.html#semana-3",
-    "title": "Material de estudio semanal",
-    "section": "",
-    "text": "Ver los siguientes videos:\n\nStatQuest with Josh Starmer. Regularization Part 1: Ridge (L2) Regression\nStatQuest with Josh Starmer. Regularization Part 2: Lasso (L1) Regression\nDeberían familiarizarse con el concepto de Validación Cruzada (Cross Validation). Pueden ver el siguiente video: StatQuest with Josh Starmer. Machine Learning Fundamentals: Cross Validation\n\nOpcionalmente, leer: MIT. Intro to Machine Learning. Regression (Secciones 2.6 y 2.7)"
+    "objectID": "labs/05/lab.html#backpropagation-en-una-red-de-dos-pesos",
+    "href": "labs/05/lab.html#backpropagation-en-una-red-de-dos-pesos",
+    "title": "Clase 7: Redes neuronales. Laboratorio",
+    "section": "2.3 Backpropagation en una red de dos pesos",
+    "text": "2.3 Backpropagation en una red de dos pesos\nAhora comprobemos el ejemplo de la sección 3.3 de las notas: \\(a = \\text{ReLU}(w_1 x)\\), \\(\\hat y = w_2 a\\). A mano obtuvimos \\(\\partial L/\\partial w_1 = \\partial L/\\partial w_2 = -32\\) con \\(w_1 = w_2 = 1\\), y 0 para los dos con \\(w_1 = -1\\) (la neurona está apagada).\n\nfor w1_inicial in [1.0, -1.0]:\n    w1 = torch.tensor(w1_inicial, requires_grad=True)\n    w2 = torch.tensor(1.0, requires_grad=True)\n    a = torch.relu(w1 * 2.0)\n    y_hat = w2 * a\n    L = (y_hat - 10.0) ** 2\n    L.backward()\n    print(f\"w1 = {w1_inicial:4}:  a = {a.item()},  L = {L.item()},  dL/dw1 = {w1.grad.item() + 0.0},  dL/dw2 = {w2.grad.item() + 0.0}\")"
   },
   {
     "objectID": "labs/01/lab.html",
@@ -350,53 +315,172 @@
     "text": "6. Regresión lineal con scikit-learn\ndf.drop(columns=...) devuelve el DataFrame sin las columnas indicadas; así separamos las características (X) del precio que queremos predecir (y).\nLa función train_test_split() divide los datos: test_size=0.2 reserva 20 % para prueba y random_state=42 permite repetir la misma división.\nLinearRegression() crea el modelo. Su método fit(X, y) aprende con los datos de entrenamiento y predict(X) genera predicciones para datos nuevos.\n\nfrom sklearn.linear_model import LinearRegression\nfrom sklearn.model_selection import train_test_split\n\nX = df.drop(columns=\"House_Price\")\ny = df[\"House_Price\"]\n\nX_train, X_test, y_train, y_test = train_test_split(\n    X, y, test_size=0.2, random_state=42\n)\n\nmodelo = LinearRegression()\nmodelo.fit(X_train, y_train)\npredicciones = modelo.predict(X_test)\n\n\nEvaluación\nLa función mean_squared_error(reales, predicciones) calcula el promedio de los errores elevados al cuadrado.\nnp.sqrt() obtiene su raíz cuadrada para producir el RMSE.\nr2_score(reales, predicciones) calcula R²: la proporción de variación explicada; un valor cercano a 1 indica un mejor ajuste.\n\nfrom sklearn.metrics import mean_squared_error, r2_score\n\nrmse = np.sqrt(mean_squared_error(y_test, predicciones))\nr2 = r2_score(y_test, predicciones)\nprint(f\"RMSE: {rmse:,.2f}\")\nprint(f\"R²: {r2:.3f}\")\n\nRMSE: 10,071.48\nR²: 0.998\n\n\n\n\nCoeficientes\nEl atributo coef_ contiene un coeficiente por característica de la ecuación lineal.\npd.Series(valores, index=...) los presenta con el nombre de cada característica.\n\npd.Series(modelo.coef_, index=X.columns, name=\"Coeficiente\").round(2)\n\nSquare_Footage            199.51\nNum_Bedrooms            10225.20\nNum_Bathrooms            8208.43\nYear_Built                993.54\nLot_Size                14885.38\nGarage_Size              5146.15\nNeighborhood_Quality      115.07\nName: Coeficiente, dtype: float64\n\n\n\n\nAhora tú: modelo\n\nQuita una característica de X con drop(columns=...).\nDivide y entrena nuevamente el modelo.\nCalcula el nuevo RMSE y R².\nCompara los resultados: ¿mejoraron o empeoraron?\n\n\n# Escribe tu solución aquí"
   },
   {
-    "objectID": "labs/05/lab.html",
-    "href": "labs/05/lab.html",
-    "title": "Clase 7: Redes neuronales. Laboratorio",
+    "objectID": "READINGS.html",
+    "href": "READINGS.html",
+    "title": "Material de estudio semanal",
     "section": "",
-    "text": "Este notebook tiene dos tipos de secciones:\nLas partes 1 y 2 corresponden a las secciones 2 y 3 de las notas."
+    "text": "En este archivo se listan los materiales de estudio de cada semana. El estudiante debe revisar los materiales antes de cada clase.\n\n\n\nVer: StatQuest with Josh Starmer. A Gentle Introduction to Machine Learning (Una introducción ligera al aprendizaje automático)\n\n\n\n\n\nVer o leer alguno de los siguientes materiales:\n\nISLP 25-34 pp (desde la sección 2.1.4.)\nStatQuest with Josh Starmer. Machine Learning Fundamentals: Bias And Variance (Fundamentos del aprendizaje automático: sesgo y varianza)\n\nLeer: MIT. Intro to Machine Learning. Apendix A: Matrix Calculus (Introducción al aprendizaje automático. Apéndice A: Cálculo matricial) (Secciones A.1, A.2, A.3 y A.4, opcionalmente A.5, A.6, A.7)\n\n\n\n\n\nVer los siguientes videos:\n\nStatQuest with Josh Starmer. Regularization Part 1: Ridge (L2) Regression\nStatQuest with Josh Starmer. Regularization Part 2: Lasso (L1) Regression\nDeberían familiarizarse con el concepto de Validación Cruzada (Cross Validation). Pueden ver el siguiente video: StatQuest with Josh Starmer. Machine Learning Fundamentals: Cross Validation\n\nOpcionalmente, leer: MIT. Intro to Machine Learning. Regression (Secciones 2.6 y 2.7)"
   },
   {
-    "objectID": "labs/05/lab.html#preparación",
-    "href": "labs/05/lab.html#preparación",
-    "title": "Clase 7: Redes neuronales. Laboratorio",
+    "objectID": "READINGS.html#semana-1",
+    "href": "READINGS.html#semana-1",
+    "title": "Material de estudio semanal",
+    "section": "",
+    "text": "Ver: StatQuest with Josh Starmer. A Gentle Introduction to Machine Learning (Una introducción ligera al aprendizaje automático)"
+  },
+  {
+    "objectID": "READINGS.html#semana-2",
+    "href": "READINGS.html#semana-2",
+    "title": "Material de estudio semanal",
+    "section": "",
+    "text": "Ver o leer alguno de los siguientes materiales:\n\nISLP 25-34 pp (desde la sección 2.1.4.)\nStatQuest with Josh Starmer. Machine Learning Fundamentals: Bias And Variance (Fundamentos del aprendizaje automático: sesgo y varianza)\n\nLeer: MIT. Intro to Machine Learning. Apendix A: Matrix Calculus (Introducción al aprendizaje automático. Apéndice A: Cálculo matricial) (Secciones A.1, A.2, A.3 y A.4, opcionalmente A.5, A.6, A.7)"
+  },
+  {
+    "objectID": "READINGS.html#semana-3",
+    "href": "READINGS.html#semana-3",
+    "title": "Material de estudio semanal",
+    "section": "",
+    "text": "Ver los siguientes videos:\n\nStatQuest with Josh Starmer. Regularization Part 1: Ridge (L2) Regression\nStatQuest with Josh Starmer. Regularization Part 2: Lasso (L1) Regression\nDeberían familiarizarse con el concepto de Validación Cruzada (Cross Validation). Pueden ver el siguiente video: StatQuest with Josh Starmer. Machine Learning Fundamentals: Cross Validation\n\nOpcionalmente, leer: MIT. Intro to Machine Learning. Regression (Secciones 2.6 y 2.7)"
+  },
+  {
+    "objectID": "labs/04/lab.html",
+    "href": "labs/04/lab.html",
+    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
+    "section": "",
+    "text": "Este notebook tiene dos tipos de secciones:\nSolo se necesita numpy, matplotlib y scikit-learn."
+  },
+  {
+    "objectID": "labs/04/lab.html#preparación",
+    "href": "labs/04/lab.html#preparación",
+    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
     "section": "Preparación",
-    "text": "Preparación\nEsta celda importa las librerías y define algunas funciones para dibujar. No hace falta que la leas con detalle.\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom matplotlib.colors import ListedColormap\n\nimport torch\nfrom torch import nn\nfrom sklearn.datasets import make_moons\n\nC_NEG, C_POS = \"#1f77b4\", \"#d62728\"\nFONDO = ListedColormap([\"#d6e4f2\", \"#f6d5d5\"])\n\n\ndef dibujar_puntos(ax, X, y, tam=30):\n    X, y = np.asarray(X), np.asarray(y).ravel()\n    ax.scatter(X[y == 0, 0], X[y == 0, 1], c=C_NEG, marker=\"o\", s=tam, label=\"clase 0\")\n    ax.scatter(X[y == 1, 0], X[y == 1, 1], c=C_POS, marker=\"^\", s=tam, label=\"clase 1\")\n\n\ndef dibujar_frontera(ax, modelo, X, y, limites, n=300):\n    \"\"\"Pinta la clase que predice el modelo (salida &gt; 0, es decir, probabilidad &gt; 0.5).\"\"\"\n    x0, x1, y0, y1 = limites\n    xs, ys = np.meshgrid(np.linspace(x0, x1, n), np.linspace(y0, y1, n))\n    P = torch.tensor(np.c_[xs.ravel(), ys.ravel()], dtype=torch.float32)\n    with torch.no_grad():\n        Z = (modelo(P) &gt; 0).float().numpy().reshape(xs.shape)\n    ax.contourf(xs, ys, Z, levels=[-0.5, 0.5, 1.5], cmap=FONDO)\n    dibujar_puntos(ax, X, y)\n    ax.set_xlim(x0, x1)\n    ax.set_ylim(y0, y1)\n\n\ndef verificar(condicion, ok, error):\n    print((\"✅ \" + ok) if condicion else (\"❌ \" + error))\n\n\nprint(\"Listo. PyTorch\", torch.__version__)"
+    "text": "Preparación\nEsta celda importa las librerías y define los datos y algunas funciones para dibujar. No hace falta que la leas con detalle.\n\nimport numpy as np\nimport matplotlib.pyplot as plt\nfrom matplotlib.colors import ListedColormap\n\nfrom sklearn.datasets import make_moons, make_hastie_10_2\nfrom sklearn.model_selection import train_test_split\nfrom sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay\nfrom sklearn.tree import DecisionTreeClassifier, DecisionTreeRegressor, plot_tree, export_text\nfrom sklearn.ensemble import (\n    BaggingClassifier,\n    RandomForestClassifier,\n    AdaBoostClassifier,\n    GradientBoostingRegressor,\n    HistGradientBoostingClassifier,\n)\n\nC_NEG, C_POS = \"#1f77b4\", \"#d62728\"\nFONDO = ListedColormap([\"#d6e4f2\", \"#f6d5d5\"])\n\n\ndef datos_esqui(m=140, semilla=3):\n    \"\"\"Mes (de 1 a 13) y latitud (de -90 a 90). y = 1 si se puede esquiar.\"\"\"\n    rng = np.random.default_rng(semilla)\n    mes = rng.uniform(1, 13, m)\n    lat = rng.uniform(-90, 90, m)\n    norte = (lat &gt; 30) & ((mes &lt; 3) | (mes &gt;= 12))\n    sur = (lat &lt; -30) & (mes &gt;= 6) & (mes &lt; 9)\n    return np.c_[mes, lat], (norte | sur).astype(int)\n\n\ndef datos_nieve(m=80, semilla=7):\n    \"\"\"Centímetros de nieve por día según el mes (hemisferio norte).\"\"\"\n    rng = np.random.default_rng(semilla)\n    x = np.sort(rng.uniform(1, 13, m))\n    verdad = 20 * np.maximum(0, np.cos(2 * np.pi * (x - 1) / 12)) ** 1.5\n    y = np.maximum(0, verdad + rng.normal(0, 2.5, m))\n    return x.reshape(-1, 1), y\n\n\ndef dibujar_puntos(ax, X, y, tam=20):\n    ax.scatter(X[y == 0, 0], X[y == 0, 1], c=C_NEG, marker=\"o\", s=tam, label=\"negativo\")\n    ax.scatter(X[y == 1, 0], X[y == 1, 1], c=C_POS, marker=\"^\", s=tam, label=\"positivo\")\n\n\ndef dibujar_regiones(ax, predecir, X, y, limites, n=300):\n    \"\"\"Pinta la clase que predice `predecir` en cada punto del plano.\"\"\"\n    x0, x1, y0, y1 = limites\n    xs, ys = np.meshgrid(np.linspace(x0, x1, n), np.linspace(y0, y1, n))\n    Z = predecir(np.c_[xs.ravel(), ys.ravel()]).reshape(xs.shape)\n    ax.contourf(xs, ys, Z, levels=[-0.5, 0.5, 1.5], cmap=FONDO)\n    dibujar_puntos(ax, X, y)\n    ax.set_xlim(x0, x1)\n    ax.set_ylim(y0, y1)\n\n\ndef verificar(condicion, ok, error):\n    print((\"✅ \" + ok) if condicion else (\"❌ \" + error))\n\n\nprint(\"Listo\")"
   },
   {
-    "objectID": "labs/05/lab.html#tensores",
-    "href": "labs/05/lab.html#tensores",
-    "title": "Clase 7: Redes neuronales. Laboratorio",
-    "section": "1.1 Tensores",
-    "text": "1.1 Tensores\nEn PyTorch los datos se guardan en tensores, que funcionan casi igual que los arreglos de NumPy. Igual que en scikit-learn, los ejemplos van en las filas: X es de \\(m \\times n\\) (un ejemplo por fila) y y es de \\(m \\times 1\\).\nPyTorch trabaja por defecto con números float32, por eso escribimos 0. en lugar de 0.\n\nX_xor = torch.tensor([[0., 0.],\n                      [0., 1.],\n                      [1., 0.],\n                      [1., 1.]])\ny_xor = torch.tensor([[0.], [1.], [1.], [0.]])\nprint(\"X:\", X_xor.shape, \" y:\", y_xor.shape)"
+    "objectID": "labs/04/lab.html#los-datos",
+    "href": "labs/04/lab.html#los-datos",
+    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
+    "section": "1.1 Los datos",
+    "text": "1.1 Los datos\nUsamos el ejemplo del esquí de las notas: dos features, el mes (de 1 a 13, donde 1 es el inicio de enero) y la latitud (de −90° a 90°). La etiqueta es 1 si se puede esquiar.\nEn scikit-learn los datos siempre tienen la misma forma: - X es una matriz de \\(m \\times d\\): una fila por ejemplo, una columna por feature. - y es un vector de largo \\(m\\) con las etiquetas.\n\nX, y = datos_esqui(m=400)\nprint(\"X:\", X.shape, \" y:\", y.shape)\nprint(\"Primeros 3 ejemplos:\\n\", X[:3].round(1), y[:3])\nprint(f\"Positivos: {y.sum()} de {len(y)}\")\n\nfig, ax = plt.subplots(figsize=(6, 4))\ndibujar_puntos(ax, X, y)\nax.set_xlabel(\"mes\"); ax.set_ylabel(\"latitud\"); ax.legend()\nplt.show()\n\nSeparamos los datos en entrenamiento (para ajustar el modelo) y prueba (para medir qué tan bien generaliza). stratify=y hace que las dos partes tengan la misma proporción de positivos, lo que es importante cuando una clase es poco frecuente.\n\nX_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.3, stratify=y, random_state=0)\nprint(\"Entrenamiento:\", X_tr.shape, \" Prueba:\", X_te.shape)"
   },
   {
-    "objectID": "labs/05/lab.html#una-neurona",
-    "href": "labs/05/lab.html#una-neurona",
-    "title": "Clase 7: Redes neuronales. Laboratorio",
-    "section": "1.2 Una neurona",
-    "text": "1.2 Una neurona\nUna capa densa (totalmente conectada) es nn.Linear(n_entradas, n_salidas). Con n_salidas = 1 es una sola neurona: calcula \\(z = \\mathbf{w}^T\\mathbf{x} + b\\). Si le aplicamos la sigmoide, es exactamente la regresión logística de la clase 4.\nPyTorch inicializa los pesos al azar. Para ver qué hace la neurona, le ponemos pesos a mano: con \\(\\mathbf{w} = (1, 1)\\) y \\(b = -1.5\\), el score solo es positivo si las dos entradas son 1.\nFíjate en la forma de weight: es de (salidas × entradas). Cada fila son los pesos de una neurona.\n\nneurona = nn.Linear(2, 1)\nprint(\"pesos:\", neurona.weight.shape, \" sesgo:\", neurona.bias.shape)\n\nwith torch.no_grad():                      # no queremos que PyTorch registre esto para el gradiente\n    neurona.weight.copy_(torch.tensor([[1., 1.]]))\n    neurona.bias.copy_(torch.tensor([-1.5]))\n\nz = neurona(X_xor)\nprint(\"scores z:\", z.detach().ravel().tolist())\nprint(\"probabilidades:\", [round(p, 2) for p in torch.sigmoid(z).ravel().tolist()])\n\nEsta neurona calcula el AND (y lógico): solo el ejemplo \\((1, 1)\\) tiene probabilidad mayor que 0.5. Con otros pesos podríamos obtener el OR. Pero ningún par de pesos da el XOR, porque la frontera de una neurona es una recta."
+    "objectID": "labs/04/lab.html#entrenar-un-árbol",
+    "href": "labs/04/lab.html#entrenar-un-árbol",
+    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
+    "section": "1.2 Entrenar un árbol",
+    "text": "1.2 Entrenar un árbol\nTodos los modelos de scikit-learn se usan igual:\n\nSe crea el modelo con sus hiperparámetros: modelo = DecisionTreeClassifier(...).\nSe entrena: modelo.fit(X, y).\nSe predice: modelo.predict(X_nuevo).\n\nLos hiperparámetros más importantes de DecisionTreeClassifier son:\n\n\n\nParámetro\nQué hace\nValor por defecto\n\n\n\n\ncriterion\nMedida de impureza: \"gini\" o \"entropy\"\n\"gini\"\n\n\nmax_depth\nProfundidad máxima\nNone (sin límite)\n\n\nmin_samples_leaf\nMínimo de ejemplos por hoja\n1\n\n\nccp_alpha\nIntensidad de la poda\n0 (sin poda)\n\n\nrandom_state\nSemilla (en empates se escoge al azar)\nNone\n\n\n\n\narbol = DecisionTreeClassifier(max_depth=4, random_state=0)\narbol.fit(X_tr, y_tr)\nprint(\"Hojas:\", arbol.get_n_leaves(), \" Profundidad:\", arbol.get_depth())"
   },
   {
-    "objectID": "labs/05/lab.html#autograd",
-    "href": "labs/05/lab.html#autograd",
-    "title": "Clase 7: Redes neuronales. Laboratorio",
-    "section": "2.1 Autograd",
-    "text": "2.1 Autograd\nPyTorch puede calcular derivadas automáticamente. Si un tensor se crea con requires_grad=True, PyTorch registra todas las operaciones que se hacen con él. Al llamar .backward() sobre un resultado, recorre esas operaciones hacia atrás (backpropagation) y guarda la derivada de ese resultado respecto al tensor en el atributo .grad."
+    "objectID": "labs/04/lab.html#ver-el-árbol",
+    "href": "labs/04/lab.html#ver-el-árbol",
+    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
+    "section": "1.3 Ver el árbol",
+    "text": "1.3 Ver el árbol\nUna gran ventaja de los árboles es que se pueden leer. Hay dos formas: dibujarlo con plot_tree o imprimirlo con export_text.\nEn cada nodo, plot_tree muestra la pregunta, la impureza de Gini, el número de ejemplos (samples), cuántos hay de cada clase (value = [negativos, positivos]) y la clase mayoritaria. Si la respuesta a la pregunta es verdadera, se sigue la rama izquierda.\n\nfig, ax = plt.subplots(figsize=(14, 6))\nplot_tree(arbol, feature_names=[\"mes\", \"latitud\"], class_names=[\"no\", \"sí\"], filled=True, rounded=True, ax=ax, fontsize=9)\nplt.show()"
   },
   {
-    "objectID": "labs/05/lab.html#descenso-por-gradiente-a-mano",
-    "href": "labs/05/lab.html#descenso-por-gradiente-a-mano",
-    "title": "Clase 7: Redes neuronales. Laboratorio",
-    "section": "2.2 Descenso por gradiente a mano",
-    "text": "2.2 Descenso por gradiente a mano\nCon backward() ya podemos hacer descenso por gradiente: calcular el gradiente, restarle \\(\\alpha\\) veces el gradiente al peso, y repetir. Dos detalles de PyTorch:\n\nLa actualización se hace dentro de torch.no_grad(), porque no queremos que PyTorch la registre como parte del cálculo de la pérdida.\nPyTorch suma los gradientes de cada backward() a lo que ya hay en .grad. Por eso hay que borrarlo en cada paso con w.grad.zero_().\n\nCompara los primeros valores con tu tabla del Ejercicio 3 de las notas.\n\ndef descenso(alfa, pasos=10):\n    w = torch.tensor(1.0, requires_grad=True)\n    valores = [w.item()]\n    for _ in range(pasos):\n        L = (w * 2.0 - 10.0) ** 2\n        L.backward()\n        with torch.no_grad():\n            w -= alfa * w.grad\n        w.grad.zero_()\n        valores.append(w.item())\n    return valores\n\n\nprint(\"alfa = 0.05:\", [round(v, 3) for v in descenso(0.05)[:4]])\n\nplt.figure(figsize=(6, 3.5))\nfor alfa in [0.05, 0.3]:\n    plt.plot(descenso(alfa, 6), \"o-\", label=f\"alfa = {alfa}\")\nplt.axhline(5, c=\"gray\", ls=\":\")\nplt.xlabel(\"paso\"); plt.ylabel(\"w\"); plt.legend()\nplt.show()\n\nPregunta. Prueba descenso(0.125, 3). ¿Qué pasa? ¿Y con 0.25? ¿Puedes explicarlo? (Pista: el gradiente es \\(8(w - 5)\\).)"
+    "objectID": "labs/04/lab.html#predecir",
+    "href": "labs/04/lab.html#predecir",
+    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
+    "section": "1.4 Predecir",
+    "text": "1.4 Predecir\npredict devuelve la clase y predict_proba la proporción de cada clase en la hoja donde cae el punto. Probemos con tres lugares: Canadá en febrero, el Ecuador en julio y Chile en julio.\n\nnuevos = np.array([[2.5, 55],    # Canadá, mediados de febrero\n                   [7.5, 0],     # Ecuador, julio\n                   [7.5, -40]])  # Chile, julio\nprint(\"Clase predicha:\", arbol.predict(nuevos))\nprint(\"Probabilidades [no, sí]:\\n\", arbol.predict_proba(nuevos).round(2))"
   },
   {
-    "objectID": "labs/05/lab.html#backpropagation-en-una-red-de-dos-pesos",
-    "href": "labs/05/lab.html#backpropagation-en-una-red-de-dos-pesos",
-    "title": "Clase 7: Redes neuronales. Laboratorio",
-    "section": "2.3 Backpropagation en una red de dos pesos",
-    "text": "2.3 Backpropagation en una red de dos pesos\nAhora comprobemos el ejemplo de la sección 3.3 de las notas: \\(a = \\text{ReLU}(w_1 x)\\), \\(\\hat y = w_2 a\\). A mano obtuvimos \\(\\partial L/\\partial w_1 = \\partial L/\\partial w_2 = -32\\) con \\(w_1 = w_2 = 1\\), y 0 para los dos con \\(w_1 = -1\\) (la neurona está apagada).\n\nfor w1_inicial in [1.0, -1.0]:\n    w1 = torch.tensor(w1_inicial, requires_grad=True)\n    w2 = torch.tensor(1.0, requires_grad=True)\n    a = torch.relu(w1 * 2.0)\n    y_hat = w2 * a\n    L = (y_hat - 10.0) ** 2\n    L.backward()\n    print(f\"w1 = {w1_inicial:4}:  a = {a.item()},  L = {L.item()},  dL/dw1 = {w1.grad.item() + 0.0},  dL/dw2 = {w2.grad.item() + 0.0}\")"
+    "objectID": "labs/04/lab.html#evaluar-exactitud-y-matriz-de-confusión",
+    "href": "labs/04/lab.html#evaluar-exactitud-y-matriz-de-confusión",
+    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
+    "section": "1.5 Evaluar: exactitud y matriz de confusión",
+    "text": "1.5 Evaluar: exactitud y matriz de confusión\nLa exactitud (accuracy) es la fracción de ejemplos bien clasificados. Cuando una clase es poco frecuente puede engañar: aquí solo uno de cada cinco ejemplos es positivo, así que un “modelo” que siempre dice “no se puede esquiar” ya tiene ~80% de exactitud.\nLa matriz de confusión da más información. Las filas son la clase real y las columnas la predicha:\n\n\n\n\n\n\n\n\n\npredice “no”\npredice “sí”\n\n\n\n\nen realidad “no”\nverdaderos negativos\nfalsos positivos: decimos que se puede esquiar y no se puede\n\n\nen realidad “sí”\nfalsos negativos: nos perdemos un buen día de esquí\nverdaderos positivos\n\n\n\n\nprint(f\"Exactitud: entrenamiento {arbol.score(X_tr, y_tr):.1%}, prueba {arbol.score(X_te, y_te):.1%}\")\nprint(f\"Siempre decir 'no' tendría exactitud {1 - y_te.mean():.1%} en prueba\")\n\nfig, axs = plt.subplots(1, 2, figsize=(9, 3.6))\nfor ax, (Xs, ys, nombre) in zip(axs, [(X_tr, y_tr, \"Entrenamiento\"), (X_te, y_te, \"Prueba\")]):\n    ConfusionMatrixDisplay.from_estimator(arbol, Xs, ys, display_labels=[\"no\", \"sí\"], cmap=\"Blues\", colorbar=False, ax=ax)\n    ax.set_title(nombre)\nplt.tight_layout()\nplt.show()"
+  },
+  {
+    "objectID": "labs/04/lab.html#las-regiones-del-árbol",
+    "href": "labs/04/lab.html#las-regiones-del-árbol",
+    "title": "Clase 6: Árboles de decisión y métodos de ensamblaje. Laboratorio",
+    "section": "1.6 Las regiones del árbol",
+    "text": "1.6 Las regiones del árbol\nComo cada pregunta compara una feature con un umbral, las regiones son rectángulos. Probemos varias profundidades. ¿Con qué profundidad el árbol ya encuentra las tres zonas donde se puede esquiar?\n\nfig, axs = plt.subplots(1, 3, figsize=(15, 4))\nfor ax, prof in zip(axs, [2, 4, None]):\n    a = DecisionTreeClassifier(max_depth=prof, random_state=0).fit(X_tr, y_tr)\n    dibujar_regiones(ax, a.predict, X_tr, y_tr, (1, 13, -90, 90))\n    ax.set_title(f\"max_depth={prof}: {a.get_n_leaves()} hojas, prueba {a.score(X_te, y_te):.0%}\")\n    ax.set_xlabel(\"mes\"); ax.set_ylabel(\"latitud\")\nplt.tight_layout()\nplt.show()\n\nGini vs. entropía. Como vimos en clase, casi siempre producen el mismo árbol:\n\nfor criterio in [\"gini\", \"entropy\"]:\n    a = DecisionTreeClassifier(criterion=criterio, max_depth=4, random_state=0).fit(X_tr, y_tr)\n    print(f\"{criterio:8s} raíz: feature {['mes', 'latitud'][a.tree_.feature[0]]} &lt; {a.tree_.threshold[0]:.2f}   prueba: {a.score(X_te, y_te):.1%}\")"
+  },
+  {
+    "objectID": "labs/06/lab.html",
+    "href": "labs/06/lab.html",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "",
+    "text": "Objetivo: escribir dos redes como clases de PyTorch y entrenarlas para reconocer los dígitos de MNIST.\nEste laboratorio tiene tres archivos:\nProtocolo: editar una clase en modelos.py, guardar el archivo y volver a ejecutar la celda de verificación aquí. Las celdas de verificación indican si la red es correcta o qué está mal."
+  },
+  {
+    "objectID": "labs/06/lab.html#preparación",
+    "href": "labs/06/lab.html#preparación",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "Preparación",
+    "text": "Preparación\n\n%load_ext autoreload\n%autoreload 2\n\nimport torch\nimport matplotlib.pyplot as plt\n\nimport modelos\nfrom utilidades import *\n\nX_train, y_train, X_val, y_val, X_test, y_test = load_mnist()\nprint(\"entrenamiento:\", X_train.shape, y_train.shape)\nprint(\"validación:   \", X_val.shape)\nprint(\"prueba:       \", X_test.shape)\n\nLas imágenes tienen forma \\((N, C, H, W)\\): \\(N\\) imágenes, de \\(C = 1\\) canal (escala de grises), de \\(28 \\times 28\\) píxeles, con valores entre 0 y 1. Estas son las primeras diez:\n\nfig, axs = plt.subplots(1, 10, figsize=(12, 1.6))\nfor i, ax in enumerate(axs):\n    ax.imshow(X_train[i, 0], cmap=\"gray_r\")\n    ax.set_title(int(y_train[i]))\n    ax.axis(\"off\")\nplt.show()"
+  },
+  {
+    "objectID": "labs/06/lab.html#ejercicio-1",
+    "href": "labs/06/lab.html#ejercicio-1",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "Ejercicio 1",
+    "text": "Ejercicio 1\nAbrir modelos.py y completar la clase MyMLP: una red densa con una capa oculta de 128 unidades.\n\nEn __init__, declarar self.hidden (784 → 128) y self.output (128 → 10) con nn.Linear.\nEn forward, aplanar la imagen, pasarla por la capa oculta con ReLU y luego por la capa de salida. Sin softmax: nn.CrossEntropyLoss lo aplica.\n\nEs la red de la sección 2.1 de las notas. Al terminar, guardar el archivo y ejecutar la celda de abajo.\n\n\nPista\n\ndef __init__(self):\n    super().__init__()\n    self.hidden = nn.Linear(784, 128)\n    self.output = nn.Linear(128, 10)\nEn forward: x = x.flatten(start_dim=1), después x = torch.relu(self.hidden(x)) y return self.output(x).\n\n\ntorch.manual_seed(0)\nmlp = modelos.MyMLP()\nshape = shape_table(mlp)\n\nprint()\nverify(shape == (1, 10), \"la salida es (1, 10): un score por dígito\",\n       f\"la salida debería ser (1, 10), y es {shape}\")\nverify(count_parameters(mlp) == 101770, \"101770 parámetros, como en las notas\",\n       f\"deberían ser 101770 parámetros, y son {count_parameters(mlp)}\")\n\nLa tabla de arriba es un forward de prueba: la red recibe una imagen inventada de forma \\((1, 1, 28, 28)\\) y, para cada capa, se imprime la forma de lo que entra, de lo que sale y su número de parámetros.\nPregunta. El entrenamiento usa 50 000 imágenes y mini-batches de 64. ¿Cuántos pasos de descenso por gradiente tiene una época? Calcularlo antes de entrenar y compararlo con lo que imprime train."
+  },
+  {
+    "objectID": "labs/06/lab.html#ejercicio-1b",
+    "href": "labs/06/lab.html#ejercicio-1b",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "Ejercicio 1b",
+    "text": "Ejercicio 1b\nCompletar la función train_step en modelos.py: un paso de descenso por gradiente sobre un mini-batch. Es el corazón del ciclo de entrenamiento de la sección 2.2 de las notas, y son cinco líneas:\n\nborrar los gradientes del paso anterior;\nforward: los scores de la red para el mini-batch;\nla pérdida;\nbackward: los gradientes;\nel paso del optimizador.\n\nDevolver la pérdida como número (.item()).\n\n\nPista\n\noptimizer.zero_grad()\nscores = model(X_batch)\nloss = loss_fn(scores, y_batch)\nloss.backward()\noptimizer.step()\nreturn loss.item()\n\nPregunta. ¿Qué pasa si se omite optimizer.zero_grad()? Cuando la función pase la verificación, borrar esa línea y volver a ejecutar la celda.\n\ntorch.manual_seed(0)\ncheck_train_step(modelos.train_step, modelos.MyMLP(), X_train[:64], y_train[:64])"
+  },
+  {
+    "objectID": "labs/06/lab.html#entrenar",
+    "href": "labs/06/lab.html#entrenar",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "Entrenar",
+    "text": "Entrenar\nEn cada época, la función train recorre los datos en mini-batches, llama a train_step (de modelos.py) con cada uno y, al terminar la época, mide la exactitud sobre los datos de validación.\nIdealmente, leer el código de train y train_step para entender qué hacen. Después, ejecutar la celda de abajo para entrenar la red y graficar la pérdida y la exactitud.\n\ntorch.manual_seed(0)\nmlp = modelos.MyMLP()\nhistory_mlp = train(mlp, X_train, y_train, X_val, y_val, num_epochs=3, lr=0.1)\n\n\nverify(history_mlp is not None and history_mlp[\"val_accuracy\"][-1] &gt; 0.93,\n       \"la red aprendió: más del 93% de exactitud de validación\",\n       \"la exactitud de validación debería pasar del 93%. Revisar el forward.\")\n\nLas predicciones de la red sobre algunas imágenes de validación, con la probabilidad que les asigna (softmax). Abajo, algunas que clasifica mal:\n\nshow_predictions(mlp, X_val, y_val, n=12)\nshow_predictions(mlp, X_val, y_val, n=12, errors=True)"
+  },
+  {
+    "objectID": "labs/06/lab.html#ejercicio-2a-en-papel-antes-de-programar",
+    "href": "labs/06/lab.html#ejercicio-2a-en-papel-antes-de-programar",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "Ejercicio 2a (en papel, antes de programar)",
+    "text": "Ejercicio 2a (en papel, antes de programar)\nMyCNN tiene esta arquitectura (la de la sección 3.7 de las notas):\nConv2d(1, 8, kernel_size=3, padding=1) -&gt; ReLU -&gt; MaxPool2d(2)\nConv2d(8, 16, kernel_size=3, padding=1) -&gt; ReLU -&gt; MaxPool2d(2)\naplanar -&gt; Linear(?, 10)\nCompletar en papel la forma de la salida de cada capa, empezando por \\(1 \\times 28 \\times 28\\). ¿Cuántas entradas tiene la capa densa? ¿Cuántos parámetros tiene cada capa?\n\n\n\nCapa\nForma de la salida\nParámetros\n\n\n\n\nentrada\n\\(1 \\times 28 \\times 28\\)\n—\n\n\nconv1 + ReLU\n\n\n\n\npool\n\n\n\n\nconv2 + ReLU\n\n\n\n\npool\n\n\n\n\naplanar\n\n\n\n\ndensa\n\\(10\\)"
+  },
+  {
+    "objectID": "labs/06/lab.html#ejercicio-2b",
+    "href": "labs/06/lab.html#ejercicio-2b",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "Ejercicio 2b",
+    "text": "Ejercicio 2b\nCompletar la clase MyCNN en modelos.py. Usar exactamente los nombres self.conv1, self.conv2, self.pool y self.dense. Guardar y ejecutar la celda de abajo.\n\n\nPista\n\nself.conv1 = nn.Conv2d(1, 8, kernel_size=3, padding=1)\nself.conv2 = nn.Conv2d(8, 16, kernel_size=3, padding=1)\nself.pool = nn.MaxPool2d(kernel_size=2)\nself.dense = nn.Linear(16 * 7 * 7, 10)\nEn forward: x = self.pool(torch.relu(self.conv1(x))), lo mismo con conv2, después x = x.flatten(start_dim=1) y return self.dense(x).\n\n\ntorch.manual_seed(0)\ncnn = modelos.MyCNN()\nshape = shape_table(cnn)\n\nprint()\nverify(shape == (1, 10), \"la salida es (1, 10)\",\n       f\"la salida debería ser (1, 10), y es {shape}\")\nverify(count_parameters(cnn) == 9098, \"9098 parámetros: comparar con la tabla en papel\",\n       f\"deberían ser 9098 parámetros, y son {count_parameters(cnn)}. Comparar capa por capa con la tabla en papel\")"
+  },
+  {
+    "objectID": "labs/06/lab.html#entrenar-1",
+    "href": "labs/06/lab.html#entrenar-1",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "Entrenar",
+    "text": "Entrenar\nCon el mismo código y los mismos datos que MyMLP. Tarda un poco más, porque cada convolución hace muchas operaciones.\n\ntorch.manual_seed(0)\ncnn = modelos.MyCNN()\nhistory_cnn = train(cnn, X_train, y_train, X_val, y_val, num_epochs=3, lr=0.1)\n\n\nverify(history_cnn is not None and history_cnn[\"val_accuracy\"][-1] &gt; 0.96,\n       \"la red aprendió: más del 96% de exactitud de validación\",\n       \"la exactitud de validación debería pasar del 96%. Revisar el forward.\")"
+  },
+  {
+    "objectID": "labs/06/lab.html#mlp-contra-cnn",
+    "href": "labs/06/lab.html#mlp-contra-cnn",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "MLP contra CNN",
+    "text": "MLP contra CNN\n\nplot_histories({\"MyMLP\": history_mlp, \"MyCNN\": history_cnn})\n\nif history_mlp is not None and history_cnn is not None:\n    print(f\"{'red':8} {'parámetros':&gt;11} {'validación':&gt;11}\")\n    print(f\"{'MyMLP':8} {count_parameters(mlp):&gt;11} {history_mlp['val_accuracy'][-1]:&gt;11.3f}\")\n    print(f\"{'MyCNN':8} {count_parameters(cnn):&gt;11} {history_cnn['val_accuracy'][-1]:&gt;11.3f}\")\n\nPreguntas.\n\n¿Cuál de las dos redes tiene más parámetros? ¿Cuál es más precisa?\n¿Por qué la CNN necesita tan pocos parámetros?\nLa CNN tarda más en entrenar aunque tiene menos parámetros. ¿Por qué?"
+  },
+  {
+    "objectID": "labs/06/lab.html#lo-que-aprendió-la-red",
+    "href": "labs/06/lab.html#lo-que-aprendió-la-red",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "Lo que aprendió la red",
+    "text": "Lo que aprendió la red\nArriba, los 8 filtros de \\(3 \\times 3\\) de conv1 (oscuro: peso positivo; claro: negativo). Abajo, el mapa de activación de cada filtro para una imagen de validación. ¿Algún filtro parece detectar bordes? ¿De qué dirección?\n\nplot_filters(cnn, X_val[0])\n\nY algunos errores de la CNN. ¿Son los mismos tipos de errores que los del MLP?\n\nshow_predictions(cnn, X_val, y_val, n=12, errors=True)"
+  },
+  {
+    "objectID": "labs/06/lab.html#la-exactitud-de-prueba",
+    "href": "labs/06/lab.html#la-exactitud-de-prueba",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "La exactitud de prueba",
+    "text": "La exactitud de prueba\nLos datos de prueba se usan una sola vez, al final, para reportar el resultado del modelo escogido. Si los usáramos para comparar o ajustar modelos, el resultado dejaría de ser una estimación honesta de cómo funciona la red con datos nuevos.\n\nif history_cnn is not None:\n    print(f\"Exactitud de prueba de MyCNN: {accuracy(cnn, X_test, y_test):.3f}\")"
+  },
+  {
+    "objectID": "labs/06/lab.html#discusión",
+    "href": "labs/06/lab.html#discusión",
+    "title": "Clase 8: Redes convolucionales. Laboratorio",
+    "section": "Discusión",
+    "text": "Discusión\nCopiar la salida de esta celda en la discusión de Classroom, junto con una breve explicación de los cambios hechos y por qué. Después, comentar la publicación de otra pareja: ¿su cambio funcionó mejor o peor que el propio?\n\nif implemented(modelos.MyCNNVariant):\n    summary(\"MyCNNVariant\", variant, history_variant)\nelse:\n    summary(\"MyCNN\", cnn, history_cnn)"
   },
   {
     "objectID": "labs/03/lab.html",

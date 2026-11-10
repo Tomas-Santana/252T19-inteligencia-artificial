@@ -16,6 +16,7 @@ subtitle: "Material de la asignatura"
 - [5. Máquinas de Soporte Vectorial](notes/05-svm.pdf)
 - [6. Árboles de decisión](notes/06-arboles.pdf)
 - [7. Redes neuronales](notes/07-redes-neuronales.pdf)
+- [8. Redes convolucionales](notes/08-redes-convolucionales.pdf)
 
 
 ## Laboratorios
