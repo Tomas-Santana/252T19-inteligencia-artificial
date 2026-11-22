@@ -71,6 +71,8 @@ class MyCNN(nn.Module):
     def forward(self, x):
         # CÓDIGO AQUÍ:
         #   1. conv1 -> ReLU -> pool
+        x = self.conv1(x)
+        x = self.pool(torch.relu(x))
         #   2. conv2 -> ReLU -> pool
         #   3. aplanar: x.flatten(start_dim=1)
         #   4. densa (sin softmax)
